@@ -1,0 +1,185 @@
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap");
+@source "../src";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-teal: var(--teal);
+  --color-teal-foreground: var(--teal-foreground);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-gold-muted: var(--gold-muted);
+  --color-cream: var(--cream);
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-mid: var(--navy-mid);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* NexusZim refined palette */
+  --navy-deep: #0D1B2A;
+  --navy-mid: #152436;
+  --gold-primary: #C49A2A;
+  --gold-muted: #9A7A1E;
+  --cream: #F5EDD8;
+
+  /* Map global tokens onto the navy/gold system */
+  --background: #0D1B2A;
+  --foreground: #F5EDD8;
+
+  --surface: #152436;
+  --surface-elevated: #1B2D44;
+
+  --card: #152436;
+  --card-foreground: #F5EDD8;
+
+  --popover: #152436;
+  --popover-foreground: #F5EDD8;
+
+  --primary: #0D1B2A;
+  --primary-foreground: #F5EDD8;
+  --primary-glow: #1B3A66;
+
+  --secondary: #152436;
+  --secondary-foreground: #F5EDD8;
+
+  --muted: #152436;
+  --muted-foreground: rgba(245, 237, 216, 0.65);
+
+  --accent: #C49A2A;
+  --accent-foreground: #0D1B2A;
+
+  --teal: #C49A2A;
+  --teal-foreground: #0D1B2A;
+
+  --gold: #C49A2A;
+  --gold-foreground: #0D1B2A;
+  --gold-muted: #9A7A1E;
+  --cream: #F5EDD8;
+
+  --success: oklch(0.65 0.13 160);
+  --success-foreground: #FFFFFF;
+  --warning: #C49A2A;
+  --warning-foreground: #0D1B2A;
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: #FFFFFF;
+
+  --border: rgba(196, 154, 42, 0.2);
+  --input: rgba(196, 154, 42, 0.25);
+  --ring: #C49A2A;
+}
+
+.dark {
+  --background: #0D1B2A;
+  --foreground: #F5EDD8;
+  --surface: #152436;
+  --surface-elevated: #1B2D44;
+  --card: #152436;
+  --card-foreground: #F5EDD8;
+  --popover: #152436;
+  --popover-foreground: #F5EDD8;
+  --primary: #C49A2A;
+  --primary-foreground: #0D1B2A;
+  --primary-glow: #E0C078;
+  --secondary: #152436;
+  --secondary-foreground: #F5EDD8;
+  --muted: #152436;
+  --muted-foreground: rgba(245, 237, 216, 0.65);
+  --accent: #C49A2A;
+  --accent-foreground: #0D1B2A;
+  --teal: #C49A2A;
+  --teal-foreground: #0D1B2A;
+  --gold: #C49A2A;
+  --gold-foreground: #0D1B2A;
+  --border: rgba(196, 154, 42, 0.2);
+  --input: rgba(196, 154, 42, 0.25);
+  --ring: #C49A2A;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html, body {
+    font-family: var(--font-sans);
+    font-weight: 300;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1200px;
+  padding-inline: 1.5rem;
+}
+
+@utility gradient-hero {
+  background-image: linear-gradient(135deg, #0D1B2A 0%, #152436 55%, #1B3A66 100%);
+}
+
+@utility gradient-teal {
+  background-image: linear-gradient(135deg, #C49A2A, #E0C078);
+}
+
+@utility shadow-elevated {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 32px rgba(196, 154, 42, 0.12);
+}
+
+@utility hero-grid-overlay {
+  background-image:
+    radial-gradient(rgba(196, 154, 42, 0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
