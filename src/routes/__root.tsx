@@ -15,22 +15,38 @@ import { CartProvider } from "@/hooks/use-cart";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
+      <div className="flex items-center gap-4 mb-10">
+        <span className="h-px w-16 bg-gold/20" />
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">404 Error</span>
+        <span className="h-px w-16 bg-gold/20" />
       </div>
+      <h1
+        className="font-display font-extrabold text-foreground tracking-tight leading-none"
+        style={{ fontSize: "clamp(72px, 12vw, 140px)" }}
+      >
+        Not Found.
+      </h1>
+      <p className="mt-8 text-base text-foreground/60 max-w-sm leading-relaxed">
+        This route doesn't exist in our network. You may have followed an expired link or mistyped the URL.
+      </p>
+      <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4">
+        <Link
+          to="/"
+          className="bg-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors rounded"
+        >
+          Return Home
+        </Link>
+        <Link
+          to="/search"
+          className="border-2 border-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-white transition-colors rounded"
+        >
+          Browse Directory
+        </Link>
+      </div>
+      <p className="mt-16 text-xs text-foreground/30 tracking-widest uppercase">
+        NexusZim · Zimbabwe's Trusted Services Network
+      </p>
     </div>
   );
 }
@@ -40,31 +56,34 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Try again
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Go home
-          </a>
-        </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
+      <div className="flex items-center gap-4 mb-10">
+        <span className="h-px w-16 bg-gold/20" />
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">System Error</span>
+        <span className="h-px w-16 bg-gold/20" />
+      </div>
+      <h1 className="font-display text-5xl font-extrabold text-foreground tracking-tight">
+        Something broke.
+      </h1>
+      <p className="mt-6 text-base text-foreground/60 max-w-sm leading-relaxed">
+        An unexpected error occurred. You can try refreshing or head back to the main platform.
+      </p>
+      <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+        <button
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
+          className="bg-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors rounded"
+        >
+          Try Again
+        </button>
+        <a
+          href="/"
+          className="border-2 border-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-white transition-colors rounded"
+        >
+          Go Home
+        </a>
       </div>
     </div>
   );
@@ -92,6 +111,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "icon", href: "/icon.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/icon.png" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
