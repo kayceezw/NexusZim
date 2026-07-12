@@ -62,11 +62,8 @@ function LandingPage() {
 
   return (
     <div className="bg-cream pt-16 overflow-x-hidden">
-
       {/* ─── HERO ─── */}
-      <section
-        className="relative py-20 lg:py-28 border-b border-hairline overflow-hidden"
-      >
+      <section className="relative py-20 lg:py-28 border-b border-hairline overflow-hidden">
         {/* Background image (renders only when loaded) */}
         {heroBg && (
           <>
@@ -86,16 +83,12 @@ function LandingPage() {
         {/* Admin hero image upload — bottom-left corner */}
         {isAdmin && (
           <div className="absolute bottom-4 left-4 z-20">
-            <HeroImageUpload
-              currentUrl={heroBg}
-              onUpload={(url) => setHeroBg(url)}
-            />
+            <HeroImageUpload currentUrl={heroBg} onUpload={(url) => setHeroBg(url)} />
           </div>
         )}
 
         <div className="container-page relative z-10">
           <div className="grid gap-14 lg:grid-cols-2 lg:items-start">
-
             {/* Left: editorial headline */}
             <div className="space-y-8 lg:pt-6">
               <p className="eyebrow text-text-soft">
@@ -105,7 +98,11 @@ function LandingPage() {
 
               <h1
                 className="text-text"
-                style={{ fontSize: "clamp(40px, 5.5vw, 68px)", lineHeight: "1.06", letterSpacing: "-0.02em" }}
+                style={{
+                  fontSize: "clamp(40px, 5.5vw, 68px)",
+                  lineHeight: "1.06",
+                  letterSpacing: "-0.02em",
+                }}
               >
                 Find providers.
                 <br />
@@ -115,12 +112,16 @@ function LandingPage() {
               </h1>
 
               <p className="font-sans text-base text-text-soft leading-relaxed max-w-[440px]">
-                NexusZim maintains a public register of vetted service providers across Zimbabwe. Every listing shows what was checked, by whom, and when.
+                NexusZim maintains a public register of vetted service providers across Zimbabwe.
+                Every listing shows what was checked, by whom, and when.
               </p>
 
               <form onSubmit={handleSearch} className="flex max-w-[480px]">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-soft/50" strokeWidth={1.5} />
+                  <Search
+                    className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-soft/50"
+                    strokeWidth={1.5}
+                  />
                   <input
                     type="text"
                     value={q}
@@ -204,7 +205,9 @@ function LandingPage() {
                   className="font-sans text-[12px] font-semibold text-forest hover:text-gold-deep transition-colors flex items-center gap-1 group"
                 >
                   Browse all records
-                  <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
+                  <span className="transition-transform group-hover:translate-x-[3px] duration-150">
+                    →
+                  </span>
                 </Link>
               </div>
             </div>
@@ -251,7 +254,9 @@ function LandingPage() {
               className="font-sans text-sm font-semibold text-forest hover:text-gold-deep transition-colors mt-4 md:mt-0 flex items-center gap-1 group"
             >
               All categories
-              <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
+              <span className="transition-transform group-hover:translate-x-[3px] duration-150">
+                →
+              </span>
             </Link>
           </div>
 
@@ -282,7 +287,9 @@ function LandingPage() {
                 className="font-sans text-sm font-semibold text-forest hover:text-gold-deep transition-colors mt-4 md:mt-0 flex items-center gap-1 group"
               >
                 Full directory
-                <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
+                <span className="transition-transform group-hover:translate-x-[3px] duration-150">
+                  →
+                </span>
               </Link>
             </div>
 
@@ -297,7 +304,9 @@ function LandingPage() {
                   >
                     <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-150" />
                     <div className="flex gap-0 min-h-[96px]">
-                      <div className={`flex-shrink-0 w-[72px] flex items-center justify-center font-sans text-lg font-bold border-r border-hairline ${p.avatarColor}`}>
+                      <div
+                        className={`flex-shrink-0 w-[72px] flex items-center justify-center font-sans text-lg font-bold border-r border-hairline ${p.avatarColor}`}
+                      >
                         {p.initials}
                       </div>
                       <div className="flex-1 px-4 py-3 min-w-0">
@@ -343,7 +352,8 @@ function LandingPage() {
                 Apply to join the register
               </h2>
               <p className="font-sans text-sm text-cream/60 max-w-md leading-relaxed">
-                Submit your business documents and complete the NexusZim verification process. Listed status is free. Verified and Trust Certified require document review.
+                Submit your business documents and complete the NexusZim verification process.
+                Listed status is free. Verified and Trust Certified require document review.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 shrink-0">
@@ -352,7 +362,9 @@ function LandingPage() {
                 className="bg-gold px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors flex items-center gap-2 group justify-center"
               >
                 Apply as a provider
-                <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
+                <span className="transition-transform group-hover:translate-x-[3px] duration-150">
+                  →
+                </span>
               </Link>
               <Link
                 to="/about"

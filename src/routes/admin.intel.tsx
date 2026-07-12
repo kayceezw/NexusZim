@@ -66,10 +66,25 @@ function AdminIntelPage() {
 /* ─── EVENTS TAB ─── */
 
 type EventForm = {
-  title: string; date: string; venue: string; city: string;
-  genre: string; estimated_attendance: string; ticket_price_range: string; source: string;
+  title: string;
+  date: string;
+  venue: string;
+  city: string;
+  genre: string;
+  estimated_attendance: string;
+  ticket_price_range: string;
+  source: string;
 };
-const EMPTY_EVENT: EventForm = { title: "", date: "", venue: "", city: "", genre: "", estimated_attendance: "", ticket_price_range: "", source: "" };
+const EMPTY_EVENT: EventForm = {
+  title: "",
+  date: "",
+  venue: "",
+  city: "",
+  genre: "",
+  estimated_attendance: "",
+  ticket_price_range: "",
+  source: "",
+};
 
 function EventsTab() {
   const qc = useQueryClient();
@@ -79,7 +94,10 @@ function EventsTab() {
   const { data: events } = useQuery({
     queryKey: ["admin", "intel", "events"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("events_radar").select("*").order("date", { ascending: true });
+      const { data, error } = await supabase
+        .from("events_radar")
+        .select("*")
+        .order("date", { ascending: true });
       if (error) throw error;
       return data ?? [];
     },
@@ -128,16 +146,47 @@ function EventsTab() {
 
       {open && (
         <div className="border border-gold/30 bg-card p-8 space-y-6">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">New Event</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
+            New Event
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Title *" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
-            <Field label="Date *" type="date" value={form.date} onChange={(v) => setForm({ ...form, date: v })} />
-            <Field label="Venue" value={form.venue} onChange={(v) => setForm({ ...form, venue: v })} />
+            <Field
+              label="Title *"
+              value={form.title}
+              onChange={(v) => setForm({ ...form, title: v })}
+            />
+            <Field
+              label="Date *"
+              type="date"
+              value={form.date}
+              onChange={(v) => setForm({ ...form, date: v })}
+            />
+            <Field
+              label="Venue"
+              value={form.venue}
+              onChange={(v) => setForm({ ...form, venue: v })}
+            />
             <Field label="City" value={form.city} onChange={(v) => setForm({ ...form, city: v })} />
-            <Field label="Genre" value={form.genre} onChange={(v) => setForm({ ...form, genre: v })} />
-            <Field label="Est. Attendance" value={form.estimated_attendance} onChange={(v) => setForm({ ...form, estimated_attendance: v })} />
-            <Field label="Ticket Price Range" value={form.ticket_price_range} onChange={(v) => setForm({ ...form, ticket_price_range: v })} />
-            <Field label="Source" value={form.source} onChange={(v) => setForm({ ...form, source: v })} />
+            <Field
+              label="Genre"
+              value={form.genre}
+              onChange={(v) => setForm({ ...form, genre: v })}
+            />
+            <Field
+              label="Est. Attendance"
+              value={form.estimated_attendance}
+              onChange={(v) => setForm({ ...form, estimated_attendance: v })}
+            />
+            <Field
+              label="Ticket Price Range"
+              value={form.ticket_price_range}
+              onChange={(v) => setForm({ ...form, ticket_price_range: v })}
+            />
+            <Field
+              label="Source"
+              value={form.source}
+              onChange={(v) => setForm({ ...form, source: v })}
+            />
           </div>
           <div className="flex gap-4">
             <button
@@ -147,7 +196,10 @@ function EventsTab() {
             >
               {add.isPending ? "Saving…" : "Save Event"}
             </button>
-            <button onClick={() => setOpen(false)} className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors">
+            <button
+              onClick={() => setOpen(false)}
+              className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors"
+            >
               Cancel
             </button>
           </div>
@@ -155,13 +207,25 @@ function EventsTab() {
       )}
 
       <div className="space-y-3">
-        {(events ?? []).length === 0 && <p className="font-body text-sm text-foreground/30 italic">No events yet. Add one above.</p>}
+        {(events ?? []).length === 0 && (
+          <p className="font-body text-sm text-foreground/30 italic">
+            No events yet. Add one above.
+          </p>
+        )}
         {(events ?? []).map((e) => (
-          <div key={e.id} className="flex items-start justify-between border border-gold/10 bg-card p-6">
+          <div
+            key={e.id}
+            className="flex items-start justify-between border border-gold/10 bg-card p-6"
+          >
             <div className="space-y-1">
-              <p className="font-mono text-[10px] text-gold uppercase tracking-widest">{e.genre ?? "—"} · {e.city ?? "—"}</p>
+              <p className="font-mono text-[10px] text-gold uppercase tracking-widest">
+                {e.genre ?? "—"} · {e.city ?? "—"}
+              </p>
               <p className="font-display text-xl font-bold text-foreground">{e.title}</p>
-              <p className="font-mono text-[10px] text-foreground/40">{e.date} · {e.venue ?? "—"} · {e.estimated_attendance ?? "?"} attendees · {e.ticket_price_range ?? "—"}</p>
+              <p className="font-mono text-[10px] text-foreground/40">
+                {e.date} · {e.venue ?? "—"} · {e.estimated_attendance ?? "?"} attendees ·{" "}
+                {e.ticket_price_range ?? "—"}
+              </p>
             </div>
             <button
               onClick={() => del.mutate(e.id)}
@@ -179,10 +243,21 @@ function EventsTab() {
 /* ─── VENUES TAB ─── */
 
 type VenueForm = {
-  venue_name: string; city: string; available_from: string;
-  available_to: string; capacity: string; contact: string;
+  venue_name: string;
+  city: string;
+  available_from: string;
+  available_to: string;
+  capacity: string;
+  contact: string;
 };
-const EMPTY_VENUE: VenueForm = { venue_name: "", city: "", available_from: "", available_to: "", capacity: "", contact: "" };
+const EMPTY_VENUE: VenueForm = {
+  venue_name: "",
+  city: "",
+  available_from: "",
+  available_to: "",
+  capacity: "",
+  contact: "",
+};
 
 function VenuesTab() {
   const qc = useQueryClient();
@@ -192,7 +267,10 @@ function VenuesTab() {
   const { data: venues } = useQuery({
     queryKey: ["admin", "intel", "venues"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("venue_availability").select("*").order("venue_name");
+      const { data, error } = await supabase
+        .from("venue_availability")
+        .select("*")
+        .order("venue_name");
       if (error) throw error;
       return data ?? [];
     },
@@ -200,12 +278,14 @@ function VenuesTab() {
 
   const add = useMutation({
     mutationFn: async (f: VenueForm) => {
-      const { error } = await supabase.from("venue_availability").insert([{
-        ...f,
-        capacity: f.capacity ? parseInt(f.capacity, 10) : null,
-        available_from: f.available_from || null,
-        available_to: f.available_to || null,
-      }]);
+      const { error } = await supabase.from("venue_availability").insert([
+        {
+          ...f,
+          capacity: f.capacity ? parseInt(f.capacity, 10) : null,
+          available_from: f.available_from || null,
+          available_to: f.available_to || null,
+        },
+      ]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -246,14 +326,39 @@ function VenuesTab() {
 
       {open && (
         <div className="border border-gold/30 bg-card p-8 space-y-6">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">New Venue</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
+            New Venue
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Venue Name *" value={form.venue_name} onChange={(v) => setForm({ ...form, venue_name: v })} />
+            <Field
+              label="Venue Name *"
+              value={form.venue_name}
+              onChange={(v) => setForm({ ...form, venue_name: v })}
+            />
             <Field label="City" value={form.city} onChange={(v) => setForm({ ...form, city: v })} />
-            <Field label="Available From" type="date" value={form.available_from} onChange={(v) => setForm({ ...form, available_from: v })} />
-            <Field label="Available To" type="date" value={form.available_to} onChange={(v) => setForm({ ...form, available_to: v })} />
-            <Field label="Capacity" type="number" value={form.capacity} onChange={(v) => setForm({ ...form, capacity: v })} />
-            <Field label="Contact" value={form.contact} onChange={(v) => setForm({ ...form, contact: v })} />
+            <Field
+              label="Available From"
+              type="date"
+              value={form.available_from}
+              onChange={(v) => setForm({ ...form, available_from: v })}
+            />
+            <Field
+              label="Available To"
+              type="date"
+              value={form.available_to}
+              onChange={(v) => setForm({ ...form, available_to: v })}
+            />
+            <Field
+              label="Capacity"
+              type="number"
+              value={form.capacity}
+              onChange={(v) => setForm({ ...form, capacity: v })}
+            />
+            <Field
+              label="Contact"
+              value={form.contact}
+              onChange={(v) => setForm({ ...form, contact: v })}
+            />
           </div>
           <div className="flex gap-4">
             <button
@@ -263,7 +368,10 @@ function VenuesTab() {
             >
               {add.isPending ? "Saving…" : "Save Venue"}
             </button>
-            <button onClick={() => setOpen(false)} className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors">
+            <button
+              onClick={() => setOpen(false)}
+              className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors"
+            >
               Cancel
             </button>
           </div>
@@ -271,11 +379,20 @@ function VenuesTab() {
       )}
 
       <div className="space-y-3">
-        {(venues ?? []).length === 0 && <p className="font-body text-sm text-foreground/30 italic">No venues yet. Add one above.</p>}
+        {(venues ?? []).length === 0 && (
+          <p className="font-body text-sm text-foreground/30 italic">
+            No venues yet. Add one above.
+          </p>
+        )}
         {(venues ?? []).map((v) => (
-          <div key={v.id} className="flex items-start justify-between border border-gold/10 bg-card p-6">
+          <div
+            key={v.id}
+            className="flex items-start justify-between border border-gold/10 bg-card p-6"
+          >
             <div className="space-y-1">
-              <p className="font-mono text-[10px] text-gold uppercase tracking-widest">{v.city ?? "—"}</p>
+              <p className="font-mono text-[10px] text-gold uppercase tracking-widest">
+                {v.city ?? "—"}
+              </p>
               <p className="font-display text-xl font-bold text-foreground">{v.venue_name}</p>
               <p className="font-mono text-[10px] text-foreground/40">
                 Capacity: {v.capacity ?? "?"} ·{" "}
@@ -301,7 +418,11 @@ function VenuesTab() {
 /* ─── RATES TAB ─── */
 
 type RateForm = {
-  category: string; rate_low: string; rate_high: string; unit: string; notes: string;
+  category: string;
+  rate_low: string;
+  rate_high: string;
+  unit: string;
+  notes: string;
 };
 const EMPTY_RATE: RateForm = { category: "", rate_low: "", rate_high: "", unit: "", notes: "" };
 
@@ -313,7 +434,10 @@ function RatesTab() {
   const { data: rates } = useQuery({
     queryKey: ["admin", "intel", "rates"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("market_rate_index").select("*").order("category");
+      const { data, error } = await supabase
+        .from("market_rate_index")
+        .select("*")
+        .order("category");
       if (error) throw error;
       return data ?? [];
     },
@@ -321,13 +445,15 @@ function RatesTab() {
 
   const add = useMutation({
     mutationFn: async (f: RateForm) => {
-      const { error } = await supabase.from("market_rate_index").insert([{
-        category: f.category,
-        rate_low: f.rate_low ? parseFloat(f.rate_low) : null,
-        rate_high: f.rate_high ? parseFloat(f.rate_high) : null,
-        unit: f.unit || null,
-        notes: f.notes || null,
-      }]);
+      const { error } = await supabase.from("market_rate_index").insert([
+        {
+          category: f.category,
+          rate_low: f.rate_low ? parseFloat(f.rate_low) : null,
+          rate_high: f.rate_high ? parseFloat(f.rate_high) : null,
+          unit: f.unit || null,
+          notes: f.notes || null,
+        },
+      ]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -368,14 +494,40 @@ function RatesTab() {
 
       {open && (
         <div className="border border-gold/30 bg-card p-8 space-y-6">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">New Rate Entry</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
+            New Rate Entry
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Category *" value={form.category} onChange={(v) => setForm({ ...form, category: v })} placeholder="e.g. DJ Services (Standard)" />
-            <Field label="Unit" value={form.unit} onChange={(v) => setForm({ ...form, unit: v })} placeholder="e.g. per event" />
-            <Field label="Rate Low (USD)" type="number" value={form.rate_low} onChange={(v) => setForm({ ...form, rate_low: v })} />
-            <Field label="Rate High (USD)" type="number" value={form.rate_high} onChange={(v) => setForm({ ...form, rate_high: v })} />
+            <Field
+              label="Category *"
+              value={form.category}
+              onChange={(v) => setForm({ ...form, category: v })}
+              placeholder="e.g. DJ Services (Standard)"
+            />
+            <Field
+              label="Unit"
+              value={form.unit}
+              onChange={(v) => setForm({ ...form, unit: v })}
+              placeholder="e.g. per event"
+            />
+            <Field
+              label="Rate Low (USD)"
+              type="number"
+              value={form.rate_low}
+              onChange={(v) => setForm({ ...form, rate_low: v })}
+            />
+            <Field
+              label="Rate High (USD)"
+              type="number"
+              value={form.rate_high}
+              onChange={(v) => setForm({ ...form, rate_high: v })}
+            />
           </div>
-          <Field label="Notes (optional)" value={form.notes} onChange={(v) => setForm({ ...form, notes: v })} />
+          <Field
+            label="Notes (optional)"
+            value={form.notes}
+            onChange={(v) => setForm({ ...form, notes: v })}
+          />
           <div className="flex gap-4">
             <button
               onClick={() => add.mutate(form)}
@@ -384,7 +536,10 @@ function RatesTab() {
             >
               {add.isPending ? "Saving…" : "Save Rate"}
             </button>
-            <button onClick={() => setOpen(false)} className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors">
+            <button
+              onClick={() => setOpen(false)}
+              className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors"
+            >
               Cancel
             </button>
           </div>
@@ -392,16 +547,25 @@ function RatesTab() {
       )}
 
       <div className="space-y-3">
-        {(rates ?? []).length === 0 && <p className="font-body text-sm text-foreground/30 italic">No rates yet. Add one above.</p>}
+        {(rates ?? []).length === 0 && (
+          <p className="font-body text-sm text-foreground/30 italic">
+            No rates yet. Add one above.
+          </p>
+        )}
         {(rates ?? []).map((r) => (
-          <div key={r.id} className="flex items-start justify-between border border-gold/10 bg-card p-6">
+          <div
+            key={r.id}
+            className="flex items-start justify-between border border-gold/10 bg-card p-6"
+          >
             <div className="space-y-1">
               <p className="font-display text-xl font-bold text-foreground">{r.category}</p>
               <p className="font-mono text-[10px] text-foreground/40">
                 ${r.rate_low ?? "?"} – ${r.rate_high ?? "?"} · {r.unit ?? "—"}
                 {r.notes && ` · ${r.notes}`}
               </p>
-              <p className="font-mono text-[9px] text-foreground/20">Updated: {new Date(r.updated_at).toLocaleDateString()}</p>
+              <p className="font-mono text-[9px] text-foreground/20">
+                Updated: {new Date(r.updated_at).toLocaleDateString()}
+              </p>
             </div>
             <button
               onClick={() => del.mutate(r.id)}
@@ -419,10 +583,17 @@ function RatesTab() {
 /* ─── SHARED ─── */
 
 function Field({
-  label, value, onChange, type = "text", placeholder,
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
 }: {
-  label: string; value: string; onChange: (v: string) => void;
-  type?: string; placeholder?: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  placeholder?: string;
 }) {
   return (
     <div>

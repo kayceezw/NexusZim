@@ -13,17 +13,17 @@ function ContactPage() {
       <div className="container-page grid gap-16 py-12 md:grid-cols-2 md:py-24">
         <div>
           <div className="flex items-center gap-4">
-             <span className="h-px w-8 bg-gold/40" />
-             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-               Support Desk
-             </p>
+            <span className="h-px w-8 bg-gold/40" />
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+              Support Desk
+            </p>
           </div>
           <h1 className="mt-6 font-display text-5xl font-bold tracking-tight text-foreground md:text-6xl">
             Contact the <span className="italic text-gold">Operator.</span>
           </h1>
           <p className="mt-8 text-lg font-light leading-relaxed text-foreground/70">
-            NexusZim is a connection hub. If you have questions regarding brokered deals, 
-            managed packages, or provider verification, reach out to our concierge desk.
+            NexusZim is a connection hub. If you have questions regarding brokered deals, managed
+            packages, or provider verification, reach out to our concierge desk.
           </p>
           <ul className="mt-12 space-y-6">
             <ContactItem label="Email Intelligence" value="ops@nexuszim.co.zw" />
@@ -55,8 +55,14 @@ function ContactPage() {
               <Input label="Secure Email" type="email" required />
               <Input label="Subject / Topic" />
               <div className="space-y-3">
-                <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">Brief Message</label>
-                <textarea required rows={5} className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-none" />
+                <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+                  Brief Message
+                </label>
+                <textarea
+                  required
+                  rows={5}
+                  className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-none"
+                />
               </div>
               <button className="w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors">
                 Broadcast Message
@@ -70,12 +76,14 @@ function ContactPage() {
 }
 
 function ContactItem({ label, value }: { label: string; value: string }) {
-    return (
-        <li>
-            <p className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gold/60">{label}</p>
-            <p className="mt-1 font-body text-base text-foreground/80">{value}</p>
-        </li>
-    )
+  return (
+    <li>
+      <p className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gold/60">
+        {label}
+      </p>
+      <p className="mt-1 font-body text-base text-foreground/80">{value}</p>
+    </li>
+  );
 }
 
 function Input({
@@ -84,9 +92,13 @@ function Input({
 }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="space-y-3">
-      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">{label}</label>
-      <input {...rest} className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+        {label}
+      </label>
+      <input
+        {...rest}
+        className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+      />
     </div>
   );
 }
-

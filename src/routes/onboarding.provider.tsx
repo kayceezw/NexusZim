@@ -83,7 +83,6 @@ function ProviderOnboarding() {
   return (
     <div className="bg-cream pt-24 pb-20 min-h-screen">
       <div className="container-page max-w-2xl">
-
         {/* Page header */}
         <div className="mb-10">
           <p className="eyebrow text-text-soft mb-3">
@@ -94,12 +93,13 @@ function ProviderOnboarding() {
             Join the register
           </h1>
           <p className="mt-3 font-sans text-base text-text-soft leading-relaxed">
-            Complete your profile to appear in the NexusZim directory. You will be listed immediately at Tier 1 (Listed). Verification for Tier 2 and above is reviewed by our desk.
+            Complete your profile to appear in the NexusZim directory. You will be listed
+            immediately at Tier 1 (Listed). Verification for Tier 2 and above is reviewed by our
+            desk.
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-0">
-
           {error && (
             <div className="mb-6 border border-rose-200 bg-rose-50 px-4 py-3 rounded-[3px] font-sans text-sm text-rose-600">
               {error}
@@ -132,7 +132,9 @@ function ProviderOnboarding() {
                 required
               >
                 {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -145,7 +147,9 @@ function ProviderOnboarding() {
                   className="field-input"
                 >
                   {CITIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
                   ))}
                 </select>
               </Field>
@@ -203,7 +207,8 @@ function ProviderOnboarding() {
                   Proof photos
                 </p>
                 <p className="font-sans text-[13px] text-text-soft leading-relaxed">
-                  Add up to 5 photos of your premises, team, or past work. These appear on your public profile. You can skip this step and add photos later from your dashboard.
+                  Add up to 5 photos of your premises, team, or past work. These appear on your
+                  public profile. You can skip this step and add photos later from your dashboard.
                 </p>
               </div>
 
@@ -222,9 +227,13 @@ function ProviderOnboarding() {
             <div className="flex gap-4">
               <span className="inline-block h-2.5 w-2.5 rotate-45 border border-hairline shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-text">Tier 1 — Listed</p>
+                <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-text">
+                  Tier 1 — Listed
+                </p>
                 <p className="font-sans text-[12px] text-text-soft leading-relaxed">
-                  Your profile enters the register immediately as Listed. To advance to Verified or Trust Certified, the NexusZim desk will contact you with document requirements. Verification is free.
+                  Your profile enters the register immediately as Listed. To advance to Verified or
+                  Trust Certified, the NexusZim desk will contact you with document requirements.
+                  Verification is free.
                 </p>
               </div>
             </div>
@@ -265,7 +274,11 @@ function Field({
       <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
         {label}
         {required && <span className="text-gold ml-1">*</span>}
-        {hint && <span className="ml-2 normal-case tracking-normal text-text-soft/60 font-sans text-[11px]">{hint}</span>}
+        {hint && (
+          <span className="ml-2 normal-case tracking-normal text-text-soft/60 font-sans text-[11px]">
+            {hint}
+          </span>
+        )}
       </label>
       {children}
     </div>

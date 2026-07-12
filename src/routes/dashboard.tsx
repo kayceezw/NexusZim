@@ -64,13 +64,21 @@ function DashboardPage() {
           .in("request_id", ids)
           .order("created_at", { ascending: false });
         const providerIds = Array.from(new Set((qs ?? []).map((q) => q.provider_id)));
-        let profilesMap = new Map<string, { business_name: string; phone: string | null; whatsapp: string | null }>();
+        let profilesMap = new Map<
+          string,
+          { business_name: string; phone: string | null; whatsapp: string | null }
+        >();
         if (providerIds.length > 0) {
           const { data: profs } = await supabase
             .from("provider_profiles")
             .select("user_id, business_name, phone, whatsapp")
             .in("user_id", providerIds);
-          profilesMap = new Map((profs ?? []).map((p) => [p.user_id, { business_name: p.business_name, phone: p.phone, whatsapp: p.whatsapp }]));
+          profilesMap = new Map(
+            (profs ?? []).map((p) => [
+              p.user_id,
+              { business_name: p.business_name, phone: p.phone, whatsapp: p.whatsapp },
+            ]),
+          );
         }
         const merged: QuoteRow[] = (qs ?? []).map((q) => ({
           ...q,
@@ -90,9 +98,8 @@ function DashboardPage() {
   const openCount = requests.filter((r) => r.status === "open").length;
   const closedCount = requests.filter((r) => r.status !== "open").length;
   const [activeTab, setActiveTab] = useState<"open" | "all">("open");
-  const visibleRequests = activeTab === "open"
-    ? requests.filter((r) => r.status === "open")
-    : requests;
+  const visibleRequests =
+    activeTab === "open" ? requests.filter((r) => r.status === "open") : requests;
 
   return (
     <div className="bg-background pt-24 min-h-screen">
@@ -152,7 +159,9 @@ function DashboardPage() {
             </div>
           ) : visibleRequests.length === 0 && requests.length === 0 ? (
             <div className="border border-dashed border-gold/20 bg-card/20 p-20 text-center">
-              <p className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">No Active Missions</p>
+              <p className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">
+                No Active Missions
+              </p>
               <p className="mt-4 font-body text-sm text-foreground/40 max-w-md mx-auto">
                 Your enquiry stream is empty. Start by browsing our verified network of providers.
               </p>
@@ -173,23 +182,29 @@ function DashboardPage() {
             visibleRequests.map((r) => {
               const reqQuotes = quotes.filter((q) => q.request_id === r.id);
               return (
-                <div key={r.id} className="border border-gold/10 bg-card p-8 md:p-10 transition-all hover:border-gold/30">
+                <div
+                  key={r.id}
+                  className="border border-gold/10 bg-card p-8 md:p-10 transition-all hover:border-gold/30"
+                >
                   <div className="flex flex-wrap items-start justify-between gap-6 border-b border-gold/10 pb-8">
                     <div>
-                      <h3 className="font-display text-2xl font-bold text-foreground">{r.service_name ?? r.title}</h3>
+                      <h3 className="font-display text-2xl font-bold text-foreground">
+                        {r.service_name ?? r.title}
+                      </h3>
                       <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
                         <span className="flex items-center gap-2">
-                           <span className="text-gold/60">LOC:</span> {r.city ?? "—"}
+                          <span className="text-gold/60">LOC:</span> {r.city ?? "—"}
                         </span>
                         {r.budget && (
-                           <span className="flex items-center gap-2">
-                             <span className="text-gold/60">BUDGET:</span> ${Number(r.budget).toFixed(0)}
-                           </span>
+                          <span className="flex items-center gap-2">
+                            <span className="text-gold/60">BUDGET:</span> $
+                            {Number(r.budget).toFixed(0)}
+                          </span>
                         )}
                         {r.needed_by && (
-                           <span className="flex items-center gap-2">
-                             <span className="text-gold/60">DATE:</span> {r.needed_by}
-                           </span>
+                          <span className="flex items-center gap-2">
+                            <span className="text-gold/60">DATE:</span> {r.needed_by}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -228,9 +243,13 @@ function DashboardPage() {
                                 <p className="font-display text-lg font-bold text-foreground">
                                   {q.business_name ?? "Provider"}
                                 </p>
-                                <p className="mt-1 font-display text-xl text-gold">${Number(q.amount).toFixed(0)}</p>
+                                <p className="mt-1 font-display text-xl text-gold">
+                                  ${Number(q.amount).toFixed(0)}
+                                </p>
                                 {q.message && (
-                                  <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed italic border-l border-gold/20 pl-4">"{q.message}"</p>
+                                  <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed italic border-l border-gold/20 pl-4">
+                                    "{q.message}"
+                                  </p>
                                 )}
                               </div>
                               <div className="flex shrink-0 gap-3">
@@ -275,7 +294,9 @@ function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="border border-gold/20 bg-card p-8 transition-all hover:border-gold/40">
       <p className="font-display text-4xl font-bold text-gold">{value}</p>
-      <p className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">{label}</p>
+      <p className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
+        {label}
+      </p>
     </div>
   );
 }
@@ -293,11 +314,12 @@ function TabBtn({
     <button
       onClick={onClick}
       className={`pb-3 font-mono text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${
-        active ? "border-gold text-gold" : "border-transparent text-foreground/40 hover:text-foreground"
+        active
+          ? "border-gold text-gold"
+          : "border-transparent text-foreground/40 hover:text-foreground"
       }`}
     >
       {children}
     </button>
   );
 }
-

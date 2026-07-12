@@ -18,15 +18,13 @@ const tiers = [
   {
     window: "More than 72 hours before service",
     refund: "100% refund",
-    detail:
-      "Full refund of deposit and any prepayment. Platform fee is refunded.",
+    detail: "Full refund of deposit and any prepayment. Platform fee is refunded.",
     tone: "text-success",
   },
   {
     window: "24 – 72 hours before service",
     refund: "50% refund",
-    detail:
-      "Half of the deposit (or prepayment) is refunded. Platform fee is non-refundable.",
+    detail: "Half of the deposit (or prepayment) is refunded. Platform fee is non-refundable.",
     tone: "text-teal",
   },
   {
@@ -66,17 +64,17 @@ function CancellationPolicyPage() {
       <div className="container-page pb-24">
         <div className="mx-auto max-w-4xl">
           <div className="flex items-center gap-4">
-               <span className="h-px w-8 bg-gold/40" />
-               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-                 Mission Abortion
-               </p>
+            <span className="h-px w-8 bg-gold/40" />
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+              Mission Abortion
+            </p>
           </div>
           <h1 className="mt-6 font-display text-5xl font-bold text-foreground md:text-6xl">
             Cancellation <span className="italic text-gold">Protocol.</span>
           </h1>
           <p className="mt-8 text-lg font-light leading-relaxed text-foreground/70">
-            NexusZim manages all commitment authorizations through a secure escrow layer. 
-            If mission parameters change, our protocol ensures fair compensation for mobilised fixers.
+            NexusZim manages all commitment authorizations through a secure escrow layer. If mission
+            parameters change, our protocol ensures fair compensation for mobilised fixers.
           </p>
 
           <div className="mt-16 grid gap-px bg-gold/10 border border-gold/10">
@@ -86,12 +84,18 @@ function CancellationPolicyPage() {
                 className="bg-background p-8 md:p-10 group hover:bg-card transition-colors"
               >
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <p className="font-display text-xl font-bold text-foreground group-hover:text-gold transition-colors">{t.window}</p>
-                  <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${t.tone}`}>
+                  <p className="font-display text-xl font-bold text-foreground group-hover:text-gold transition-colors">
+                    {t.window}
+                  </p>
+                  <span
+                    className={`font-mono text-[10px] font-bold uppercase tracking-widest ${t.tone}`}
+                  >
                     {t.refund}
                   </span>
                 </div>
-                <p className="mt-6 font-body text-base text-foreground/60 leading-relaxed">{t.detail}</p>
+                <p className="mt-6 font-body text-base text-foreground/60 leading-relaxed">
+                  {t.detail}
+                </p>
               </div>
             ))}
           </div>
@@ -99,17 +103,24 @@ function CancellationPolicyPage() {
           <div className="mt-16 grid gap-8 md:grid-cols-3">
             {highlights.map((h) => (
               <div key={h.title} className="border border-gold/10 bg-card p-8">
-                <p className="font-display text-lg font-bold text-foreground uppercase tracking-widest">{h.title}</p>
-                <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed">{h.body}</p>
+                <p className="font-display text-lg font-bold text-foreground uppercase tracking-widest">
+                  {h.title}
+                </p>
+                <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed">
+                  {h.body}
+                </p>
               </div>
             ))}
           </div>
 
           <div className="mt-16 border border-gold/20 bg-gold/5 p-10">
-            <h2 className="font-display text-2xl font-bold text-gold uppercase tracking-widest">Fixer De-mobilisation</h2>
+            <h2 className="font-display text-2xl font-bold text-gold uppercase tracking-widest">
+              Fixer De-mobilisation
+            </h2>
             <p className="mt-6 font-body text-base text-foreground/70 leading-relaxed italic">
-              In the rare event of fixer-side abort, the operative receives a 100% commitment restoration. 
-              Our concierge desk will prioritize immediate re-assignment of a vetted alternative.
+              In the rare event of fixer-side abort, the operative receives a 100% commitment
+              restoration. Our concierge desk will prioritize immediate re-assignment of a vetted
+              alternative.
             </p>
           </div>
 
@@ -132,4 +143,3 @@ function CancellationPolicyPage() {
     </div>
   );
 }
-

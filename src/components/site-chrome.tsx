@@ -172,8 +172,8 @@ export function SiteFooter() {
   return (
     <footer className="bg-forest-ink text-cream">
       {/* CTA strip */}
-      <div className="border-b border-cream/10 py-14">
-        <div className="container-page flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+      <div className="border-b border-cream/10 py-10 lg:py-14">
+        <div className="container-page flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
             <p className="eyebrow text-cream/40">
               <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -209,7 +209,7 @@ export function SiteFooter() {
       </div>
 
       {/* Links grid */}
-      <div className="container-page grid gap-12 py-16 md:grid-cols-4">
+      <div className="container-page grid grid-cols-2 gap-x-6 gap-y-10 py-12 lg:py-16 md:grid-cols-4">
         <div>
           <NexusZimLogo variant="reversed" size="sm" asLink={false} />
           <p className="mt-5 max-w-xs font-sans text-sm leading-relaxed text-cream/50">
