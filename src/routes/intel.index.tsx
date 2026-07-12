@@ -30,9 +30,7 @@ function AlertsSection() {
   ];
 
   function toggleCategory(c: string) {
-    setCategories((prev) =>
-      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
-    );
+    setCategories((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
   }
 
   function handleSubmit(e: FormEvent) {
@@ -47,12 +45,15 @@ function AlertsSection() {
           <Bell className="h-6 w-6 text-gold" />
         </div>
         <div className="flex-1">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">Organizer Alerts</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+            Organizer Alerts
+          </p>
           <h3 className="mt-3 font-display text-3xl font-bold text-foreground">
             Never miss a <span className="italic text-gold">market shift.</span>
           </h3>
           <p className="mt-4 font-body text-base text-foreground/60 max-w-xl leading-relaxed">
-            Subscribe for weekly intelligence: new verified providers, rate changes, venue openings, and priority events in your city.
+            Subscribe for weekly intelligence: new verified providers, rate changes, venue openings,
+            and priority events in your city.
           </p>
 
           {subscribed ? (
@@ -63,7 +64,8 @@ function AlertsSection() {
                   Alert Subscription Active
                 </p>
                 <p className="mt-1 font-body text-xs text-foreground/50">
-                  Intelligence briefings will be sent to <span className="text-foreground/80">{email}</span>
+                  Intelligence briefings will be sent to{" "}
+                  <span className="text-foreground/80">{email}</span>
                 </p>
               </div>
             </div>

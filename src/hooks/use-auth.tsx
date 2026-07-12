@@ -34,7 +34,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       if (s?.user) {
         // Defer DB call to avoid deadlocks

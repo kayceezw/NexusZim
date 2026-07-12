@@ -22,10 +22,10 @@ function CategoriesPage() {
       {/* Header strip */}
       <div className="bg-[#00301c] py-12">
         <div className="container-page">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/50 mb-2">Service Network</p>
-          <h1 className="font-display text-4xl font-bold text-white">
-            Browse by Category
-          </h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/50 mb-2">
+            Service Network
+          </p>
+          <h1 className="font-display text-4xl font-bold text-white">Browse by Category</h1>
           <p className="mt-3 max-w-lg text-base text-white/70">
             Find verified service providers across all major categories in Zimbabwe.
           </p>
@@ -42,4 +42,3 @@ function CategoriesPage() {
     </div>
   );
 }
-

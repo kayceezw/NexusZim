@@ -135,8 +135,7 @@ export const CATEGORIES: Category[] = [
     slug: "personal",
     name: "Personal & Lifestyle",
     tagline: "Look good. Feel good. Locally.",
-    description:
-      "Barbering, grooming, beauty, wellness, and at-home personal services.",
+    description: "Barbering, grooming, beauty, wellness, and at-home personal services.",
     icon: "Scissors",
     accent: "gold",
     services: ["Barbering", "Grooming", "Beauty", "Wellness", "At-home services"],
@@ -223,10 +222,7 @@ const RAW_PROVIDERS: Provider[] = [
     name: "Chef Rutendo Madziva",
     business: "Maison Rutendo Private Dining",
     category: "elite",
-    services: [
-      "Private chef, catering & fine dining",
-      "Private event planning & full production",
-    ],
+    services: ["Private chef, catering & fine dining", "Private event planning & full production"],
     city: "Harare",
     rating: 4.97,
     reviews: 64,
@@ -705,9 +701,6 @@ export const REVIEWS: Review[] = [
 ];
 
 export const findProvider = (id: string) => PROVIDERS.find((p) => p.id === id);
-export const findCategory = (slug: string) =>
-  CATEGORIES.find((c) => c.slug === slug);
-export const providersByCategory = (slug: string) =>
-  PROVIDERS.filter((p) => p.category === slug);
-export const reviewsForProvider = (id: string) =>
-  REVIEWS.filter((r) => r.providerId === id);
+export const findCategory = (slug: string) => CATEGORIES.find((c) => c.slug === slug);
+export const providersByCategory = (slug: string) => PROVIDERS.filter((p) => p.category === slug);
+export const reviewsForProvider = (id: string) => REVIEWS.filter((r) => r.providerId === id);

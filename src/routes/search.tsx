@@ -67,12 +67,9 @@ function SearchPage() {
   const [sortBy, setSortBy] = useState<SortKey>("rating");
   const [availableOnly, setAvailableOnly] = useState(false);
 
-  const activeFilterCount = [
-    city !== "all",
-    category !== "all",
-    minTier > 1,
-    availableOnly,
-  ].filter(Boolean).length;
+  const activeFilterCount = [city !== "all", category !== "all", minTier > 1, availableOnly].filter(
+    Boolean,
+  ).length;
 
   function resetFilters() {
     setQ("");
@@ -108,7 +105,6 @@ function SearchPage() {
 
   return (
     <div className="bg-cream pt-16 min-h-screen">
-
       {/* Forest header with search */}
       <div className="bg-forest border-b border-cream/10">
         <div className="container-page py-8">
@@ -127,7 +123,9 @@ function SearchPage() {
 
           {/* Search bar */}
           <form
-            onSubmit={(e) => { e.preventDefault(); }}
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
             className="mt-6 flex max-w-xl"
           >
             <div className="relative flex-1">
@@ -156,11 +154,9 @@ function SearchPage() {
 
       <div className="container-page py-8">
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
-
           {/* ─── FILTER RAIL ─── */}
           <aside className="space-y-0 lg:sticky lg:top-24 lg:self-start">
             <div className="bg-cream-raised border border-hairline rounded-[6px] divide-y divide-hairline">
-
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4">
                 <span className="eyebrow text-text-soft">
@@ -185,11 +181,12 @@ function SearchPage() {
 
               {/* Verification tier */}
               <div className="px-5 py-4 space-y-2">
-                <p className="eyebrow text-text-soft/60 mb-3">
-                  Verification tier
-                </p>
+                <p className="eyebrow text-text-soft/60 mb-3">Verification tier</p>
                 {TIER_OPTIONS.map((t) => (
-                  <label key={t.value} className="flex items-center justify-between cursor-pointer group">
+                  <label
+                    key={t.value}
+                    className="flex items-center justify-between cursor-pointer group"
+                  >
                     <div className="flex items-center gap-2.5">
                       <input
                         type="radio"
@@ -225,7 +222,9 @@ function SearchPage() {
                       All cities
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-text-soft/50">{PROVIDERS.length}</span>
+                  <span className="font-mono text-[10px] text-text-soft/50">
+                    {PROVIDERS.length}
+                  </span>
                 </label>
                 {CITIES.filter((c) => cityCount(c) > 0).map((c) => (
                   <label key={c} className="flex items-center justify-between cursor-pointer group">
@@ -262,10 +261,15 @@ function SearchPage() {
                       All specialties
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-text-soft/50">{PROVIDERS.length}</span>
+                  <span className="font-mono text-[10px] text-text-soft/50">
+                    {PROVIDERS.length}
+                  </span>
                 </label>
                 {CATEGORIES.map((c) => (
-                  <label key={c.slug} className="flex items-center justify-between cursor-pointer group">
+                  <label
+                    key={c.slug}
+                    className="flex items-center justify-between cursor-pointer group"
+                  >
                     <div className="flex items-center gap-2.5">
                       <input
                         type="radio"
@@ -278,7 +282,9 @@ function SearchPage() {
                         {c.name}
                       </span>
                     </div>
-                    <span className="font-mono text-[10px] text-text-soft/50">{categoryCount(c.slug)}</span>
+                    <span className="font-mono text-[10px] text-text-soft/50">
+                      {categoryCount(c.slug)}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -303,7 +309,8 @@ function SearchPage() {
 
             <div className="mt-4 border border-hairline rounded-[6px] p-4">
               <p className="font-sans text-[12px] text-text-soft leading-relaxed">
-                All NexusZim providers have completed identity verification. Trust Certified providers have passed an on-site audit by the NexusZim desk.
+                All NexusZim providers have completed identity verification. Trust Certified
+                providers have passed an on-site audit by the NexusZim desk.
               </p>
             </div>
           </aside>
@@ -325,7 +332,9 @@ function SearchPage() {
                   className="bg-cream-raised border border-hairline rounded-[3px] px-3 py-1.5 font-sans text-[13px] text-text outline-none focus:border-forest transition-colors cursor-pointer"
                 >
                   {SORT_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -337,9 +346,7 @@ function SearchPage() {
                 {availableOnly && (
                   <FilterChip label="Available Now" onRemove={() => setAvailableOnly(false)} />
                 )}
-                {city !== "all" && (
-                  <FilterChip label={city} onRemove={() => setCity("all")} />
-                )}
+                {city !== "all" && <FilterChip label={city} onRemove={() => setCity("all")} />}
                 {category !== "all" && (
                   <FilterChip
                     label={CATEGORIES.find((c) => c.slug === category)?.name ?? category}

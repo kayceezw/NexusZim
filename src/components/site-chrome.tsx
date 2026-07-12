@@ -36,7 +36,10 @@ export function SiteHeader() {
                 key={n.to}
                 to={n.to}
                 className="font-sans text-[13px] font-medium text-text-soft transition-colors hover:text-forest h-16 flex items-center border-b-2 border-transparent"
-                activeProps={{ className: "font-sans text-[13px] font-medium text-forest border-b-2 border-forest h-16 flex items-center" }}
+                activeProps={{
+                  className:
+                    "font-sans text-[13px] font-medium text-forest border-b-2 border-forest h-16 flex items-center",
+                }}
                 activeOptions={{ exact: n.exact }}
               >
                 {n.label}
@@ -46,7 +49,10 @@ export function SiteHeader() {
               <Link
                 to="/admin/concierge"
                 className="font-sans text-[13px] font-medium text-gold transition-colors hover:text-gold-deep h-16 flex items-center border-b-2 border-transparent"
-                activeProps={{ className: "font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center" }}
+                activeProps={{
+                  className:
+                    "font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center",
+                }}
               >
                 Concierge
               </Link>
@@ -107,7 +113,10 @@ export function SiteHeader() {
                 to={n.to}
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-text-soft hover:text-forest transition-colors"
-                activeProps={{ className: "flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-forest" }}
+                activeProps={{
+                  className:
+                    "flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-forest",
+                }}
                 activeOptions={{ exact: n.exact }}
               >
                 {n.label}
@@ -213,7 +222,8 @@ export function SiteFooter() {
         <div>
           <NexusZimLogo variant="reversed" size="sm" asLink={false} />
           <p className="mt-5 max-w-xs font-sans text-sm leading-relaxed text-cream/50">
-            Zimbabwe's service registry. Connecting clients with verified providers across events, transport, business, and more.
+            Zimbabwe's service registry. Connecting clients with verified providers across events,
+            transport, business, and more.
           </p>
           <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-cream/30">
             A ZimDataPulse company
@@ -253,7 +263,8 @@ export function SiteFooter() {
       <div className="border-t border-cream/10">
         <div className="container-page flex flex-col items-center justify-between gap-3 py-6 sm:flex-row">
           <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-cream/25">
-            &copy; {new Date().getFullYear()} NexusZim. Harare &middot; Bulawayo &middot; Victoria Falls &middot; Mutare
+            &copy; {new Date().getFullYear()} NexusZim. Harare &middot; Bulawayo &middot; Victoria
+            Falls &middot; Mutare
           </p>
           <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-cream/25">
             You pay the provider directly. NexusZim never holds your money.
@@ -298,7 +309,7 @@ function FooterCol({
                 {l.label}
               </Link>
             </li>
-          )
+          ),
         )}
       </ul>
     </div>

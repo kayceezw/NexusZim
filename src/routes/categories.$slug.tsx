@@ -1,11 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  findCategory,
-  providersByCategory,
-  type Category,
-  type Provider,
-} from "@/lib/mock-data";
+import { findCategory, providersByCategory, type Category, type Provider } from "@/lib/mock-data";
 import { ProviderCard } from "@/components/provider-card";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/use-cart";
@@ -99,7 +94,9 @@ function CategoryDetailPage() {
             <h1 className="font-display text-5xl font-bold tracking-tight text-foreground md:text-7xl">
               {category.name}.
             </h1>
-            <p className="mt-8 max-w-xl font-body text-lg font-light leading-relaxed text-foreground/70">{category.description}</p>
+            <p className="mt-8 max-w-xl font-body text-lg font-light leading-relaxed text-foreground/70">
+              {category.description}
+            </p>
           </div>
         </div>
       </div>
@@ -123,11 +120,19 @@ function CategoryDetailPage() {
         </div>
 
         {loadingServices ? (
-          <p className="mt-10 font-mono text-xs text-gold/40 animate-pulse uppercase tracking-widest">Querying service layers...</p>
+          <p className="mt-10 font-mono text-xs text-gold/40 animate-pulse uppercase tracking-widest">
+            Querying service layers...
+          </p>
         ) : (
           <div className="mt-12 grid gap-px bg-gold/10 md:grid-cols-3 border border-gold/10">
             {services.map((s) => (
-              <ServiceCard key={s.id} service={s} category={dbCategory!} categorySlug={category.slug} categoryName={category.name} />
+              <ServiceCard
+                key={s.id}
+                service={s}
+                category={dbCategory!}
+                categorySlug={category.slug}
+                categoryName={category.name}
+              />
             ))}
           </div>
         )}
@@ -152,11 +157,11 @@ function CategoryDetailPage() {
               Featured <span className="italic text-gold">Fixers.</span>
             </h2>
             <div className="mt-12 grid gap-8 md:grid-cols-3">
-                {providers
+              {providers
                 .filter((p) => p.featured)
                 .slice(0, 3)
                 .map((p) => (
-                    <ProviderCard key={p.id} provider={p} />
+                  <ProviderCard key={p.id} provider={p} />
                 ))}
             </div>
           </div>
@@ -165,13 +170,13 @@ function CategoryDetailPage() {
 
       <div className="container-page py-20">
         <div className="flex items-center gap-4 border-b border-gold/10 pb-8">
-            <h2 className="font-display text-3xl font-bold text-foreground">
-                Verified <span className="italic text-gold">Directory.</span>
-            </h2>
-            <div className="h-px flex-1 bg-gold/5 ml-4" />
-            <span className="font-mono text-[10px] text-foreground/40 font-bold uppercase tracking-widest">
-                {providers.length} Available
-            </span>
+          <h2 className="font-display text-3xl font-bold text-foreground">
+            Verified <span className="italic text-gold">Directory.</span>
+          </h2>
+          <div className="h-px flex-1 bg-gold/5 ml-4" />
+          <span className="font-mono text-[10px] text-foreground/40 font-bold uppercase tracking-widest">
+            {providers.length} Available
+          </span>
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {providers.map((p) => (
@@ -180,9 +185,9 @@ function CategoryDetailPage() {
         </div>
         {providers.length === 0 && (
           <div className="border border-dashed border-gold/20 p-20 text-center bg-card/20">
-             <p className="font-body text-sm text-foreground/40 italic">
-                Our network for this category is currently being audited. Check back shortly.
-             </p>
+            <p className="font-body text-sm text-foreground/40 italic">
+              Our network for this category is currently being audited. Check back shortly.
+            </p>
           </div>
         )}
       </div>
@@ -219,18 +224,28 @@ function ServiceCard({
 
   return (
     <div className="flex flex-col bg-background p-8 group hover:bg-card transition-colors">
-      <h3 className="font-display text-xl font-bold text-foreground group-hover:text-gold transition-colors">{service.name}</h3>
+      <h3 className="font-display text-xl font-bold text-foreground group-hover:text-gold transition-colors">
+        {service.name}
+      </h3>
       {service.description && (
-        <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed line-clamp-2">{service.description}</p>
+        <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed line-clamp-2">
+          {service.description}
+        </p>
       )}
       <div className="mt-8 flex items-baseline gap-2">
         {service.base_price != null ? (
           <>
-            <span className="font-mono text-[9px] uppercase tracking-tighter text-foreground/30">From</span>
-            <span className="font-display text-2xl font-bold text-foreground">${Number(service.base_price).toFixed(0)}</span>
+            <span className="font-mono text-[9px] uppercase tracking-tighter text-foreground/30">
+              From
+            </span>
+            <span className="font-display text-2xl font-bold text-foreground">
+              ${Number(service.base_price).toFixed(0)}
+            </span>
           </>
         ) : (
-          <span className="font-mono text-[10px] text-gold/60 font-bold uppercase tracking-widest">Quote on Request</span>
+          <span className="font-mono text-[10px] text-gold/60 font-bold uppercase tracking-widest">
+            Quote on Request
+          </span>
         )}
       </div>
       <div className="mt-auto pt-10 flex flex-col gap-3">
@@ -238,9 +253,9 @@ function ServiceCard({
           onClick={handleAdd}
           disabled={inCart}
           className={`w-full py-4 font-display text-[11px] font-bold uppercase tracking-widest transition-colors ${
-            inCart 
-            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 cursor-not-allowed' 
-            : 'bg-gold/10 text-gold border border-gold/30 hover:bg-gold hover:text-white'
+            inCart
+              ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 cursor-not-allowed"
+              : "bg-gold/10 text-gold border border-gold/30 hover:bg-gold hover:text-white"
           }`}
         >
           {inCart ? "In Mission Brief" : "Add to Mission"}
@@ -293,14 +308,15 @@ function CustomRequestCard({
       <div className="flex items-center gap-4">
         <span className="h-px w-8 bg-gold/40" />
         <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-            Bespoke Enquiry
+          Bespoke Enquiry
         </p>
       </div>
       <h3 className="mt-6 font-display text-3xl font-bold text-foreground">
         Describe a custom <span className="italic text-gold">brief.</span>
       </h3>
       <p className="mt-4 font-body text-base text-foreground/60 max-w-xl">
-        Tell us exactly what you're looking for and verified fixers in {categoryName} will respond with bespoke proposals.
+        Tell us exactly what you're looking for and verified fixers in {categoryName} will respond
+        with bespoke proposals.
       </p>
       <div className="mt-10 flex flex-col gap-4 md:flex-row">
         <input
@@ -326,4 +342,3 @@ function CustomRequestCard({
     </div>
   );
 }
-

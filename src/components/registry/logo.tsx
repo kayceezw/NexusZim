@@ -18,25 +18,34 @@ function LogoMark({ variant, size }: { variant: "color" | "reversed"; size: numb
   const w = Math.round(size * (210 / 128));
 
   return (
-    <svg
-      viewBox="30 46 210 128"
-      width={w}
-      height={size}
-      aria-hidden
-      style={{ flexShrink: 0 }}
-    >
+    <svg viewBox="30 46 210 128" width={w} height={size} aria-hidden style={{ flexShrink: 0 }}>
       <rect
-        x="45" y="65" width="90" height="90" rx="16"
-        fill="none" stroke={forestStroke} strokeWidth="8"
+        x="45"
+        y="65"
+        width="90"
+        height="90"
+        rx="16"
+        fill="none"
+        stroke={forestStroke}
+        strokeWidth="8"
         transform="rotate(45 90 110)"
       />
       <rect
-        x="115" y="65" width="90" height="90" rx="16"
-        fill="none" stroke="#E7A020" strokeWidth="8"
+        x="115"
+        y="65"
+        width="90"
+        height="90"
+        rx="16"
+        fill="none"
+        stroke="#E7A020"
+        strokeWidth="8"
         transform="rotate(45 160 110)"
       />
       <rect
-        x="113" y="103" width="14" height="14"
+        x="113"
+        y="103"
+        width="14"
+        height="14"
         fill={forestFill}
         transform="rotate(45 120 110)"
       />
@@ -61,7 +70,10 @@ export function NexusZimLogo({ variant = "color", size = "md", asLink = true }: 
   if (!asLink) return inner;
 
   return (
-    <Link to="/" className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-sm">
+    <Link
+      to="/"
+      className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-sm"
+    >
       {inner}
     </Link>
   );
