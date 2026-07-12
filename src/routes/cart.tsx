@@ -69,20 +69,23 @@ function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container-page grid min-h-[60vh] place-items-center py-16">
-        <div className="max-w-md text-center">
-          <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gold">
-            Your cart
+      <div className="bg-background pt-24 min-h-screen grid place-items-center">
+        <div className="container-page py-16 text-center">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center bg-gold/5 border border-gold/10 mb-8">
+            <span className="font-mono text-gold/20 text-3xl font-bold">00</span>
+          </div>
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold/60">
+            Mission Brief
           </p>
-          <h1 className="mt-3 font-display text-3xl font-bold">Cart is empty</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Browse a category and add the services you need.
+          <h1 className="mt-4 font-display text-5xl font-bold text-foreground">Cart is Empty.</h1>
+          <p className="mt-6 font-body text-lg font-light text-foreground/40 max-w-md mx-auto">
+            Your mission brief is currently empty. Initialize a search to find verified fixers.
           </p>
           <Link
             to="/categories"
-            className="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-accent"
+            className="mt-12 inline-block bg-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
           >
-            Browse categories
+            Access Network
           </Link>
         </div>
       </div>
@@ -90,126 +93,141 @@ function CartPage() {
   }
 
   return (
-    <div className="container-page py-10 md:py-14">
-      <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gold">
-        Your cart
-      </p>
-      <h1 className="mt-2 font-display text-3xl font-bold md:text-4xl">
-        Review and place your order
-      </h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Each item becomes an open request that every provider in that category will see.
-      </p>
-
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-4">
-          {items.map((item) => (
-            <div key={item.id} className="rounded-2xl border border-border bg-card p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                    {item.categoryName}
-                    {item.isCustom && <span className="ml-2 rounded-full bg-gold/10 px-2 py-0.5 text-[10px] font-semibold text-gold">Custom</span>}
-                  </p>
-                  <h3 className="mt-1 font-display text-lg font-semibold">{item.serviceName}</h3>
-                </div>
-                <div className="text-right">
-                  {item.basePrice != null ? (
-                    <p className="font-display text-lg font-bold">${Number(item.basePrice).toFixed(0)}</p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">Quoted</p>
-                  )}
-                  <button
-                    onClick={() => remove(item.id)}
-                    className="mt-2 text-xs text-muted-foreground underline hover:text-destructive"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-              <textarea
-                value={item.notes ?? ""}
-                onChange={(e) => updateNotes(item.id, e.target.value)}
-                placeholder="Add details for providers (date, location, guest count, etc.)"
-                rows={2}
-                className="mt-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-ring focus:outline-none"
-              />
-            </div>
-          ))}
+    <div className="bg-background pt-24 min-h-screen">
+      <div className="container-page py-12 md:py-20">
+        <div className="flex items-center gap-4">
+            <span className="h-px w-8 bg-gold/40" />
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+                Mission Briefing
+            </span>
         </div>
+        <h1 className="mt-4 font-display text-5xl font-bold text-foreground md:text-6xl">
+            Review your <span className="italic text-gold">Brief.</span>
+        </h1>
+        <p className="mt-6 font-body text-lg font-light text-foreground/60">
+            Each item in your brief will be broadcast to our verified network in that domain.
+        </p>
 
-        <aside className="rounded-2xl border border-border bg-surface p-6 lg:sticky lg:top-24 h-fit">
-          <h2 className="font-display text-lg font-semibold">Order details</h2>
-          <div className="mt-4 space-y-4">
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium">City</span>
-              <select value={city} onChange={(e) => setCity(e.target.value)} className="input">
-                {CITIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium">Needed by</span>
-              <input
-                type="date"
-                value={neededBy}
-                onChange={(e) => setNeededBy(e.target.value)}
-                className="input"
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium">Budget per item (USD, optional)</span>
-              <input
-                type="number"
-                min={0}
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                placeholder="Use service base price"
-                className="input"
-              />
-            </label>
+        <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_400px]">
+          <div className="space-y-6">
+            {items.map((item) => (
+              <div key={item.id} className="border border-gold/10 bg-card p-8 md:p-10 transition-all hover:border-gold/30">
+                <div className="flex items-start justify-between gap-6">
+                  <div className="min-w-0">
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/60">
+                      {item.categoryName}
+                      {item.isCustom && <span className="ml-3 border border-gold/20 px-2 py-0.5 text-[9px] font-bold text-gold bg-gold/5">Bespoke</span>}
+                    </p>
+                    <h3 className="mt-4 font-display text-2xl font-bold text-foreground">{item.serviceName}</h3>
+                  </div>
+                  <div className="text-right">
+                    {item.basePrice != null ? (
+                      <p className="font-display text-2xl font-bold text-foreground">${Number(item.basePrice).toFixed(0)}</p>
+                    ) : (
+                      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/40">Audit Pending</p>
+                    )}
+                    <button
+                      onClick={() => remove(item.id)}
+                      className="mt-4 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/30 hover:text-rose-500 transition-colors"
+                    >
+                      Remove Item
+                    </button>
+                  </div>
+                </div>
+                <textarea
+                  value={item.notes ?? ""}
+                  onChange={(e) => updateNotes(item.id, e.target.value)}
+                  placeholder="Provide operational details: dates, scope, guest count, or specific technical requirements..."
+                  rows={3}
+                  className="mt-8 w-full bg-background border border-gold/10 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-none"
+                />
+              </div>
+            ))}
           </div>
 
-          <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-            <span className="text-sm text-muted-foreground">Estimated total</span>
-            <span className="font-display text-xl font-bold">${total.toFixed(0)}</span>
-          </div>
-
-          {error && (
-            <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-              {error}
+          <aside className="border border-gold/20 bg-card p-10 h-fit lg:sticky lg:top-32">
+            <h2 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">Op Specs</h2>
+            <div className="mt-10 space-y-8">
+              <Field label="Mission City">
+                <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold">
+                  {CITIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Target Date">
+                <input
+                  type="date"
+                  value={neededBy}
+                  onChange={(e) => setNeededBy(e.target.value)}
+                  className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
+                />
+              </Field>
+              <Field label="Override Budget (USD)">
+                <input
+                  type="number"
+                  min={0}
+                  value={budget}
+                  onChange={(e) => setBudget(e.target.value)}
+                  placeholder="Standard Base Rates"
+                  className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+                />
+              </Field>
             </div>
-          )}
 
-          {!user ? (
-            <Link
-              to="/login"
-              className="mt-5 block w-full rounded-xl bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-accent"
-            >
-              Log in to place order
-            </Link>
-          ) : (
-            <button
-              onClick={placeOrder}
-              disabled={submitting}
-              className="mt-5 block w-full rounded-xl bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-accent disabled:opacity-60"
-            >
-              {submitting ? "Placing order..." : `Place order (${items.length} request${items.length === 1 ? "" : "s"})`}
-            </button>
-          )}
+            <div className="mt-12 flex items-center justify-between border-t border-gold/10 pt-8">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">Est. Engagement</span>
+              <span className="font-display text-4xl font-bold text-gold">${total.toFixed(0)}</span>
+            </div>
 
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            Providers will respond with quotes you can review and book.
-          </p>
-        </aside>
+            {error && (
+              <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-xs text-rose-500 italic">
+                {error}
+              </div>
+            )}
+
+            {!user ? (
+              <Link
+                to="/login"
+                className="mt-10 block w-full bg-gold py-5 text-center font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+              >
+                Authenticate to Deploy
+              </Link>
+            ) : (
+              <button
+                onClick={placeOrder}
+                disabled={submitting}
+                className="mt-10 block w-full bg-gold py-5 text-center font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
+              >
+                {submitting ? "Deploying Brief..." : "Submit Mission Brief"}
+              </button>
+            )}
+
+            <p className="mt-8 text-center font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30 leading-relaxed">
+              Matched fixers will reach out with bespoke proposals. No upfront payment required.
+            </p>
+          </aside>
+        </div>
       </div>
-      <style>{`
-        .input { width: 100%; border-radius: 0.625rem; border: 1px solid var(--border); background: var(--background); padding: 0.65rem 0.85rem; font-size: 0.875rem; }
-        .input:focus { border-color: var(--ring); outline: none; }
-      `}</style>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+        {label}
+      </label>
+      {children}
     </div>
   );
 }

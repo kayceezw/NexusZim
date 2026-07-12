@@ -36,254 +36,243 @@ function CheckoutPage() {
 
   if (done) {
     return (
-      <div className="container-page py-24">
-        <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-8 text-center">
-          <h1 className="font-display text-2xl font-bold">Booking confirmed</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            We've notified {provider.business} and placed ${due} in escrow.
+      <div className="bg-background pt-24 min-h-screen grid place-items-center">
+        <div className="container-page py-16 text-center">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center bg-gold/5 border border-gold/10 mb-8">
+            <span className="font-mono text-gold font-bold">OK</span>
+          </div>
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold/60">
+            Booking Protocol
+          </p>
+          <h1 className="mt-4 font-display text-5xl font-bold text-foreground">Mission Confirmed.</h1>
+          <p className="mt-6 font-body text-lg font-light text-foreground/40 max-w-md mx-auto">
+            We've notified {provider.business} and placed ${due} in secure escrow. 
             {paymentType === "deposit" && (
-              <>
-                {" "}The remaining ${balance} will be charged on completion.
-              </>
+              <> The remaining balance of ${balance} is scheduled for finalization.</>
             )}
           </p>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Need to change plans? Review our{" "}
-            <Link to="/policies/cancellation" className="underline">
-              cancellation policy
+          <div className="mt-12 flex flex-col sm:flex-row justify-center gap-6">
+            <Link
+              to="/dashboard"
+              className="bg-gold px-10 py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+            >
+              Command Dashboard
             </Link>
-            .
-          </p>
-          <Link
-            to="/dashboard"
-            className="mt-6 inline-block rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-accent"
-          >
-            Go to dashboard
-          </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container-page py-12">
-      <Link
-        to="/providers/$providerId"
-        params={{ providerId: provider.id }}
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← Back to profile
-      </Link>
-      <h1 className="mt-4 font-display text-3xl font-bold tracking-tight md:text-4xl">
-        Confirm your booking
-      </h1>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_380px]">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (!agreed) return;
-            setDone(true);
-          }}
-          className="space-y-6 rounded-2xl border border-border bg-card p-6"
+    <div className="bg-background pt-32 min-h-screen">
+      <div className="container-page pb-24">
+        <Link
+            to="/providers/$providerId"
+            params={{ providerId: provider.id }}
+            className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/60 hover:text-gold transition-colors"
         >
-          <Section title="Service details">
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Date">
-                <input type="date" required className="input" />
-              </Field>
-              <Field label="Time">
-                <input type="time" required className="input" />
-              </Field>
-              <Field label="Location / address">
-                <input
-                  required
-                  placeholder="Street, city"
-                  className="input md:col-span-2"
-                />
-              </Field>
-              <Field label="Notes for the provider">
-                <textarea
-                  rows={3}
-                  placeholder="Anything they should know"
-                  className="input md:col-span-2"
-                />
-              </Field>
-            </div>
-          </Section>
+            ← Return to Profile
+        </Link>
+        <h1 className="mt-10 font-display text-5xl font-bold text-foreground md:text-6xl">
+            Confirm <span className="italic text-gold">Deployment.</span>
+        </h1>
 
-          <Section title="Contact">
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Full name">
-                <input required placeholder="Jane Doe" className="input" />
-              </Field>
-              <Field label="Phone">
-                <input required type="tel" placeholder="+263…" className="input" />
-              </Field>
-              <Field label="Email">
-                <input required type="email" placeholder="you@example.com" className="input md:col-span-2" />
-              </Field>
-            </div>
-          </Section>
-
-          <Section title="Payment">
-            <div className="grid gap-2 sm:grid-cols-2">
-              <PayOption
-                checked={paymentType === "deposit"}
-                onChange={() => setPaymentType("deposit")}
-                title="Pay 30% deposit"
-                desc={`$${deposit} now · $${balance} on completion`}
-              />
-              <PayOption
-                checked={paymentType === "full"}
-                onChange={() => setPaymentType("full")}
-                title="Pay in full"
-                desc={`$${total} now · held in escrow`}
-              />
-            </div>
-
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <Field label="Cardholder name">
-                <input required placeholder="Name on card" className="input md:col-span-2" />
-              </Field>
-              <Field label="Card number">
-                <input
-                  required
-                  inputMode="numeric"
-                  placeholder="4242 4242 4242 4242"
-                  className="input md:col-span-2"
-                />
-              </Field>
-              <Field label="Expiry">
-                <input required placeholder="MM / YY" className="input" />
-              </Field>
-              <Field label="CVC">
-                <input required inputMode="numeric" placeholder="123" className="input" />
-              </Field>
-            </div>
-          </Section>
-
-          <Section title="Cancellation & refunds">
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <PolicyRow tone="text-success" label="72+ hours before" value="100% refund" />
-              <PolicyRow tone="text-teal" label="24 – 72 hours before" value="50% refund" />
-              <PolicyRow tone="text-gold" label="Under 24 hours / no-show" value="Non-refundable" />
-            </ul>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Funds stay in escrow until the service is delivered. Provider
-              cancellations are refunded in full.{" "}
-              <Link to="/policies/cancellation" className="underline">
-                Read full policy
-              </Link>
-              .
-            </p>
-            <label className="mt-4 flex items-start gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-                className="mt-0.5"
-              />
-              <span>
-                I agree to the{" "}
-                <Link to="/terms" className="underline">
-                  terms
-                </Link>{" "}
-                and{" "}
-                <Link to="/policies/cancellation" className="underline">
-                  cancellation policy
-                </Link>
-                .
-              </span>
-            </label>
-          </Section>
-
-          <button
-            type="submit"
-            disabled={!agreed}
-            className="w-full rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+        <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_400px]">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!agreed) return;
+              setDone(true);
+            }}
+            className="space-y-12"
           >
-            Confirm & pay ${due}
-          </button>
-          <p className="text-center text-xs text-muted-foreground">
-            Secure escrow. Released to the provider only after the service is
-            delivered.
-          </p>
-        </form>
+            <Section title="Operational Details">
+                <div className="grid gap-8 md:grid-cols-2">
+                    <Field label="Target Date">
+                        <input type="date" required className="w-full bg-card border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold" />
+                    </Field>
+                    <Field label="Deployment Time">
+                        <input type="time" required className="w-full bg-card border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold" />
+                    </Field>
+                    <div className="md:col-span-2">
+                        <Field label="Mission Location / Address">
+                            <input
+                                required
+                                placeholder="Street address, city complex..."
+                                className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+                            />
+                        </Field>
+                    </div>
+                    <div className="md:col-span-2">
+                        <Field label="Additional Intelligence / Notes">
+                            <textarea
+                                rows={4}
+                                placeholder="Describe specific requirements or operational constraints..."
+                                className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-none"
+                            />
+                        </Field>
+                    </div>
+                </div>
+            </Section>
 
-        <aside className="h-fit rounded-2xl border border-border bg-card p-6 lg:sticky lg:top-20">
-          <h3 className="font-display font-semibold">Order summary</h3>
-          <div className="mt-3 flex items-center gap-3 border-b border-border pb-4">
-            <div
-              className={`grid h-12 w-12 place-items-center rounded-xl font-bold ${provider.avatarColor}`}
+            <Section title="Representative Contact">
+                <div className="grid gap-8 md:grid-cols-2">
+                    <Field label="Identity Name">
+                        <input required placeholder="Full name" className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+                    </Field>
+                    <Field label="Secure Line">
+                        <input required type="tel" placeholder="+263..." className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+                    </Field>
+                    <div className="md:col-span-2">
+                        <Field label="Secure Email">
+                            <input required type="email" placeholder="you@domain.zw" className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+                        </Field>
+                    </div>
+                </div>
+            </Section>
+
+            <Section title="Payment Authorization">
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <PayOption
+                        checked={paymentType === "deposit"}
+                        onChange={() => setPaymentType("deposit")}
+                        title="30% Commitment"
+                        desc={`$${deposit} Immediate · $${balance} on Terminal`}
+                    />
+                    <PayOption
+                        checked={paymentType === "full"}
+                        onChange={() => setPaymentType("full")}
+                        title="Full Settlement"
+                        desc={`$${total} Initialized · Held in Escrow`}
+                    />
+                </div>
+
+                <div className="mt-8 grid gap-8 md:grid-cols-2">
+                    <div className="md:col-span-2">
+                        <Field label="Cardholder Identity">
+                            <input required placeholder="Name as shown on card" className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+                        </Field>
+                    </div>
+                    <div className="md:col-span-2">
+                        <Field label="Credential Number">
+                            <input
+                                required
+                                inputMode="numeric"
+                                placeholder="4242 4242 4242 4242"
+                                className="w-full bg-card border border-gold/20 p-4 font-mono text-sm tracking-widest text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+                            />
+                        </Field>
+                    </div>
+                    <Field label="Expiry Code">
+                        <input required placeholder="MM / YY" className="w-full bg-card border border-gold/20 p-4 font-mono text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+                    </Field>
+                    <Field label="Security CVC">
+                        <input required inputMode="numeric" placeholder="123" className="w-full bg-card border border-gold/20 p-4 font-mono text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+                    </Field>
+                </div>
+            </Section>
+
+            <Section title="Cancellation Protocol">
+                <ul className="space-y-4">
+                    <PolicyRow tone="text-emerald-500" label="72+ Hours Notice" value="100% Refund" />
+                    <PolicyRow tone="text-gold" label="24 – 72 Hours Notice" value="50% Refund" />
+                    <PolicyRow tone="text-rose-500" label="Under 24 Hours / No-Show" value="Non-Refundable" />
+                </ul>
+                <div className="mt-8 p-6 bg-gold/5 border border-gold/10">
+                    <p className="font-body text-xs text-foreground/60 leading-relaxed italic">
+                        Funds stay in secure escrow until mission delivery is confirmed. 
+                        Provider-side cancellations are authorized for full refund.
+                    </p>
+                </div>
+                <label className="mt-8 flex items-start gap-4 cursor-pointer group">
+                    <input
+                        type="checkbox"
+                        checked={agreed}
+                        onChange={(e) => setAgreed(e.target.checked)}
+                        className="mt-1 h-4 w-4 accent-gold"
+                    />
+                    <span className="font-body text-sm text-foreground/70 group-hover:text-foreground transition-colors">
+                        I authorize this deployment and agree to the NexusZim {" "}
+                        <Link to="/terms" className="text-gold underline underline-offset-4 decoration-gold/30">Terms</Link> and {" "}
+                        <Link to="/policies/cancellation" className="text-gold underline underline-offset-4 decoration-gold/30">Cancellation Protocol</Link>.
+                    </span>
+                </label>
+            </Section>
+
+            <button
+                type="submit"
+                disabled={!agreed}
+                className="w-full bg-gold py-6 font-display text-sm font-bold uppercase tracking-[0.2em] text-white hover:bg-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {provider.initials}
-            </div>
-            <div>
-              <p className="font-semibold">{provider.business}</p>
-              <p className="text-xs text-muted-foreground">{provider.city}</p>
-            </div>
-          </div>
-          <Row label="Service starting price" value={`$${total}`} />
-          <Row
-            label={paymentType === "full" ? "Paying now" : "Deposit (30%)"}
-            value={`$${paymentType === "full" ? total : deposit}`}
-          />
-          {paymentType === "deposit" && (
-            <Row label="Balance on completion" value={`$${balance}`} />
-          )}
-          <Row label="Platform fee (7%)" value={`$${platformFee}`} />
-          <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-            <span className="font-display font-semibold">Due today</span>
-            <span className="font-display text-xl font-bold">${due}</span>
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Free cancellation up to 72 hours before service.
-          </p>
-        </aside>
-      </div>
+                Authorize & Deploy (${due})
+            </button>
+          </form>
 
-      <style>{`
-        .input {
-          width: 100%;
-          border-radius: 0.625rem;
-          border: 1px solid var(--border);
-          background: var(--background);
-          padding: 0.65rem 0.85rem;
-          font-size: 0.875rem;
-          color: var(--foreground);
-        }
-        .input:focus { border-color: var(--ring); outline: none; }
-      `}</style>
+          <aside className="h-fit border border-gold/20 bg-card p-10 lg:sticky lg:top-32">
+            <h3 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">Op Summary</h3>
+            <div className="mt-8 flex items-center gap-6 border-b border-gold/10 pb-8">
+                <div
+                className={`grid h-16 w-16 place-items-center font-display text-xl font-bold border border-gold/20 ${provider.avatarColor}`}
+                >
+                {provider.initials}
+                </div>
+                <div>
+                <p className="font-display text-xl font-bold text-foreground">{provider.business}</p>
+                <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">{provider.city}</p>
+                </div>
+            </div>
+            
+            <div className="mt-8 space-y-4">
+                <Row label="Mission Base Rate" value={`$${total}`} />
+                <Row
+                    label={paymentType === "full" ? "Authorization Amount" : "Commitment (30%)"}
+                    value={`$${paymentType === "full" ? total : deposit}`}
+                />
+                {paymentType === "deposit" && (
+                    <Row label="Deferred Balance" value={`$${balance}`} />
+                )}
+                <Row label="Brokerage Fee (7%)" value={`$${platformFee}`} />
+            </div>
+
+            <div className="mt-10 flex items-center justify-between border-t border-gold/10 pt-8">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">Due for Deployment</span>
+                <span className="font-display text-4xl font-bold text-gold">${due}</span>
+            </div>
+          </aside>
+        </div>
+      </div>
     </div>
   );
 }
 
 function PolicyRow({ tone, label, value }: { tone: string; label: string; value: string }) {
   return (
-    <li className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2">
-      <span>{label}</span>
-      <span className={`font-semibold ${tone}`}>{value}</span>
+    <li className="flex items-center justify-between border border-gold/5 bg-background/30 p-4">
+      <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/60">{label}</span>
+      <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${tone}`}>{value}</span>
     </li>
   );
 }
 
-
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div>
-      <h2 className="font-display text-lg font-semibold">{title}</h2>
-      <div className="mt-3">{children}</div>
+    <div className="space-y-8">
+      <div className="flex items-center gap-4">
+          <span className="h-px w-8 bg-gold/40" />
+          <h2 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">{title}</h2>
+      </div>
+      {children}
     </div>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium">{label}</span>
+    <div className="space-y-3">
+      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">{label}</label>
       {children}
-    </label>
+    </div>
   );
 }
 
@@ -302,23 +291,24 @@ function PayOption({
     <button
       type="button"
       onClick={onChange}
-      className={`rounded-xl border p-4 text-left transition-colors ${
+      className={`border p-6 text-left transition-all ${
         checked
-          ? "border-teal bg-teal/5"
-          : "border-border bg-card hover:border-teal"
+          ? "border-gold bg-gold/5 ring-1 ring-gold"
+          : "border-gold/10 bg-card hover:border-gold/30"
       }`}
     >
-      <p className="font-display font-semibold">{title}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
+      <p className="font-display text-lg font-bold text-foreground">{title}</p>
+      <p className="mt-2 font-body text-xs text-foreground/40 leading-relaxed">{desc}</p>
     </button>
   );
 }
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="mt-3 flex items-center justify-between text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="font-medium">{value}</span>
+    <div className="flex items-center justify-between">
+      <span className="font-body text-sm text-foreground/50">{label}</span>
+      <span className="font-mono text-sm font-bold text-foreground">{value}</span>
     </div>
   );
 }
+

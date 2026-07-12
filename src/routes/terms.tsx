@@ -7,63 +7,50 @@ export const Route = createFileRoute("/terms")({
 
 function TermsPage() {
   return (
-    <article className="container-page prose-base mx-auto max-w-3xl py-12 md:py-16">
-      <p className="font-display text-xs font-semibold uppercase tracking-wider text-teal">
-        Legal
-      </p>
-      <h1 className="mt-2 font-display text-4xl font-bold tracking-tight">
-        Terms & conditions
-      </h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Last updated: today
-      </p>
+    <div className="bg-background pt-32 min-h-screen">
+      <article className="container-page mx-auto max-w-4xl pb-24">
+        <div className="flex items-center gap-4">
+             <span className="h-px w-8 bg-gold/40" />
+             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+               Operating Charter
+             </p>
+        </div>
+        <h1 className="mt-6 font-display text-5xl font-bold text-foreground md:text-6xl">
+            Terms of <span className="italic text-gold">Engagement.</span>
+        </h1>
+        <p className="mt-4 font-mono text-[10px] text-foreground/40 uppercase tracking-widest">Effective: June 2026</p>
 
-      <div className="mt-8 space-y-6 text-sm leading-relaxed text-foreground">
-        <Section title="1. About NexusZim">
-          NexusZim is a marketplace platform connecting clients with independent service
-          providers in Zimbabwe. We are not the provider of services listed on the platform.
-        </Section>
-        <Section title="2. Regulated services">
-          Services such as visa application support and company registration are provided as
-          consultancy and document assistance only. They are not government approval or legal
-          representation unless the provider is properly licensed. Always verify provider
-          credentials.
-        </Section>
-        <Section title="3. Bookings & payments">
-          Clients may pay a deposit or full amount at checkout. NexusZim charges a platform
-          fee on each completed booking. Funds may be held in escrow on eligible bookings until
-          the service is delivered.
-        </Section>
-        <Section title="4. Cancellations & refunds">
-          Cancellations made 48+ hours before the booking are eligible for a full refund of
-          deposits. Cancellations within 48 hours may forfeit the deposit. Provider no-shows
-          result in a full refund and a deduction against the provider account.
-        </Section>
-        <Section title="5. Dispute resolution">
-          If a service was not delivered as described, open a dispute within 7 days. NexusZim
-          will mediate between client and provider. Held funds are released according to the
-          mediation outcome.
-        </Section>
-        <Section title="6. Provider responsibilities">
-          Providers must hold all necessary licences and insurance for their services, deliver
-          on time and to the agreed standard, and respond to messages within their stated
-          response time.
-        </Section>
-        <Section title="7. Liability">
-          NexusZim facilitates bookings but is not liable for the acts or omissions of
-          providers or clients. Use of the platform is at your own risk and subject to these
-          terms.
-        </Section>
-      </div>
-    </article>
+        <div className="mt-16 space-y-12 border-t border-gold/10 pt-16">
+          <Section title="01. The Brokerage">
+            NexusZim is a connection intelligence platform. We facilitate introductions between clients and independent service fixers. We do not personally execute the services listed beyond administrative and data support.
+          </Section>
+          <Section title="02. Regulatory Boundaries">
+            Specialized services (legal, medical, or government documentation) are provided as administrative consultancy only. Clients are responsible for verifying specific professional licenses where mandated by law.
+          </Section>
+          <Section title="03. Financial Escrow">
+            All financial authorizations are held in a secure escrow layer. Brokerage fees are applied to each successful deployment. Funds are released only upon verification of mission completion.
+          </Section>
+          <Section title="04. Cancellation Protocol">
+            Deployment aborts with 72+ hours notice qualify for full commitment refund. Late aborts (under 24h) result in commitment forfeiture to compensate provider mobilization.
+          </Section>
+          <Section title="05. Conflict Resolution">
+            In the event of mission failure or standard deviation, formal disputes must be lodged within 7 days. NexusZim acting as the operator will mediate based on the logged Mission Brief.
+          </Section>
+          <Section title="06. Operational Liability">
+            NexusZim is a facilitator of intelligence and connection. We are not liable for the tactical execution or omissions of independent providers. Deployment is at the operative's discretion.
+          </Section>
+        </div>
+      </article>
+    </div>
   );
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section>
-      <h2 className="font-display text-lg font-semibold">{title}</h2>
-      <p className="mt-2 text-muted-foreground">{children}</p>
+    <section className="group">
+      <h2 className="font-display text-2xl font-bold text-foreground group-hover:text-gold transition-colors uppercase tracking-widest">{title}</h2>
+      <p className="mt-4 font-body text-base font-light leading-relaxed text-foreground/60">{children}</p>
     </section>
   );
 }
+

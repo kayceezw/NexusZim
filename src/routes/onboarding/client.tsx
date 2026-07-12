@@ -55,77 +55,91 @@ function ClientOnboarding() {
   }
 
   return (
-    <div className="container-page grid min-h-[80vh] place-items-center py-12">
-      <form onSubmit={onSubmit} className="w-full max-w-lg rounded-2xl border border-border bg-card p-8">
-        <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gold">
-          Step 1 of 1
-        </p>
-        <h1 className="mt-2 font-display text-2xl font-bold">Tell us about you</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          A few details so providers can reach you quickly.
+    <div className="bg-background pt-24 min-h-screen grid place-items-center">
+      <form onSubmit={onSubmit} className="w-full max-w-2xl bg-card border border-gold/20 p-10 md:p-14 my-12">
+        <div className="flex items-center gap-4">
+             <span className="h-px w-8 bg-gold/40" />
+             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+               Onboarding Phase
+             </p>
+        </div>
+        <h1 className="mt-6 font-display text-4xl font-bold text-foreground">Operational <span className="italic text-gold">Brief.</span></h1>
+        <p className="mt-4 font-body text-base text-foreground/60">
+            Define your preferences so our network of fixers can respond with optimal speed and precision.
         </p>
 
         {error && (
-          <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
             {error}
           </div>
         )}
 
-        <div className="mt-6 space-y-4">
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium">Phone (WhatsApp preferred)</span>
-            <input
-              type="tel"
-              required
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+263 7..."
-              className="input"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium">City</span>
-            <select value={city} onChange={(e) => setCity(e.target.value)} className="input">
+        <div className="mt-10 space-y-8">
+          <Input 
+            label="Secure Line / Phone (WhatsApp Preferred)" 
+            type="tel"
+            required
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+263 7..."
+          />
+          
+          <div className="space-y-3">
+            <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">Base City</label>
+            <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold">
               {CITIES.map((c) => (
                 <option key={c} value={c}>
                   {c}
                 </option>
               ))}
             </select>
-          </label>
-          <fieldset>
-            <legend className="mb-2 text-sm font-medium">Preferred contact</legend>
-            <div className="grid grid-cols-3 gap-2">
+          </div>
+
+          <div className="space-y-4">
+            <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">Preferred Intelligence Vector</label>
+            <div className="grid grid-cols-3 gap-4">
               {(["whatsapp", "phone", "email"] as const).map((opt) => (
                 <button
                   type="button"
                   key={opt}
                   onClick={() => setPreferred(opt)}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-semibold capitalize transition-colors ${
+                  className={`border px-3 py-3 font-mono text-[9px] font-bold uppercase tracking-widest transition-all ${
                     preferred === opt
-                      ? "border-gold bg-gold/10 text-foreground"
-                      : "border-border bg-card text-muted-foreground hover:text-foreground"
+                      ? "border-gold bg-gold text-white"
+                      : "border-gold/20 text-gold/40 hover:border-gold/40"
                   }`}
                 >
                   {opt}
                 </button>
               ))}
             </div>
-          </fieldset>
+          </div>
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 block w-full rounded-xl bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-accent disabled:opacity-60"
+          className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
         >
-          {loading ? "Saving..." : "Finish & go to dashboard"}
+          {loading ? "Synchronizing Data..." : "Finalize Deployment"}
         </button>
+        <p className="mt-6 text-center font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30">
+          Welcome to the NexusZim intelligence layer.
+        </p>
       </form>
-      <style>{`
-        .input { width: 100%; border-radius: 0.625rem; border: 1px solid var(--border); background: var(--background); padding: 0.65rem 0.85rem; font-size: 0.875rem; }
-        .input:focus { border-color: var(--ring); outline: none; }
-      `}</style>
     </div>
   );
 }
+
+function Input({
+    label,
+    ...rest
+  }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+    return (
+      <div className="space-y-3">
+        <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">{label}</label>
+        <input {...rest} className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
+      </div>
+    );
+}
+

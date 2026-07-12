@@ -62,69 +62,74 @@ const highlights = [
 
 function CancellationPolicyPage() {
   return (
-    <div className="container-page py-16">
-      <div className="mx-auto max-w-3xl">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-          Policy
-        </p>
-        <h1 className="mt-3 font-display text-4xl font-bold tracking-tight md:text-5xl">
-          Cancellation & refund policy
-        </h1>
-        <p className="mt-4 text-muted-foreground">
-          We hold every payment in escrow until the service is delivered. If
-          plans change, here is exactly what you can expect — no fine print.
-        </p>
-
-        <div className="mt-10 grid gap-3">
-          {tiers.map((t) => (
-            <div
-              key={t.window}
-              className="rounded-2xl border border-border bg-card p-5"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="font-display font-semibold">{t.window}</p>
-                <span className={`text-sm font-semibold ${t.tone}`}>
-                  {t.refund}
-                </span>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">{t.detail}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          {highlights.map((h) => (
-            <div key={h.title} className="rounded-2xl border border-border bg-card p-5">
-              <p className="font-display font-semibold">{h.title}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{h.body}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 rounded-2xl border border-gold/40 bg-gold/5 p-6">
-          <h2 className="font-display font-semibold">Provider cancellations</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            If a provider cancels, you receive a 100% refund — including the
-            platform fee — and we'll prioritise matching you with a vetted
-            alternative.
+    <div className="bg-background pt-32 min-h-screen">
+      <div className="container-page pb-24">
+        <div className="mx-auto max-w-4xl">
+          <div className="flex items-center gap-4">
+               <span className="h-px w-8 bg-gold/40" />
+               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+                 Mission Abortion
+               </p>
+          </div>
+          <h1 className="mt-6 font-display text-5xl font-bold text-foreground md:text-6xl">
+            Cancellation <span className="italic text-gold">Protocol.</span>
+          </h1>
+          <p className="mt-8 text-lg font-light leading-relaxed text-foreground/70">
+            NexusZim manages all commitment authorizations through a secure escrow layer. 
+            If mission parameters change, our protocol ensures fair compensation for mobilised fixers.
           </p>
-        </div>
 
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link
-            to="/contact"
-            className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-accent"
-          >
-            Contact support
-          </Link>
-          <Link
-            to="/terms"
-            className="rounded-xl border border-border px-5 py-3 text-sm font-semibold hover:border-gold"
-          >
-            Read full terms
-          </Link>
+          <div className="mt-16 grid gap-px bg-gold/10 border border-gold/10">
+            {tiers.map((t) => (
+              <div
+                key={t.window}
+                className="bg-background p-8 md:p-10 group hover:bg-card transition-colors"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <p className="font-display text-xl font-bold text-foreground group-hover:text-gold transition-colors">{t.window}</p>
+                  <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${t.tone}`}>
+                    {t.refund}
+                  </span>
+                </div>
+                <p className="mt-6 font-body text-base text-foreground/60 leading-relaxed">{t.detail}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 grid gap-8 md:grid-cols-3">
+            {highlights.map((h) => (
+              <div key={h.title} className="border border-gold/10 bg-card p-8">
+                <p className="font-display text-lg font-bold text-foreground uppercase tracking-widest">{h.title}</p>
+                <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed">{h.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 border border-gold/20 bg-gold/5 p-10">
+            <h2 className="font-display text-2xl font-bold text-gold uppercase tracking-widest">Fixer De-mobilisation</h2>
+            <p className="mt-6 font-body text-base text-foreground/70 leading-relaxed italic">
+              In the rare event of fixer-side abort, the operative receives a 100% commitment restoration. 
+              Our concierge desk will prioritize immediate re-assignment of a vetted alternative.
+            </p>
+          </div>
+
+          <div className="mt-16 flex flex-wrap gap-6">
+            <Link
+              to="/contact"
+              className="bg-gold px-10 py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+            >
+              Contact Support
+            </Link>
+            <Link
+              to="/terms"
+              className="border border-gold/30 px-10 py-5 font-display text-sm font-bold uppercase tracking-widest text-gold hover:bg-gold/5 transition-colors"
+            >
+              Operating Charter
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

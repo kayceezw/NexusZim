@@ -1,96 +1,42 @@
 import { Link } from "@tanstack/react-router";
 import type { Category } from "@/lib/mock-data";
-import {
-  Crown,
-  PartyPopper,
-  FileCheck2,
-  Car,
-  Scissors,
-  Briefcase,
-  ArrowRight,
-} from "lucide-react";
-
-const iconMap: Record<string, React.ComponentType<{ className?: string; strokeWidth?: number }>> = {
-  Crown,
-  PartyPopper,
-  FileCheck2,
-  Car,
-  Scissors,
-  Briefcase,
-};
+import { PROVIDERS } from "@/lib/mock-data";
 
 export function CategoryCard({ category }: { category: Category }) {
-  const Icon = iconMap[category.icon] ?? Briefcase;
+  const count = PROVIDERS.filter((p) => p.category === category.slug).length;
 
   return (
     <Link
       to="/categories/$slug"
       params={{ slug: category.slug }}
-      className="group relative flex flex-col gap-4 overflow-hidden rounded-lg border p-6 transition-all duration-300 hover:-translate-y-[3px]"
-      style={{
-        backgroundColor: "var(--navy-mid)",
-        borderColor: "rgba(196,154,42,0.2)",
-        boxShadow: "0 0 0 rgba(0,0,0,0)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "rgba(196,154,42,0.6)";
-        e.currentTarget.style.boxShadow = "0 8px 32px rgba(196,154,42,0.12)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "rgba(196,154,42,0.2)";
-        e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)";
-      }}
+      className="group flex flex-col gap-4 bg-cream-raised border border-hairline p-6 rounded-[6px] transition-all duration-150 hover:border-forest hover:shadow-[0_1px_4px_rgba(15,51,35,0.08)] relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest"
     >
-      {/* Gold left accent bar */}
-      <span
-        aria-hidden
-        className="absolute left-0 top-0 h-full w-[3px]"
-        style={{ backgroundColor: "var(--gold)" }}
-      />
+      {/* Gold left rule on hover */}
+      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-150" />
 
-      {/* Icon + name */}
-      <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-gold">
-          <Icon className="h-5 w-5 text-gold-foreground" strokeWidth={1.5} />
-        </div>
-        <div>
-          <h3 className="font-display text-[22px] font-semibold leading-tight text-gold">
-            {category.name}
-          </h3>
-          <p className="mt-1 font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-cream/60">
-            {category.tagline}
-          </p>
-        </div>
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="font-display text-xl text-text group-hover:text-forest transition-colors leading-tight">
+          {category.name}
+        </h3>
+        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft/60 shrink-0 mt-1">
+          {count} on register
+        </span>
       </div>
 
-      {/* Description */}
-      <p className="text-[13px] font-light leading-relaxed text-cream/70">
-        {category.description}
+      <p className="font-sans text-[13px] text-text-soft leading-relaxed line-clamp-2">
+        {category.tagline}
       </p>
 
-      {/* Tags */}
-      <div className="mt-auto flex flex-wrap gap-1.5">
-        {category.services.slice(0, 3).map((s) => (
-          <span
-            key={s}
-            className="rounded-sm border bg-transparent px-2 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.08em] text-cream/80"
-            style={{ borderColor: "rgba(196,154,42,0.4)" }}
-          >
-            {s}
-          </span>
-        ))}
-        {category.services.length > 3 && (
-          <span className="px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.08em] text-cream/55">
-            +{category.services.length - 3} more
-          </span>
-        )}
-      </div>
-
-      {/* CTA text link */}
-      <div className="pt-1">
-        <span className="inline-flex items-center gap-1.5 font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-gold group-hover:underline group-hover:underline-offset-[6px]">
-          Browse providers
-          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" strokeWidth={1.5} />
+      <div className="mt-auto pt-3 border-t border-hairline flex items-center justify-between">
+        <span className="eyebrow text-text-soft/50">
+          <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+          Browse registry
+        </span>
+        <span
+          aria-hidden
+          className="font-sans text-xs text-forest opacity-0 group-hover:opacity-100 transition-opacity duration-150 translate-x-0 group-hover:translate-x-[3px] inline-block"
+        >
+          →
         </span>
       </div>
     </Link>

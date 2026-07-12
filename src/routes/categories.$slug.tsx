@@ -85,47 +85,47 @@ function CategoryDetailPage() {
   }, [category.slug]);
 
   return (
-    <div>
-      <div style={{ backgroundColor: "var(--navy-mid)", borderBottom: "1px solid rgba(196,154,42,0.18)" }}>
-        <div className="container-page py-16 md:py-20">
-          <div className="flex items-center gap-2 font-sans text-[11px] uppercase tracking-[0.18em] text-cream/55">
-            <Link to="/categories" className="hover:text-gold">
+    <div className="bg-background pt-24 min-h-screen">
+      <div className="border-b border-gold/10">
+        <div className="container-page py-16 md:py-24">
+          <div className="flex items-center gap-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/40">
+            <Link to="/categories" className="hover:text-gold transition-colors">
               Categories
             </Link>
-            <span>/</span>
+            <span className="text-gold/20">/</span>
             <span className="text-gold">{category.name}</span>
           </div>
-          <div className="mt-6 max-w-2xl">
-            <h1 className="font-display text-4xl font-semibold tracking-tight text-cream md:text-6xl">
-              {category.name}
+          <div className="mt-8 max-w-3xl">
+            <h1 className="font-display text-5xl font-bold tracking-tight text-foreground md:text-7xl">
+              {category.name}.
             </h1>
-            <p className="mt-5 max-w-xl font-sans text-base font-light leading-[1.7] text-cream/70">{category.description}</p>
+            <p className="mt-8 max-w-xl font-body text-lg font-light leading-relaxed text-foreground/70">{category.description}</p>
           </div>
         </div>
       </div>
 
-      <div className="container-page py-12">
-        <div className="flex items-end justify-between gap-4">
+      <div className="container-page py-20">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 border-b border-gold/10 pb-10">
           <div>
-            <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gold">
-              01 — Choose services
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+              Step 01
             </p>
-            <h2 className="mt-2 font-display text-2xl font-semibold">
-              Add what you need to your cart
+            <h2 className="mt-4 font-display text-3xl font-bold text-foreground">
+              Select <span className="italic text-gold">Services.</span>
             </h2>
           </div>
           <Link
             to="/cart"
-            className="hidden rounded-md border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-muted md:inline-flex"
+            className="bg-gold px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
           >
-            View cart
+            Access Cart
           </Link>
         </div>
 
         {loadingServices ? (
-          <p className="mt-6 text-sm text-muted-foreground">Loading services...</p>
+          <p className="mt-10 font-mono text-xs text-gold/40 animate-pulse uppercase tracking-widest">Querying service layers...</p>
         ) : (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-px bg-gold/10 md:grid-cols-3 border border-gold/10">
             {services.map((s) => (
               <ServiceCard key={s.id} service={s} category={dbCategory!} categorySlug={category.slug} categoryName={category.name} />
             ))}
@@ -140,81 +140,51 @@ function CategoryDetailPage() {
       </div>
 
       {providers.some((p) => p.featured) && (
-        <div className="container-page pb-4">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gold">
-                Featured providers
+        <div className="bg-card/30 border-y border-gold/10 py-20">
+          <div className="container-page">
+            <div className="flex items-center gap-4">
+              <span className="h-px w-8 bg-gold/40" />
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+                Elite Network
               </p>
-              <h2 className="mt-2 font-display text-2xl font-semibold">
-                Top picks in {category.name}
-              </h2>
             </div>
-          </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {providers
-              .filter((p) => p.featured)
-              .slice(0, 3)
-              .map((p) => (
-                <Link
-                  key={p.id}
-                  to="/providers/$providerId"
-                  params={{ providerId: p.id }}
-                  className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-gold"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`grid h-12 w-12 place-items-center rounded-full font-display text-base font-semibold ${p.avatarColor}`}
-                    >
-                      {p.initials}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate font-display text-base font-semibold group-hover:text-gold">
-                        {p.business}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {p.name} · {p.city}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">
-                    {p.bio}
-                  </p>
-                  <div className="mt-4 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-foreground">
-                      ★ {p.rating.toFixed(2)}{" "}
-                      <span className="text-muted-foreground">
-                        ({p.reviews})
-                      </span>
-                    </span>
-                    <span className="text-muted-foreground">
-                      From ${p.priceFrom}
-                    </span>
-                  </div>
-                  <span className="mt-4 inline-block text-[11px] font-bold uppercase tracking-[0.2em] text-gold">
-                    View profile →
-                  </span>
-                </Link>
-              ))}
+            <h2 className="mt-4 font-display text-4xl font-bold text-foreground">
+              Featured <span className="italic text-gold">Fixers.</span>
+            </h2>
+            <div className="mt-12 grid gap-8 md:grid-cols-3">
+                {providers
+                .filter((p) => p.featured)
+                .slice(0, 3)
+                .map((p) => (
+                    <ProviderCard key={p.id} provider={p} />
+                ))}
+            </div>
           </div>
         </div>
       )}
 
-      <div className="container-page pb-12">
-        <h2 className="font-display text-2xl font-semibold">
-          {providers.length} provider{providers.length === 1 ? "" : "s"}{" "}
-          available
-        </h2>
-        <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="container-page py-20">
+        <div className="flex items-center gap-4 border-b border-gold/10 pb-8">
+            <h2 className="font-display text-3xl font-bold text-foreground">
+                Verified <span className="italic text-gold">Directory.</span>
+            </h2>
+            <div className="h-px flex-1 bg-gold/5 ml-4" />
+            <span className="font-mono text-[10px] text-foreground/40 font-bold uppercase tracking-widest">
+                {providers.length} Available
+            </span>
+        </div>
+        <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {providers.map((p) => (
             <ProviderCard key={p.id} provider={p} />
           ))}
-          {providers.length === 0 && (
-            <p className="text-muted-foreground">
-              No providers yet — check back soon.
-            </p>
-          )}
         </div>
+        {providers.length === 0 && (
+          <div className="border border-dashed border-gold/20 p-20 text-center bg-card/20">
+             <p className="font-body text-sm text-foreground/40 italic">
+                Our network for this category is currently being audited. Check back shortly.
+             </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -248,35 +218,39 @@ function ServiceCard({
   }
 
   return (
-    <div className="flex flex-col rounded-2xl border border-border bg-card p-5">
-      <h3 className="font-display text-base font-semibold">{service.name}</h3>
+    <div className="flex flex-col bg-background p-8 group hover:bg-card transition-colors">
+      <h3 className="font-display text-xl font-bold text-foreground group-hover:text-gold transition-colors">{service.name}</h3>
       {service.description && (
-        <p className="mt-2 text-sm text-muted-foreground">{service.description}</p>
+        <p className="mt-4 font-body text-sm text-foreground/60 leading-relaxed line-clamp-2">{service.description}</p>
       )}
-      <div className="mt-4 flex items-baseline gap-2">
+      <div className="mt-8 flex items-baseline gap-2">
         {service.base_price != null ? (
           <>
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">From</span>
-            <span className="font-display text-xl font-bold">${Number(service.base_price).toFixed(0)}</span>
+            <span className="font-mono text-[9px] uppercase tracking-tighter text-foreground/30">From</span>
+            <span className="font-display text-2xl font-bold text-foreground">${Number(service.base_price).toFixed(0)}</span>
           </>
         ) : (
-          <span className="text-sm text-muted-foreground">Quoted on request</span>
+          <span className="font-mono text-[10px] text-gold/60 font-bold uppercase tracking-widest">Quote on Request</span>
         )}
       </div>
-      <div className="mt-auto pt-5 flex gap-2">
+      <div className="mt-auto pt-10 flex flex-col gap-3">
         <button
           onClick={handleAdd}
           disabled={inCart}
-          className="flex-1 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-accent disabled:opacity-60"
+          className={`w-full py-4 font-display text-[11px] font-bold uppercase tracking-widest transition-colors ${
+            inCart 
+            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 cursor-not-allowed' 
+            : 'bg-gold/10 text-gold border border-gold/30 hover:bg-gold hover:text-white'
+          }`}
         >
-          {inCart ? "Added" : "Add to cart"}
+          {inCart ? "In Mission Brief" : "Add to Mission"}
         </button>
         {inCart && (
           <button
             onClick={() => navigate({ to: "/cart" })}
-            className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted"
+            className="w-full border border-gold/20 py-3 font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors"
           >
-            Cart
+            Review Cart
           </button>
         )}
       </div>
@@ -315,37 +289,41 @@ function CustomRequestCard({
   }
 
   return (
-    <div className="mt-10 rounded-2xl border border-dashed border-gold/40 bg-gold/5 p-6">
-      <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-gold">
-        Don't see what you need?
-      </p>
-      <h3 className="mt-2 font-display text-xl font-semibold">
-        Describe a custom request
+    <div className="mt-20 border border-gold/20 bg-gold/5 p-10 md:p-14">
+      <div className="flex items-center gap-4">
+        <span className="h-px w-8 bg-gold/40" />
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+            Bespoke Enquiry
+        </p>
+      </div>
+      <h3 className="mt-6 font-display text-3xl font-bold text-foreground">
+        Describe a custom <span className="italic text-gold">brief.</span>
       </h3>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Tell us what you're looking for and providers in {categoryName} will respond.
+      <p className="mt-4 font-body text-base text-foreground/60 max-w-xl">
+        Tell us exactly what you're looking for and verified fixers in {categoryName} will respond with bespoke proposals.
       </p>
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-10 flex flex-col gap-4 md:flex-row">
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="e.g. Drone aerial photography for a 200-guest wedding"
-          className="flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:border-ring focus:outline-none"
+          placeholder="e.g. Drone aerial photography for a 200-guest wedding..."
+          className="flex-1 bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
         />
         <button
           onClick={handleAdd}
           disabled={!text.trim() || !dbCategory}
-          className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-accent disabled:opacity-60"
+          className="bg-gold px-10 py-4 font-display text-[11px] font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
         >
-          {added ? "Added!" : "Add custom request"}
+          {added ? "Brief Added!" : "Add to Mission"}
         </button>
         <button
           onClick={() => navigate({ to: "/cart" })}
-          className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted"
+          className="border border-gold/30 px-6 py-4 font-display text-[11px] font-bold uppercase tracking-widest text-gold hover:bg-gold/5 transition-colors"
         >
-          View cart
+          Review Cart
         </button>
       </div>
     </div>
   );
 }
+

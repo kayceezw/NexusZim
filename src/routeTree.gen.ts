@@ -12,9 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RequestRouteImport } from './routes/request'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as IntelRouteImport } from './routes/intel'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CartRouteImport } from './routes/cart'
@@ -22,14 +25,21 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding.index'
+import { Route as IntelIndexRouteImport } from './routes/intel.index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as ProvidersProviderIdRouteImport } from './routes/providers.$providerId'
 import { Route as ProviderDashboardRouteImport } from './routes/provider.dashboard'
 import { Route as PoliciesCancellationRouteImport } from './routes/policies.cancellation'
 import { Route as OnboardingProviderRouteImport } from './routes/onboarding.provider'
 import { Route as OnboardingClientRouteImport } from './routes/onboarding/client'
+import { Route as IntelVenuesRouteImport } from './routes/intel.venues'
+import { Route as IntelRatesRouteImport } from './routes/intel.rates'
+import { Route as IntelEventsRouteImport } from './routes/intel.events'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as BookProviderIdRouteImport } from './routes/book.$providerId'
+import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
+import { Route as AdminIntelRouteImport } from './routes/admin.intel'
+import { Route as AdminConciergeRouteImport } from './routes/admin.concierge'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -46,6 +56,11 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RequestRoute = RequestRouteImport.update({
   id: '/request',
   path: '/request',
@@ -59,6 +74,16 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntelRoute = IntelRouteImport.update({
+  id: '/intel',
+  path: '/intel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -96,6 +121,11 @@ const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
   path: '/onboarding/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntelIndexRoute = IntelIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => IntelRoute,
+} as any)
 const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
   id: '/categories/',
   path: '/categories/',
@@ -126,6 +156,21 @@ const OnboardingClientRoute = OnboardingClientRouteImport.update({
   path: '/onboarding/client',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntelVenuesRoute = IntelVenuesRouteImport.update({
+  id: '/venues',
+  path: '/venues',
+  getParentRoute: () => IntelRoute,
+} as any)
+const IntelRatesRoute = IntelRatesRouteImport.update({
+  id: '/rates',
+  path: '/rates',
+  getParentRoute: () => IntelRoute,
+} as any)
+const IntelEventsRoute = IntelEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => IntelRoute,
+} as any)
 const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
   id: '/categories/$slug',
   path: '/categories/$slug',
@@ -136,75 +181,119 @@ const BookProviderIdRoute = BookProviderIdRouteImport.update({
   path: '/book/$providerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminIntelRoute = AdminIntelRouteImport.update({
+  id: '/intel',
+  path: '/intel',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConciergeRoute = AdminConciergeRouteImport.update({
+  id: '/concierge',
+  path: '/concierge',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/intel': typeof IntelRouteWithChildren
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/request': typeof RequestRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/admin/concierge': typeof AdminConciergeRoute
+  '/admin/intel': typeof AdminIntelRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/intel/events': typeof IntelEventsRoute
+  '/intel/rates': typeof IntelRatesRoute
+  '/intel/venues': typeof IntelVenuesRoute
   '/onboarding/client': typeof OnboardingClientRoute
   '/onboarding/provider': typeof OnboardingProviderRoute
   '/policies/cancellation': typeof PoliciesCancellationRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/providers/$providerId': typeof ProvidersProviderIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/intel/': typeof IntelIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/request': typeof RequestRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/admin/concierge': typeof AdminConciergeRoute
+  '/admin/intel': typeof AdminIntelRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/intel/events': typeof IntelEventsRoute
+  '/intel/rates': typeof IntelRatesRoute
+  '/intel/venues': typeof IntelVenuesRoute
   '/onboarding/client': typeof OnboardingClientRoute
   '/onboarding/provider': typeof OnboardingProviderRoute
   '/policies/cancellation': typeof PoliciesCancellationRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/providers/$providerId': typeof ProvidersProviderIdRoute
   '/categories': typeof CategoriesIndexRoute
+  '/intel': typeof IntelIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/intel': typeof IntelRouteWithChildren
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/request': typeof RequestRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/admin/concierge': typeof AdminConciergeRoute
+  '/admin/intel': typeof AdminIntelRoute
+  '/admin/revenue': typeof AdminRevenueRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/intel/events': typeof IntelEventsRoute
+  '/intel/rates': typeof IntelRatesRoute
+  '/intel/venues': typeof IntelVenuesRoute
   '/onboarding/client': typeof OnboardingClientRoute
   '/onboarding/provider': typeof OnboardingProviderRoute
   '/policies/cancellation': typeof PoliciesCancellationRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/providers/$providerId': typeof ProvidersProviderIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/intel/': typeof IntelIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
 }
 export interface FileRouteTypes {
@@ -216,20 +305,30 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/dashboard'
+    | '/forgot-password'
+    | '/intel'
     | '/login'
     | '/privacy'
     | '/request'
+    | '/reset-password'
     | '/search'
     | '/signup'
     | '/terms'
+    | '/admin/concierge'
+    | '/admin/intel'
+    | '/admin/revenue'
     | '/book/$providerId'
     | '/categories/$slug'
+    | '/intel/events'
+    | '/intel/rates'
+    | '/intel/venues'
     | '/onboarding/client'
     | '/onboarding/provider'
     | '/policies/cancellation'
     | '/provider/dashboard'
     | '/providers/$providerId'
     | '/categories/'
+    | '/intel/'
     | '/onboarding/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -239,20 +338,29 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/dashboard'
+    | '/forgot-password'
     | '/login'
     | '/privacy'
     | '/request'
+    | '/reset-password'
     | '/search'
     | '/signup'
     | '/terms'
+    | '/admin/concierge'
+    | '/admin/intel'
+    | '/admin/revenue'
     | '/book/$providerId'
     | '/categories/$slug'
+    | '/intel/events'
+    | '/intel/rates'
+    | '/intel/venues'
     | '/onboarding/client'
     | '/onboarding/provider'
     | '/policies/cancellation'
     | '/provider/dashboard'
     | '/providers/$providerId'
     | '/categories'
+    | '/intel'
     | '/onboarding'
   id:
     | '__root__'
@@ -262,33 +370,46 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/dashboard'
+    | '/forgot-password'
+    | '/intel'
     | '/login'
     | '/privacy'
     | '/request'
+    | '/reset-password'
     | '/search'
     | '/signup'
     | '/terms'
+    | '/admin/concierge'
+    | '/admin/intel'
+    | '/admin/revenue'
     | '/book/$providerId'
     | '/categories/$slug'
+    | '/intel/events'
+    | '/intel/rates'
+    | '/intel/venues'
     | '/onboarding/client'
     | '/onboarding/provider'
     | '/policies/cancellation'
     | '/provider/dashboard'
     | '/providers/$providerId'
     | '/categories/'
+    | '/intel/'
     | '/onboarding/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  IntelRoute: typeof IntelRouteWithChildren
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   RequestRoute: typeof RequestRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
@@ -326,6 +447,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/request': {
       id: '/request'
       path: '/request'
@@ -345,6 +473,20 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intel': {
+      id: '/intel'
+      path: '/intel'
+      fullPath: '/intel'
+      preLoaderRoute: typeof IntelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -396,6 +538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/intel/': {
+      id: '/intel/'
+      path: '/'
+      fullPath: '/intel/'
+      preLoaderRoute: typeof IntelIndexRouteImport
+      parentRoute: typeof IntelRoute
+    }
     '/categories/': {
       id: '/categories/'
       path: '/categories'
@@ -438,6 +587,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingClientRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/intel/venues': {
+      id: '/intel/venues'
+      path: '/venues'
+      fullPath: '/intel/venues'
+      preLoaderRoute: typeof IntelVenuesRouteImport
+      parentRoute: typeof IntelRoute
+    }
+    '/intel/rates': {
+      id: '/intel/rates'
+      path: '/rates'
+      fullPath: '/intel/rates'
+      preLoaderRoute: typeof IntelRatesRouteImport
+      parentRoute: typeof IntelRoute
+    }
+    '/intel/events': {
+      id: '/intel/events'
+      path: '/events'
+      fullPath: '/intel/events'
+      preLoaderRoute: typeof IntelEventsRouteImport
+      parentRoute: typeof IntelRoute
+    }
     '/categories/$slug': {
       id: '/categories/$slug'
       path: '/categories/$slug'
@@ -452,19 +622,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookProviderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/intel': {
+      id: '/admin/intel'
+      path: '/intel'
+      fullPath: '/admin/intel'
+      preLoaderRoute: typeof AdminIntelRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/concierge': {
+      id: '/admin/concierge'
+      path: '/concierge'
+      fullPath: '/admin/concierge'
+      preLoaderRoute: typeof AdminConciergeRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminConciergeRoute: typeof AdminConciergeRoute
+  AdminIntelRoute: typeof AdminIntelRoute
+  AdminRevenueRoute: typeof AdminRevenueRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminConciergeRoute: AdminConciergeRoute,
+  AdminIntelRoute: AdminIntelRoute,
+  AdminRevenueRoute: AdminRevenueRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface IntelRouteChildren {
+  IntelEventsRoute: typeof IntelEventsRoute
+  IntelRatesRoute: typeof IntelRatesRoute
+  IntelVenuesRoute: typeof IntelVenuesRoute
+  IntelIndexRoute: typeof IntelIndexRoute
+}
+
+const IntelRouteChildren: IntelRouteChildren = {
+  IntelEventsRoute: IntelEventsRoute,
+  IntelRatesRoute: IntelRatesRoute,
+  IntelVenuesRoute: IntelVenuesRoute,
+  IntelIndexRoute: IntelIndexRoute,
+}
+
+const IntelRouteWithChildren = IntelRoute._addFileChildren(IntelRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   CartRoute: CartRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  IntelRoute: IntelRouteWithChildren,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   RequestRoute: RequestRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
@@ -481,3 +705,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

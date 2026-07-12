@@ -1,21 +1,38 @@
 @import "tailwindcss" source(none);
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap");
 @source "../src";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
-  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+  /* Registry fonts */
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-sans: "Archivo", system-ui, sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+  --font-body: "Archivo", system-ui, sans-serif;
+  --font-data: "Spline Sans Mono", ui-monospace, monospace;
 
-  --radius-sm: 4px;
+  /* Registry radii — near-square corners */
+  --radius-sm: 3px;
   --radius-md: 6px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 20px;
-  --radius-3xl: 24px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
 
+  /* Registry palette — direct token values */
+  --color-forest: #0F3323;
+  --color-forest-ink: #081F14;
+  --color-forest-soft: #1A4630;
+  --color-gold: #E7A020;
+  --color-gold-deep: #B87F1A;
+  --color-cream: #F6F5F0;
+  --color-cream-raised: #FDFCF9;
+  --color-hairline: #DEDACB;
+  --color-text: #14251C;
+  --color-text-soft: #5C6B60;
+
+  /* Semantic aliases — keep for shadcn/ui compatibility */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -24,21 +41,22 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary-glow: var(--primary-glow);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-amber: var(--amber);
+  --color-amber-foreground: var(--amber-foreground);
+  --color-surface: var(--surface);
+  --color-surface-low: var(--surface-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-high: var(--surface-high);
+  --color-copper: var(--copper);
+  --color-copper-foreground: var(--copper-foreground);
   --color-teal: var(--teal);
   --color-teal-foreground: var(--teal-foreground);
-  --color-gold: var(--gold);
-  --color-gold-foreground: var(--gold-foreground);
-  --color-gold-muted: var(--gold-muted);
-  --color-cream: var(--cream);
-  --color-navy-deep: var(--navy-deep);
-  --color-navy-mid: var(--navy-mid);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
@@ -48,91 +66,59 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
 }
 
 :root {
-  --radius: 0.75rem;
+  --background: #F6F5F0;
+  --foreground: #14251C;
 
-  /* NexusZim refined palette */
-  --navy-deep: #0D1B2A;
-  --navy-mid: #152436;
-  --gold-primary: #C49A2A;
-  --gold-muted: #9A7A1E;
-  --cream: #F5EDD8;
+  --card: #FDFCF9;
+  --card-foreground: #14251C;
+  --popover: #FDFCF9;
+  --popover-foreground: #14251C;
 
-  /* Map global tokens onto the navy/gold system */
-  --background: #0D1B2A;
-  --foreground: #F5EDD8;
+  --primary: #0F3323;
+  --primary-foreground: #FDFCF9;
 
-  --surface: #152436;
-  --surface-elevated: #1B2D44;
+  /* Gold is now actual amber gold */
+  --gold: #E7A020;
+  --gold-foreground: #081F14;
 
-  --card: #152436;
-  --card-foreground: #F5EDD8;
+  --amber: #E7A020;
+  --amber-foreground: #081F14;
 
-  --popover: #152436;
-  --popover-foreground: #F5EDD8;
+  --secondary: #EDE9DB;
+  --secondary-foreground: #14251C;
 
-  --primary: #0D1B2A;
-  --primary-foreground: #F5EDD8;
-  --primary-glow: #1B3A66;
+  --muted: #DEDACB;
+  --muted-foreground: #5C6B60;
 
-  --secondary: #152436;
-  --secondary-foreground: #F5EDD8;
+  --accent: #F6F5F0;
+  --accent-foreground: #0F3323;
 
-  --muted: #152436;
-  --muted-foreground: rgba(245, 237, 216, 0.65);
+  --copper: #92400e;
+  --copper-foreground: #fef3c7;
 
-  --accent: #C49A2A;
-  --accent-foreground: #0D1B2A;
+  --teal: #14B8A6;
+  --teal-foreground: #ffffff;
 
-  --teal: #C49A2A;
-  --teal-foreground: #0D1B2A;
+  --surface: #FDFCF9;
+  --surface-low: #F6F5F0;
+  --surface-container: #EDE9DB;
+  --surface-high: #DEDACB;
 
-  --gold: #C49A2A;
-  --gold-foreground: #0D1B2A;
-  --gold-muted: #9A7A1E;
-  --cream: #F5EDD8;
+  --border: #DEDACB;
+  --input: #DEDACB;
+  --ring: #0F3323;
 
-  --success: oklch(0.65 0.13 160);
-  --success-foreground: #FFFFFF;
-  --warning: #C49A2A;
-  --warning-foreground: #0D1B2A;
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: #FFFFFF;
+  --success: #10B981;
+  --success-foreground: #ffffff;
+  --warning: #E7A020;
+  --warning-foreground: #081F14;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
 
-  --border: rgba(196, 154, 42, 0.2);
-  --input: rgba(196, 154, 42, 0.25);
-  --ring: #C49A2A;
-}
-
-.dark {
-  --background: #0D1B2A;
-  --foreground: #F5EDD8;
-  --surface: #152436;
-  --surface-elevated: #1B2D44;
-  --card: #152436;
-  --card-foreground: #F5EDD8;
-  --popover: #152436;
-  --popover-foreground: #F5EDD8;
-  --primary: #C49A2A;
-  --primary-foreground: #0D1B2A;
-  --primary-glow: #E0C078;
-  --secondary: #152436;
-  --secondary-foreground: #F5EDD8;
-  --muted: #152436;
-  --muted-foreground: rgba(245, 237, 216, 0.65);
-  --accent: #C49A2A;
-  --accent-foreground: #0D1B2A;
-  --teal: #C49A2A;
-  --teal-foreground: #0D1B2A;
-  --gold: #C49A2A;
-  --gold-foreground: #0D1B2A;
-  --border: rgba(196, 154, 42, 0.2);
-  --input: rgba(196, 154, 42, 0.25);
-  --ring: #C49A2A;
+  --radius: 6px;
 }
 
 @layer base {
@@ -140,9 +126,15 @@
     border-color: var(--color-border);
   }
 
-  html, body {
-    font-family: var(--font-sans);
-    font-weight: 300;
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 16px;
   }
 
   body {
@@ -152,34 +144,73 @@
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3 {
     font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
     font-weight: 600;
-    letter-spacing: -0.015em;
   }
 }
 
 @utility container-page {
   margin-inline: auto;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1280px;
   padding-inline: 1.5rem;
 }
 
-@utility gradient-hero {
-  background-image: linear-gradient(135deg, #0D1B2A 0%, #152436 55%, #1B3A66 100%);
+@utility eyebrow {
+  font-family: var(--font-data);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-@utility gradient-teal {
-  background-image: linear-gradient(135deg, #C49A2A, #E0C078);
+@utility field-input {
+  display: block;
+  width: 100%;
+  background-color: var(--color-cream);
+  border: 1px solid var(--color-hairline);
+  border-radius: 3px;
+  padding: 0.625rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 150ms;
+  &::placeholder { color: color-mix(in srgb, var(--color-text-soft) 50%, transparent); }
+  &:focus { border-color: var(--color-forest); }
 }
 
-@utility shadow-elevated {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 32px rgba(196, 154, 42, 0.12);
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
 }
 
-@utility hero-grid-overlay {
-  background-image:
-    radial-gradient(rgba(196, 154, 42, 0.18) 1px, transparent 1px);
-  background-size: 28px 28px;
+@utility skeleton {
+  background: linear-gradient(90deg, #1A4630 25%, rgba(15, 51, 35, 0.3) 50%, #1A4630 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

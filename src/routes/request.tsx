@@ -40,25 +40,28 @@ function RequestPage() {
 
   if (submitted) {
     return (
-      <div className="container-page py-24">
-        <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-8 text-center">
-          <h1 className="font-display text-2xl font-bold">Request posted</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Verified providers will start sending quotes shortly. We'll notify
-            you in your dashboard.
+      <div className="container-page py-24 min-h-screen pt-40">
+        <div className="mx-auto max-w-xl border border-gold/20 bg-card p-12 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center bg-gold/10 border border-gold/30 mb-8">
+            <span className="font-mono text-gold font-bold">OK</span>
+          </div>
+          <h1 className="font-display text-4xl font-bold text-foreground">Request Lodged.</h1>
+          <p className="mt-6 font-body text-lg font-light text-foreground/60">
+            Your enquiry has been broadcast to the NexusZim network. 
+            Verified providers will respond shortly with formal quotes.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <div className="mt-12 flex flex-col gap-4">
             <Link
               to="/dashboard"
-              className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-accent"
+              className="bg-gold px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
             >
-              Go to dashboard
+              Access My Dashboard
             </Link>
             <Link
               to="/search"
-              className="rounded-xl border border-border px-5 py-3 text-sm font-semibold"
+              className="border border-gold/30 px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-gold hover:bg-gold/5"
             >
-              Browse providers
+              Browse More Fixers
             </Link>
           </div>
         </div>
@@ -67,152 +70,134 @@ function RequestPage() {
   }
 
   return (
-    <div className="container-page py-12 md:py-16">
-      <div className="mx-auto max-w-3xl">
-        <p className="font-display text-xs font-semibold uppercase tracking-wider text-teal">
-          Post a request
-        </p>
-        <h1 className="mt-2 font-display text-4xl font-bold tracking-tight">
-          Tell us what you need
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          Share the details once and let providers come to you with quotes.
-        </p>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSubmitted(true);
-          }}
-          className="mt-8 space-y-5 rounded-2xl border border-border bg-card p-6 md:p-8"
-        >
-          <Field label="Service category">
-            <select
-              required
-              value={form.category}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  category: e.target.value as CategorySlug,
-                }))
-              }
-              className="input"
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.slug} value={c.slug}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </Field>
-
-          <Field label="Short title">
-            <input
-              required
-              value={form.title}
-              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              placeholder="e.g. Wedding coordination for 200 guests"
-              className="input"
-            />
-          </Field>
-
-          <Field label="Details & requirements">
-            <textarea
-              required
-              value={form.details}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, details: e.target.value }))
-              }
-              rows={5}
-              placeholder="Describe scope, expectations, anything providers should know."
-              className="input resize-y"
-            />
-          </Field>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <Field label="City / location">
-              <select
-                value={form.city}
-                onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
-                className="input"
-              >
-                {CITIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Date needed">
-              <input
-                type="date"
-                required
-                value={form.date}
-                onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Budget (USD)">
-              <input
-                type="number"
-                min={0}
-                value={form.budget}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, budget: e.target.value }))
-                }
-                placeholder="e.g. 500"
-                className="input"
-              />
-            </Field>
-            <Field label="Urgency">
-              <select
-                value={form.urgency}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, urgency: e.target.value }))
-                }
-                className="input"
-              >
-                <option value="flexible">Flexible</option>
-                <option value="standard">Standard</option>
-                <option value="urgent">Urgent (within 48 hrs)</option>
-              </select>
-            </Field>
+    <div className="bg-background pt-24 min-h-screen">
+      <div className="container-page py-12 md:py-20">
+        <div className="mx-auto max-w-3xl">
+          <div className="flex items-center gap-4">
+            <span className="h-px w-8 bg-gold/40" />
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+              Service Enquiry
+            </span>
           </div>
-
-          {search.providerId && (
-            <p className="rounded-lg bg-teal/10 px-3 py-2 text-xs text-teal">
-              This request will be sent directly to the provider you selected.
-            </p>
-          )}
-
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground hover:bg-accent"
-          >
-            Post request & receive quotes
-          </button>
-          <p className="text-center text-xs text-muted-foreground">
-            By posting, you agree to our terms and our cancellation policy.
+          <h1 className="mt-4 font-display text-5xl font-bold tracking-tight text-foreground">
+            Tell us what you <span className="italic text-gold">need.</span>
+          </h1>
+          <p className="mt-6 font-body text-lg font-light text-foreground/60">
+            Share your requirements once and let the continent's most trusted 
+            service providers come to you with curated proposals.
           </p>
-        </form>
-      </div>
 
-      <style>{`
-        .input {
-          width: 100%;
-          border-radius: 0.625rem;
-          border: 1px solid var(--border);
-          background: var(--background);
-          padding: 0.65rem 0.85rem;
-          font-size: 0.875rem;
-          color: var(--foreground);
-          outline: none;
-        }
-        .input:focus {
-          border-color: var(--ring);
-          box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 25%, transparent);
-        }
-      `}</style>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSubmitted(true);
+            }}
+            className="mt-12 space-y-8 border border-gold/20 bg-card p-8 md:p-12"
+          >
+            <div className="grid gap-8 md:grid-cols-2">
+                <Field label="Service Category">
+                    <select
+                    required
+                    value={form.category}
+                    onChange={(e) =>
+                        setForm((f) => ({
+                        ...f,
+                        category: e.target.value as CategorySlug,
+                        }))
+                    }
+                    className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
+                    >
+                    {CATEGORIES.map((c) => (
+                        <option key={c.slug} value={c.slug}>
+                        {c.name}
+                        </option>
+                    ))}
+                    </select>
+                </Field>
+
+                <Field label="Short Request Title">
+                    <input
+                    required
+                    value={form.title}
+                    onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                    placeholder="e.g. Wedding coordination for 200 guests"
+                    className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+                    />
+                </Field>
+            </div>
+
+            <Field label="Operational Details & Requirements">
+              <textarea
+                required
+                value={form.details}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, details: e.target.value }))
+                }
+                rows={6}
+                placeholder="Describe scope, expectations, and any mission-critical requirements..."
+                className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-y"
+              />
+            </Field>
+
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+              <div className="lg:col-span-2">
+                <Field label="Mission Location">
+                    <select
+                        value={form.city}
+                        onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+                        className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
+                    >
+                        {CITIES.map((c) => (
+                        <option key={c} value={c}>
+                            {c}
+                        </option>
+                        ))}
+                    </select>
+                </Field>
+              </div>
+              <Field label="Target Date">
+                <input
+                  type="date"
+                  required
+                  value={form.date}
+                  onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+                  className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
+                />
+              </Field>
+              <Field label="Budget (USD)">
+                <input
+                  type="number"
+                  min={0}
+                  value={form.budget}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, budget: e.target.value }))
+                  }
+                  placeholder="e.g. 500"
+                  className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+                />
+              </Field>
+            </div>
+
+            <div className="border-t border-gold/10 pt-8">
+                {search.providerId && (
+                <p className="mb-8 font-mono text-[10px] font-bold uppercase tracking-widest text-gold text-center bg-gold/5 border border-gold/20 py-3">
+                    This request will be sent directly to the selected elite provider.
+                </p>
+                )}
+
+                <button
+                type="submit"
+                className="w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-[0.2em] text-white hover:bg-foreground transition-colors"
+                >
+                Broadcast Request & Access proposals
+                </button>
+                <p className="mt-6 text-center font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-foreground/30">
+                By posting, you agree to the NexusZim Terms of Engagement.
+                </p>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
@@ -226,10 +211,11 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-sm font-medium text-foreground">
+      <label className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
         {label}
       </label>
       {children}
     </div>
   );
 }
+

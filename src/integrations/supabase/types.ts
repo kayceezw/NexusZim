@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       bookings: {
@@ -77,6 +102,47 @@ export type Database = {
           },
         ]
       }
+      brokered_deals: {
+        Row: {
+          client_name: string
+          commission_earned: number | null
+          created_at: string
+          event_date: string | null
+          id: string
+          notes: string | null
+          package_id: string | null
+          value: number | null
+        }
+        Insert: {
+          client_name: string
+          commission_earned?: number | null
+          created_at?: string
+          event_date?: string | null
+          id?: string
+          notes?: string | null
+          package_id?: string | null
+          value?: number | null
+        }
+        Update: {
+          client_name?: string
+          commission_earned?: number | null
+          created_at?: string
+          event_date?: string | null
+          id?: string
+          notes?: string | null
+          package_id?: string | null
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brokered_deals_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "operator_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -128,6 +194,90 @@ export type Database = {
         }
         Relationships: []
       }
+      events_radar: {
+        Row: {
+          city: string | null
+          created_at: string
+          date: string
+          estimated_attendance: string | null
+          genre: string | null
+          id: string
+          source: string | null
+          ticket_price_range: string | null
+          title: string
+          venue: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          date: string
+          estimated_attendance?: string | null
+          genre?: string | null
+          id?: string
+          source?: string | null
+          ticket_price_range?: string | null
+          title: string
+          venue?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          date?: string
+          estimated_attendance?: string | null
+          genre?: string | null
+          id?: string
+          source?: string | null
+          ticket_price_range?: string | null
+          title?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      featured_listings: {
+        Row: {
+          active_from: string
+          active_to: string | null
+          category_id: string | null
+          created_at: string
+          id: string
+          position: number | null
+          provider_id: string
+        }
+        Insert: {
+          active_from?: string
+          active_to?: string | null
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          position?: number | null
+          provider_id: string
+        }
+        Update: {
+          active_from?: string
+          active_to?: string | null
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          position?: number | null
+          provider_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_listings_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "featured_listings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       login_events: {
         Row: {
           id: string
@@ -149,6 +299,69 @@ export type Database = {
           role?: Database["public"]["Enums"]["app_role"] | null
           user_agent?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      market_rate_index: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          notes: string | null
+          rate_high: number | null
+          rate_low: number | null
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          rate_high?: number | null
+          rate_low?: number | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          rate_high?: number | null
+          rate_low?: number | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      operator_packages: {
+        Row: {
+          commission_pct: number | null
+          created_at: string
+          description: string | null
+          event_type: string | null
+          id: string
+          name: string
+          provider_ids: string[]
+        }
+        Insert: {
+          commission_pct?: number | null
+          created_at?: string
+          description?: string | null
+          event_type?: string | null
+          id?: string
+          name: string
+          provider_ids: string[]
+        }
+        Update: {
+          commission_pct?: number | null
+          created_at?: string
+          description?: string | null
+          event_type?: string | null
+          id?: string
+          name?: string
+          provider_ids?: string[]
         }
         Relationships: []
       }
@@ -187,6 +400,8 @@ export type Database = {
           city: string | null
           created_at: string
           phone: string | null
+          photos: string[] | null
+          tier: number
           updated_at: string
           user_id: string
           verified: boolean
@@ -200,6 +415,8 @@ export type Database = {
           city?: string | null
           created_at?: string
           phone?: string | null
+          photos?: string[] | null
+          tier?: number
           updated_at?: string
           user_id: string
           verified?: boolean
@@ -213,6 +430,8 @@ export type Database = {
           city?: string | null
           created_at?: string
           phone?: string | null
+          photos?: string[] | null
+          tier?: number
           updated_at?: string
           user_id?: string
           verified?: boolean
@@ -421,6 +640,44 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          payment_confirmed_by: string | null
+          plan: string
+          provider_id: string
+          status: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          payment_confirmed_by?: string | null
+          plan: string
+          provider_id: string
+          status?: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          payment_confirmed_by?: string | null
+          plan?: string
+          provider_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -439,6 +696,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      venue_availability: {
+        Row: {
+          available_from: string | null
+          available_to: string | null
+          capacity: number | null
+          city: string | null
+          contact: string | null
+          created_at: string
+          id: string
+          venue_name: string
+        }
+        Insert: {
+          available_from?: string | null
+          available_to?: string | null
+          capacity?: number | null
+          city?: string | null
+          contact?: string | null
+          created_at?: string
+          id?: string
+          venue_name: string
+        }
+        Update: {
+          available_from?: string | null
+          available_to?: string | null
+          capacity?: number | null
+          city?: string | null
+          contact?: string | null
+          created_at?: string
+          id?: string
+          venue_name?: string
         }
         Relationships: []
       }
@@ -595,6 +885,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       app_role: ["client", "service_provider", "admin", "super_admin"],

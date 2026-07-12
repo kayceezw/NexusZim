@@ -16,44 +16,44 @@ export const Route = createFileRoute("/about")({
 
 function AboutPage() {
   return (
-    <div>
-      <section className="bg-surface">
-        <div className="container-page py-16 md:py-24">
-          <p className="font-display text-xs font-semibold uppercase tracking-wider text-teal">
-            About NexusZim
-          </p>
-          <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold tracking-tight md:text-5xl">
-            Built in Zimbabwe, for everyone who hires services here.
+    <div className="bg-background pt-24 min-h-screen">
+      <section className="border-b border-gold/10">
+        <div className="container-page py-20 md:py-32">
+          <div className="flex items-center gap-4">
+             <span className="h-px w-12 bg-gold/40" />
+             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+               The Vision
+             </p>
+          </div>
+          <h1 className="mt-8 max-w-4xl font-display text-5xl font-bold tracking-tight text-foreground md:text-7xl">
+            Africa's Premier Event <span className="italic text-gold">Intelligence.</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            NexusZim brings local service providers and clients onto one
-            trusted platform. We verify providers, standardise quotes, handle
-            deposits, and offer a clear dispute process — so booking services
-            in Zimbabwe finally feels professional.
+          <p className="mt-10 max-w-2xl font-body text-xl font-light leading-relaxed text-foreground/70">
+            NexusZim is the authoritative hub where event organizers, corporates, and individuals connect with verified service providers, book complete event packages, and access market intel no one else has.
           </p>
         </div>
       </section>
 
-      <section className="container-page grid gap-6 py-16 md:grid-cols-2">
+      <section className="container-page grid gap-px bg-gold/10 border border-gold/10 my-24 md:grid-cols-2">
         {VALUES.map((v) => (
-          <div key={v.title} className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="font-display text-xl font-semibold">{v.title}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{v.desc}</p>
+          <div key={v.title} className="bg-background p-10 md:p-14 group hover:bg-card transition-colors">
+            <h2 className="font-display text-2xl font-bold text-foreground group-hover:text-gold transition-colors uppercase tracking-widest">{v.title}</h2>
+            <p className="mt-6 font-body text-base font-light leading-relaxed text-foreground/60">{v.desc}</p>
           </div>
         ))}
       </section>
 
-      <section className="bg-surface">
-        <div className="container-page py-16 text-center">
-          <h2 className="font-display text-2xl font-bold md:text-3xl">
-            Ready to find a provider — or become one?
+      <section className="bg-card/30 border-y border-gold/10">
+        <div className="container-page py-24 text-center">
+          <h2 className="font-display text-4xl font-bold text-foreground md:text-5xl">
+            Ready to secure your <span className="italic text-gold">Fixer?</span>
           </h2>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link to="/categories" className="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-accent">
-              Browse categories
+          <div className="mt-12 flex flex-col sm:flex-row justify-center gap-6">
+            <Link to="/categories" className="bg-gold px-10 py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors">
+              Access Network
             </Link>
-            <Link to="/signup" className="rounded-xl border border-border px-5 py-3 text-sm font-semibold">
-              Become a provider
+            <Link to="/signup" className="border border-gold/30 px-10 py-5 font-display text-sm font-bold uppercase tracking-widest text-gold hover:bg-gold/5 transition-colors">
+              Apply as Provider
             </Link>
           </div>
         </div>
@@ -64,19 +64,20 @@ function AboutPage() {
 
 const VALUES = [
   {
-    title: "Verified providers",
-    desc: "Every paid provider passes identity, business and reference checks before they can accept jobs.",
+    title: "Verified Intelligence",
+    desc: "We don't just list providers; we audit them. Our four-tier trust system ensures you're hiring vetted professionals with proven track records.",
   },
   {
-    title: "Safe payments",
-    desc: "Deposits are held in escrow on eligible bookings and only released when the service is delivered.",
+    title: "Market Data Layer",
+    desc: "NexusZim provides real-time event radars and market rate indices, giving organizers the data they need to plan with precision.",
   },
   {
-    title: "Built for locals",
-    desc: "Local cities, local currency, local categories — including categories that reflect how Zimbabwean services actually work.",
+    title: "The Fixer's Network",
+    desc: "From elite concierge specialists to mission-critical security teams, we connect you with the fixers who make things happen across the continent.",
   },
   {
-    title: "Expanding nationwide",
-    desc: "Starting in Harare and Bulawayo, we're rolling out across every major Zimbabwean city.",
+    title: "Bespoke Brokerage",
+    desc: "Our operator-managed packages and concierge mode allow for seamless, high-touch event production and service bundling.",
   },
 ];
+

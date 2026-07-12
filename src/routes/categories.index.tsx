@@ -18,25 +18,28 @@ export const Route = createFileRoute("/categories/")({
 
 function CategoriesPage() {
   return (
-    <div className="container-page py-20 md:py-24">
-      <div className="max-w-2xl">
-        <p className="font-sans text-[10px] font-medium uppercase tracking-[0.3em] text-gold">
-          Categories
-        </p>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-cream md:text-5xl">
-          Find the right <span className="italic font-medium text-gold">service.</span>
-        </h1>
-        <p className="mt-4 max-w-lg font-sans text-base font-light leading-[1.7] text-cream/70">
-          Browse every category on NexusZim. New service types are added all
-          the time.
-        </p>
+    <div className="bg-background pt-20 min-h-screen">
+      {/* Header strip */}
+      <div className="bg-[#00301c] py-12">
+        <div className="container-page">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/50 mb-2">Service Network</p>
+          <h1 className="font-display text-4xl font-bold text-white">
+            Browse by Category
+          </h1>
+          <p className="mt-3 max-w-lg text-base text-white/70">
+            Find verified service providers across all major categories in Zimbabwe.
+          </p>
+        </div>
       </div>
 
-      <div className="mt-12 grid grid-cols-2 gap-5 md:grid-cols-3">
-        {CATEGORIES.map((c) => (
-          <CategoryCard key={c.slug} category={c} />
-        ))}
+      <div className="container-page py-12 pb-24">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CATEGORIES.map((c) => (
+            <CategoryCard key={c.slug} category={c} />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
+

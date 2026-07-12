@@ -1,1 +1,14 @@
-project_id = "nxxnylunickxlvqtyhtk"
+project_id = "dsicwpyggdkwdhrifkvy"
+
+[auth]
+# Canonical production site. Confirmation / magic-link / password-reset emails
+# redirect here when the signup origin isn't in additional_redirect_urls below.
+site_url = "https://www.nexuszim.co.zw"
+
+# Every origin a user may sign up / confirm from must be allow-listed here,
+# otherwise Supabase falls back to site_url (which is what dumped you on localhost).
+additional_redirect_urls = [
+  "https://www.nexuszim.co.zw/**",
+  "https://nexuszim.kayceezw.workers.dev/**",
+  "http://localhost:8080/**",
+]
