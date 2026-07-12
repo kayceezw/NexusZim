@@ -21,16 +21,16 @@
   --radius-3xl: 16px;
 
   /* Registry palette — direct token values */
-  --color-forest: #0F3323;
-  --color-forest-ink: #081F14;
-  --color-forest-soft: #1A4630;
-  --color-gold: #E7A020;
-  --color-gold-deep: #B87F1A;
-  --color-cream: #F6F5F0;
-  --color-cream-raised: #FDFCF9;
-  --color-hairline: #DEDACB;
-  --color-text: #14251C;
-  --color-text-soft: #5C6B60;
+  --color-forest: #0f3323;
+  --color-forest-ink: #081f14;
+  --color-forest-soft: #1a4630;
+  --color-gold: #e7a020;
+  --color-gold-deep: #b87f1a;
+  --color-cream: #f6f5f0;
+  --color-cream-raised: #fdfcf9;
+  --color-hairline: #dedacb;
+  --color-text: #14251c;
+  --color-text-soft: #5c6b60;
 
   /* Semantic aliases — keep for shadcn/ui compatibility */
   --color-background: var(--background);
@@ -69,52 +69,52 @@
 }
 
 :root {
-  --background: #F6F5F0;
-  --foreground: #14251C;
+  --background: #f6f5f0;
+  --foreground: #14251c;
 
-  --card: #FDFCF9;
-  --card-foreground: #14251C;
-  --popover: #FDFCF9;
-  --popover-foreground: #14251C;
+  --card: #fdfcf9;
+  --card-foreground: #14251c;
+  --popover: #fdfcf9;
+  --popover-foreground: #14251c;
 
-  --primary: #0F3323;
-  --primary-foreground: #FDFCF9;
+  --primary: #0f3323;
+  --primary-foreground: #fdfcf9;
 
   /* Gold is now actual amber gold */
-  --gold: #E7A020;
-  --gold-foreground: #081F14;
+  --gold: #e7a020;
+  --gold-foreground: #081f14;
 
-  --amber: #E7A020;
-  --amber-foreground: #081F14;
+  --amber: #e7a020;
+  --amber-foreground: #081f14;
 
-  --secondary: #EDE9DB;
-  --secondary-foreground: #14251C;
+  --secondary: #ede9db;
+  --secondary-foreground: #14251c;
 
-  --muted: #DEDACB;
-  --muted-foreground: #5C6B60;
+  --muted: #dedacb;
+  --muted-foreground: #5c6b60;
 
-  --accent: #F6F5F0;
-  --accent-foreground: #0F3323;
+  --accent: #f6f5f0;
+  --accent-foreground: #0f3323;
 
   --copper: #92400e;
   --copper-foreground: #fef3c7;
 
-  --teal: #14B8A6;
+  --teal: #14b8a6;
   --teal-foreground: #ffffff;
 
-  --surface: #FDFCF9;
-  --surface-low: #F6F5F0;
-  --surface-container: #EDE9DB;
-  --surface-high: #DEDACB;
+  --surface: #fdfcf9;
+  --surface-low: #f6f5f0;
+  --surface-container: #ede9db;
+  --surface-high: #dedacb;
 
-  --border: #DEDACB;
-  --input: #DEDACB;
-  --ring: #0F3323;
+  --border: #dedacb;
+  --input: #dedacb;
+  --ring: #0f3323;
 
-  --success: #10B981;
+  --success: #10b981;
   --success-foreground: #ffffff;
-  --warning: #E7A020;
-  --warning-foreground: #081F14;
+  --warning: #e7a020;
+  --warning-foreground: #081f14;
   --destructive: #ba1a1a;
   --destructive-foreground: #ffffff;
 
@@ -191,17 +191,25 @@
   color: var(--color-text);
   outline: none;
   transition: border-color 150ms;
-  &::placeholder { color: color-mix(in srgb, var(--color-text-soft) 50%, transparent); }
-  &:focus { border-color: var(--color-forest); }
+  &::placeholder {
+    color: color-mix(in srgb, var(--color-text-soft) 50%, transparent);
+  }
+  &:focus {
+    border-color: var(--color-forest);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }
 
 @utility skeleton {
-  background: linear-gradient(90deg, #1A4630 25%, rgba(15, 51, 35, 0.3) 50%, #1A4630 75%);
+  background: linear-gradient(90deg, #1a4630 25%, rgba(15, 51, 35, 0.3) 50%, #1a4630 75%);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
 }

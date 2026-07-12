@@ -28,7 +28,9 @@ function AdminRevenuePage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("subscriptions")
-        .select("id, plan, status, payment_confirmed_by, confirmed_at, created_at, provider_id, provider_profiles(business_name, city)")
+        .select(
+          "id, plan, status, payment_confirmed_by, confirmed_at, created_at, provider_id, provider_profiles(business_name, city)",
+        )
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -40,7 +42,9 @@ function AdminRevenuePage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("featured_listings")
-        .select("id, position, active_from, active_to, provider_id, category_id, provider_profiles(business_name), categories(name)")
+        .select(
+          "id, position, active_from, active_to, provider_id, category_id, provider_profiles(business_name), categories(name)",
+        )
         .order("active_from", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -49,10 +53,16 @@ function AdminRevenuePage() {
 
   const confirmPayment = useMutation({
     mutationFn: async (id: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       const { error } = await supabase
         .from("subscriptions")
-        .update({ status: "active", payment_confirmed_by: user?.id ?? null, confirmed_at: new Date().toISOString() })
+        .update({
+          status: "active",
+          payment_confirmed_by: user?.id ?? null,
+          confirmed_at: new Date().toISOString(),
+        })
         .eq("id", id);
       if (error) throw error;
     },
@@ -63,12 +73,20 @@ function AdminRevenuePage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const pending = (subscriptions ?? []).filter((s) => s.status === "pending" || !s.payment_confirmed_by);
-  const active = (subscriptions ?? []).filter((s) => s.status === "active" && s.payment_confirmed_by);
+  const pending = (subscriptions ?? []).filter(
+    (s) => s.status === "pending" || !s.payment_confirmed_by,
+  );
+  const active = (subscriptions ?? []).filter(
+    (s) => s.status === "active" && s.payment_confirmed_by,
+  );
 
   const totalActive = active.length;
-  const proCount = (subscriptions ?? []).filter((s) => s.plan === "pro" && s.payment_confirmed_by).length;
-  const bizCount = (subscriptions ?? []).filter((s) => s.plan === "business" && s.payment_confirmed_by).length;
+  const proCount = (subscriptions ?? []).filter(
+    (s) => s.plan === "pro" && s.payment_confirmed_by,
+  ).length;
+  const bizCount = (subscriptions ?? []).filter(
+    (s) => s.plan === "business" && s.payment_confirmed_by,
+  ).length;
   const mrr = proCount * 15 + bizCount * 40;
 
   return (
@@ -98,24 +116,35 @@ function AdminRevenuePage() {
           Awaiting Payment Confirmation ({pending.length})
         </h2>
         <p className="mt-2 font-body text-xs text-foreground/40">
-          Providers who've signed up for a paid plan — confirm once EcoCash/bank transfer is received.
+          Providers who've signed up for a paid plan — confirm once EcoCash/bank transfer is
+          received.
         </p>
         <div className="mt-8 space-y-4">
           {pending.length === 0 && (
             <p className="font-body text-sm text-foreground/30 italic">No pending confirmations.</p>
           )}
           {pending.map((s) => {
-            const prof = s.provider_profiles as { business_name: string; city: string | null } | null;
+            const prof = s.provider_profiles as {
+              business_name: string;
+              city: string | null;
+            } | null;
             return (
-              <div key={s.id} className="flex flex-col gap-4 border border-gold/10 bg-background/50 p-6 md:flex-row md:items-center md:justify-between">
+              <div
+                key={s.id}
+                className="flex flex-col gap-4 border border-gold/10 bg-background/50 p-6 md:flex-row md:items-center md:justify-between"
+              >
                 <div>
-                  <p className="font-display text-xl font-bold text-foreground">{prof?.business_name ?? s.provider_id}</p>
+                  <p className="font-display text-xl font-bold text-foreground">
+                    {prof?.business_name ?? s.provider_id}
+                  </p>
                   <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-foreground/40">
                     {prof?.city ?? "—"} · Registered {new Date(s.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className={`border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${PLAN_COLORS[s.plan] ?? "text-foreground/40 border-foreground/20"}`}>
+                  <span
+                    className={`border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${PLAN_COLORS[s.plan] ?? "text-foreground/40 border-foreground/20"}`}
+                  >
                     {s.plan}
                   </span>
                   <button
@@ -151,7 +180,10 @@ function AdminRevenuePage() {
             <tbody className="divide-y divide-foreground/5">
               {active.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 font-body text-sm text-foreground/30 italic text-center">
+                  <td
+                    colSpan={4}
+                    className="py-8 font-body text-sm text-foreground/30 italic text-center"
+                  >
                     No active subscriptions yet.
                   </td>
                 </tr>
@@ -160,9 +192,13 @@ function AdminRevenuePage() {
                 const prof = s.provider_profiles as { business_name: string } | null;
                 return (
                   <tr key={s.id} className="hover:bg-background/40 transition-colors">
-                    <td className="py-4 font-display font-bold text-foreground">{prof?.business_name ?? s.provider_id}</td>
+                    <td className="py-4 font-display font-bold text-foreground">
+                      {prof?.business_name ?? s.provider_id}
+                    </td>
                     <td className="py-4">
-                      <span className={`border px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${PLAN_COLORS[s.plan] ?? ""}`}>
+                      <span
+                        className={`border px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${PLAN_COLORS[s.plan] ?? ""}`}
+                      >
                         {s.plan}
                       </span>
                     </td>
@@ -203,7 +239,10 @@ function AdminRevenuePage() {
             <tbody className="divide-y divide-foreground/5">
               {(featured ?? []).length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 font-body text-sm text-foreground/30 italic text-center">
+                  <td
+                    colSpan={4}
+                    className="py-8 font-body text-sm text-foreground/30 italic text-center"
+                  >
                     No featured listings yet.
                   </td>
                 </tr>
@@ -214,15 +253,29 @@ function AdminRevenuePage() {
                 const isActive = !f.active_to || new Date(f.active_to) >= new Date();
                 return (
                   <tr key={f.id} className="hover:bg-background/40 transition-colors">
-                    <td className="py-4 font-display font-bold text-foreground">{prof?.business_name ?? f.provider_id}</td>
-                    <td className="py-4 font-mono text-[10px] text-foreground/60 uppercase">{cat?.name ?? "—"}</td>
-                    <td className="py-4 font-mono text-[10px] text-foreground/60">#{f.position ?? "—"}</td>
+                    <td className="py-4 font-display font-bold text-foreground">
+                      {prof?.business_name ?? f.provider_id}
+                    </td>
+                    <td className="py-4 font-mono text-[10px] text-foreground/60 uppercase">
+                      {cat?.name ?? "—"}
+                    </td>
+                    <td className="py-4 font-mono text-[10px] text-foreground/60">
+                      #{f.position ?? "—"}
+                    </td>
                     <td className="py-4 text-right">
-                      <span className={`flex items-center justify-end gap-1.5 font-mono text-[9px] font-bold uppercase tracking-widest ${isActive ? "text-gold" : "text-foreground/20"}`}>
+                      <span
+                        className={`flex items-center justify-end gap-1.5 font-mono text-[9px] font-bold uppercase tracking-widest ${isActive ? "text-gold" : "text-foreground/20"}`}
+                      >
                         {isActive ? (
-                          <><CheckCircle2 className="h-3 w-3" />Active</>
+                          <>
+                            <CheckCircle2 className="h-3 w-3" />
+                            Active
+                          </>
                         ) : (
-                          <><Clock className="h-3 w-3" />Expired</>
+                          <>
+                            <Clock className="h-3 w-3" />
+                            Expired
+                          </>
                         )}
                       </span>
                     </td>
@@ -241,7 +294,9 @@ function Tile({ label, value }: { label: string; value: string }) {
   return (
     <div className="border border-gold/20 bg-card p-8">
       <p className="font-display text-4xl font-bold text-gold">{value}</p>
-      <p className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">{label}</p>
+      <p className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
+        {label}
+      </p>
     </div>
   );
 }

@@ -56,16 +56,22 @@ function ClientOnboarding() {
 
   return (
     <div className="bg-background pt-24 min-h-screen grid place-items-center">
-      <form onSubmit={onSubmit} className="w-full max-w-2xl bg-card border border-gold/20 p-10 md:p-14 my-12">
+      <form
+        onSubmit={onSubmit}
+        className="w-full max-w-2xl bg-card border border-gold/20 p-10 md:p-14 my-12"
+      >
         <div className="flex items-center gap-4">
-             <span className="h-px w-8 bg-gold/40" />
-             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-               Onboarding Phase
-             </p>
+          <span className="h-px w-8 bg-gold/40" />
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+            Onboarding Phase
+          </p>
         </div>
-        <h1 className="mt-6 font-display text-4xl font-bold text-foreground">Operational <span className="italic text-gold">Brief.</span></h1>
+        <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
+          Operational <span className="italic text-gold">Brief.</span>
+        </h1>
         <p className="mt-4 font-body text-base text-foreground/60">
-            Define your preferences so our network of fixers can respond with optimal speed and precision.
+          Define your preferences so our network of fixers can respond with optimal speed and
+          precision.
         </p>
 
         {error && (
@@ -75,18 +81,24 @@ function ClientOnboarding() {
         )}
 
         <div className="mt-10 space-y-8">
-          <Input 
-            label="Secure Line / Phone (WhatsApp Preferred)" 
+          <Input
+            label="Secure Line / Phone (WhatsApp Preferred)"
             type="tel"
             required
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+263 7..."
           />
-          
+
           <div className="space-y-3">
-            <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">Base City</label>
-            <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold">
+            <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+              Base City
+            </label>
+            <select
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
+            >
               {CITIES.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -96,7 +108,9 @@ function ClientOnboarding() {
           </div>
 
           <div className="space-y-4">
-            <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">Preferred Intelligence Vector</label>
+            <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+              Preferred Intelligence Vector
+            </label>
             <div className="grid grid-cols-3 gap-4">
               {(["whatsapp", "phone", "email"] as const).map((opt) => (
                 <button
@@ -132,14 +146,18 @@ function ClientOnboarding() {
 }
 
 function Input({
-    label,
-    ...rest
-  }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
-    return (
-      <div className="space-y-3">
-        <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">{label}</label>
-        <input {...rest} className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20" />
-      </div>
-    );
+  label,
+  ...rest
+}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div className="space-y-3">
+      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+        {label}
+      </label>
+      <input
+        {...rest}
+        className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+      />
+    </div>
+  );
 }
-

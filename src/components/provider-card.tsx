@@ -51,17 +51,15 @@ export function ProviderCard({ provider }: { provider: Provider }) {
               <MapPin className="h-3 w-3" strokeWidth={1.5} />
               {provider.city}
             </span>
-            <span className="font-mono text-[11px] text-text-soft">
-              From ${provider.priceFrom}
-            </span>
+            <span className="font-mono text-[11px] text-text-soft">From ${provider.priceFrom}</span>
           </div>
 
           {/* On-file condensed ledger */}
           <p className="mt-2 font-mono text-[11px] text-text-soft leading-relaxed line-clamp-1">
-            On file: {provider.verifiedAt
+            On file:{" "}
+            {provider.verifiedAt
               ? `Identity confirmed ✓ ${provider.verifiedAt}`
-              : "Identity confirmed ✓"
-            }
+              : "Identity confirmed ✓"}
           </p>
 
           {/* Footer */}
@@ -72,16 +70,16 @@ export function ProviderCard({ provider }: { provider: Provider }) {
                   provider.availability === "available"
                     ? "bg-emerald-500"
                     : provider.availability === "busy"
-                    ? "bg-yellow-400"
-                    : "bg-rose-500"
+                      ? "bg-yellow-400"
+                      : "bg-rose-500"
                 }`}
               />
               <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-soft">
                 {provider.availability === "available"
                   ? "Available"
                   : provider.availability === "busy"
-                  ? "Busy"
-                  : "Fully Booked"}
+                    ? "Busy"
+                    : "Fully Booked"}
               </span>
             </div>
             <Link

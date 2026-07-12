@@ -17,18 +17,41 @@ export const Route = createFileRoute("/admin/concierge")({
 
 /* ─── TYPES ─── */
 type Package = {
-  id: string; name: string; event_type: string | null;
-  provider_ids: string[]; commission_pct: number | null; description: string | null; created_at: string;
+  id: string;
+  name: string;
+  event_type: string | null;
+  provider_ids: string[];
+  commission_pct: number | null;
+  description: string | null;
+  created_at: string;
 };
 type Deal = {
-  id: string; package_id: string | null; client_name: string;
-  event_date: string | null; value: number | null; commission_earned: number | null;
-  notes: string | null; created_at: string;
+  id: string;
+  package_id: string | null;
+  client_name: string;
+  event_date: string | null;
+  value: number | null;
+  commission_earned: number | null;
+  notes: string | null;
+  created_at: string;
 };
 
 /* ─── FORMS ─── */
-const EMPTY_PKG = { name: "", event_type: "", provider_ids_raw: "", commission_pct: "", description: "" };
-const EMPTY_DEAL = { package_id: "", client_name: "", event_date: "", value: "", commission_earned: "", notes: "" };
+const EMPTY_PKG = {
+  name: "",
+  event_type: "",
+  provider_ids_raw: "",
+  commission_pct: "",
+  description: "",
+};
+const EMPTY_DEAL = {
+  package_id: "",
+  client_name: "",
+  event_date: "",
+  value: "",
+  commission_earned: "",
+  notes: "",
+};
 
 function ConciergeMode() {
   const [activeTab, setActiveTab] = useState<"packages" | "deals">("packages");
@@ -66,9 +89,7 @@ function ConciergeMode() {
         ))}
       </div>
 
-      <div className="py-12">
-        {activeTab === "packages" ? <PackagesTab /> : <DealsTab />}
-      </div>
+      <div className="py-12">{activeTab === "packages" ? <PackagesTab /> : <DealsTab />}</div>
     </div>
   );
 }
@@ -83,7 +104,10 @@ function PackagesTab() {
   const { data: packages } = useQuery<Package[]>({
     queryKey: ["admin", "concierge", "packages"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("operator_packages").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("operator_packages")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as Package[];
     },
@@ -95,13 +119,15 @@ function PackagesTab() {
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
-      const { error } = await supabase.from("operator_packages").insert([{
-        name: form.name,
-        event_type: form.event_type || null,
-        provider_ids: ids,
-        commission_pct: form.commission_pct ? parseFloat(form.commission_pct) : null,
-        description: form.description || null,
-      }]);
+      const { error } = await supabase.from("operator_packages").insert([
+        {
+          name: form.name,
+          event_type: form.event_type || null,
+          provider_ids: ids,
+          commission_pct: form.commission_pct ? parseFloat(form.commission_pct) : null,
+          description: form.description || null,
+        },
+      ]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -142,22 +168,42 @@ function PackagesTab() {
 
       {open && (
         <div className="border border-gold/30 bg-card p-8 space-y-6">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">New Managed Package</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
+            New Managed Package
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Package Name *" value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="e.g. Corporate Dinner Package" />
-            <Field label="Event Type" value={form.event_type} onChange={(v) => setForm({ ...form, event_type: v })} placeholder="e.g. Corporate, Wedding, VIP" />
             <Field
-              label="Commission %" type="number"
-              value={form.commission_pct} onChange={(v) => setForm({ ...form, commission_pct: v })}
+              label="Package Name *"
+              value={form.name}
+              onChange={(v) => setForm({ ...form, name: v })}
+              placeholder="e.g. Corporate Dinner Package"
+            />
+            <Field
+              label="Event Type"
+              value={form.event_type}
+              onChange={(v) => setForm({ ...form, event_type: v })}
+              placeholder="e.g. Corporate, Wedding, VIP"
+            />
+            <Field
+              label="Commission %"
+              type="number"
+              value={form.commission_pct}
+              onChange={(v) => setForm({ ...form, commission_pct: v })}
               placeholder="e.g. 15"
             />
             <Field
               label="Provider IDs (comma-separated)"
-              value={form.provider_ids_raw} onChange={(v) => setForm({ ...form, provider_ids_raw: v })}
+              value={form.provider_ids_raw}
+              onChange={(v) => setForm({ ...form, provider_ids_raw: v })}
               placeholder="uuid1, uuid2, uuid3"
             />
           </div>
-          <Field label="Description" value={form.description} onChange={(v) => setForm({ ...form, description: v })} placeholder="Brief description of what's included…" />
+          <Field
+            label="Description"
+            value={form.description}
+            onChange={(v) => setForm({ ...form, description: v })}
+            placeholder="Brief description of what's included…"
+          />
           <div className="flex gap-4">
             <button
               onClick={() => add.mutate()}
@@ -166,7 +212,10 @@ function PackagesTab() {
             >
               {add.isPending ? "Saving…" : "Create Package"}
             </button>
-            <button onClick={() => setOpen(false)} className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors">
+            <button
+              onClick={() => setOpen(false)}
+              className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors"
+            >
               Cancel
             </button>
           </div>
@@ -174,26 +223,39 @@ function PackagesTab() {
       )}
 
       {(packages ?? []).length === 0 && !open && (
-        <p className="font-body text-sm text-foreground/30 italic">No packages yet. Create one above.</p>
+        <p className="font-body text-sm text-foreground/30 italic">
+          No packages yet. Create one above.
+        </p>
       )}
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {(packages ?? []).map((pkg) => (
-          <div key={pkg.id} className="border border-gold/10 bg-card p-8 group hover:border-gold/30 relative">
+          <div
+            key={pkg.id}
+            className="border border-gold/10 bg-card p-8 group hover:border-gold/30 relative"
+          >
             <button
               onClick={() => del.mutate(pkg.id)}
               className="absolute top-4 right-4 text-foreground/20 hover:text-rose-500 transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
-            <p className="font-mono text-[10px] text-gold uppercase tracking-widest">{pkg.event_type ?? "General"}</p>
+            <p className="font-mono text-[10px] text-gold uppercase tracking-widest">
+              {pkg.event_type ?? "General"}
+            </p>
             <h3 className="mt-4 font-display text-xl font-bold text-foreground">{pkg.name}</h3>
             {pkg.description && (
-              <p className="mt-3 font-body text-xs text-foreground/50 leading-relaxed line-clamp-2">{pkg.description}</p>
+              <p className="mt-3 font-body text-xs text-foreground/50 leading-relaxed line-clamp-2">
+                {pkg.description}
+              </p>
             )}
             <div className="mt-8 space-y-4">
               <Row label="Providers" value={String(pkg.provider_ids.length)} />
-              <Row label="Commission" value={pkg.commission_pct != null ? `${pkg.commission_pct}%` : "—"} gold />
+              <Row
+                label="Commission"
+                value={pkg.commission_pct != null ? `${pkg.commission_pct}%` : "—"}
+                gold
+              />
               <Row label="Created" value={new Date(pkg.created_at).toLocaleDateString()} />
             </div>
           </div>
@@ -213,7 +275,10 @@ function DealsTab() {
   const { data: deals } = useQuery<Deal[]>({
     queryKey: ["admin", "concierge", "deals"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("brokered_deals").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("brokered_deals")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as Deal[];
     },
@@ -222,7 +287,10 @@ function DealsTab() {
   const { data: packages } = useQuery<Package[]>({
     queryKey: ["admin", "concierge", "packages"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("operator_packages").select("id, name").order("name");
+      const { data, error } = await supabase
+        .from("operator_packages")
+        .select("id, name")
+        .order("name");
       if (error) throw error;
       return (data ?? []) as Package[];
     },
@@ -230,14 +298,16 @@ function DealsTab() {
 
   const add = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("brokered_deals").insert([{
-        package_id: form.package_id || null,
-        client_name: form.client_name,
-        event_date: form.event_date || null,
-        value: form.value ? parseFloat(form.value) : null,
-        commission_earned: form.commission_earned ? parseFloat(form.commission_earned) : null,
-        notes: form.notes || null,
-      }]);
+      const { error } = await supabase.from("brokered_deals").insert([
+        {
+          package_id: form.package_id || null,
+          client_name: form.client_name,
+          event_date: form.event_date || null,
+          value: form.value ? parseFloat(form.value) : null,
+          commission_earned: form.commission_earned ? parseFloat(form.commission_earned) : null,
+          notes: form.notes || null,
+        },
+      ]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -281,9 +351,15 @@ function DealsTab() {
 
       {open && (
         <div className="border border-gold/30 bg-card p-8 space-y-6">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">Log Brokered Deal</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
+            Log Brokered Deal
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Client Name *" value={form.client_name} onChange={(v) => setForm({ ...form, client_name: v })} />
+            <Field
+              label="Client Name *"
+              value={form.client_name}
+              onChange={(v) => setForm({ ...form, client_name: v })}
+            />
             <div>
               <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/40 mb-2">
                 Package (optional)
@@ -295,14 +371,38 @@ function DealsTab() {
               >
                 <option value="">— None —</option>
                 {(packages ?? []).map((p) => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
                 ))}
               </select>
             </div>
-            <Field label="Event Date" type="date" value={form.event_date} onChange={(v) => setForm({ ...form, event_date: v })} />
-            <Field label="Deal Value (USD)" type="number" value={form.value} onChange={(v) => setForm({ ...form, value: v })} placeholder="e.g. 3500" />
-            <Field label="Commission Earned (USD)" type="number" value={form.commission_earned} onChange={(v) => setForm({ ...form, commission_earned: v })} placeholder="e.g. 525" />
-            <Field label="Notes" value={form.notes} onChange={(v) => setForm({ ...form, notes: v })} placeholder="Any context on this deal…" />
+            <Field
+              label="Event Date"
+              type="date"
+              value={form.event_date}
+              onChange={(v) => setForm({ ...form, event_date: v })}
+            />
+            <Field
+              label="Deal Value (USD)"
+              type="number"
+              value={form.value}
+              onChange={(v) => setForm({ ...form, value: v })}
+              placeholder="e.g. 3500"
+            />
+            <Field
+              label="Commission Earned (USD)"
+              type="number"
+              value={form.commission_earned}
+              onChange={(v) => setForm({ ...form, commission_earned: v })}
+              placeholder="e.g. 525"
+            />
+            <Field
+              label="Notes"
+              value={form.notes}
+              onChange={(v) => setForm({ ...form, notes: v })}
+              placeholder="Any context on this deal…"
+            />
           </div>
           <div className="flex gap-4">
             <button
@@ -312,7 +412,10 @@ function DealsTab() {
             >
               {add.isPending ? "Saving…" : "Log Deal"}
             </button>
-            <button onClick={() => setOpen(false)} className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors">
+            <button
+              onClick={() => setOpen(false)}
+              className="px-6 py-3 font-mono text-xs text-foreground/40 hover:text-foreground transition-colors"
+            >
               Cancel
             </button>
           </div>
@@ -347,12 +450,22 @@ function DealsTab() {
                 return (
                   <tr key={deal.id} className="group hover:bg-card/50 transition-colors">
                     <td className="py-6">
-                      <p className="font-display text-lg font-bold text-foreground">{deal.client_name}</p>
-                      <p className="font-mono text-[10px] text-foreground/40">{deal.event_date ?? "No date"}</p>
+                      <p className="font-display text-lg font-bold text-foreground">
+                        {deal.client_name}
+                      </p>
+                      <p className="font-mono text-[10px] text-foreground/40">
+                        {deal.event_date ?? "No date"}
+                      </p>
                     </td>
                     <td className="py-6">
-                      <span className="font-body text-sm text-foreground/80">{pkg?.name ?? "—"}</span>
-                      {deal.notes && <p className="mt-1 font-mono text-[9px] text-foreground/30 line-clamp-1">{deal.notes}</p>}
+                      <span className="font-body text-sm text-foreground/80">
+                        {pkg?.name ?? "—"}
+                      </span>
+                      {deal.notes && (
+                        <p className="mt-1 font-mono text-[9px] text-foreground/30 line-clamp-1">
+                          {deal.notes}
+                        </p>
+                      )}
                     </td>
                     <td className="py-6 text-center">
                       <span className="font-mono text-xs font-bold text-foreground">
@@ -361,7 +474,9 @@ function DealsTab() {
                     </td>
                     <td className="py-6 text-center">
                       <span className="font-mono text-xs font-bold text-gold">
-                        {deal.commission_earned != null ? `$${deal.commission_earned.toFixed(0)}` : "—"}
+                        {deal.commission_earned != null
+                          ? `$${deal.commission_earned.toFixed(0)}`
+                          : "—"}
                       </span>
                     </td>
                     <td className="py-6 text-right">
@@ -385,12 +500,24 @@ function DealsTab() {
 
 /* ─── SHARED ─── */
 
-function Field({ label, value, onChange, type = "text", placeholder }: {
-  label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string;
+function Field({
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  placeholder?: string;
 }) {
   return (
     <div>
-      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/40 mb-2">{label}</label>
+      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/40 mb-2">
+        {label}
+      </label>
       <input
         type={type}
         value={value}

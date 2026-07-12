@@ -5,23 +5,19 @@ export type TierLevel = 1 | 2 | 3 | 4;
 const TIER_CONFIG: Record<TierLevel, { label: string; className: string }> = {
   1: {
     label: "Listed",
-    className:
-      "border border-[#DEDACB] text-[#5C6B60] bg-transparent",
+    className: "border border-[#DEDACB] text-[#5C6B60] bg-transparent",
   },
   2: {
     label: "Verified",
-    className:
-      "border border-[#0F3323] text-[#0F3323] bg-transparent",
+    className: "border border-[#0F3323] text-[#0F3323] bg-transparent",
   },
   3: {
     label: "Trust Certified",
-    className:
-      "border border-[#E7A020] text-[#B87F1A] bg-[#E7A020]/10",
+    className: "border border-[#E7A020] text-[#B87F1A] bg-[#E7A020]/10",
   },
   4: {
     label: "Trust Certified",
-    className:
-      "border border-[#E7A020] text-[#B87F1A] bg-[#E7A020]/10",
+    className: "border border-[#E7A020] text-[#B87F1A] bg-[#E7A020]/10",
   },
 };
 
@@ -40,7 +36,7 @@ export function Hallmark({ tier, className }: HallmarkProps) {
         "font-mono text-[10px] font-medium uppercase tracking-[0.08em]",
         "rounded-[3px]",
         config.className,
-        className
+        className,
       )}
     >
       <span

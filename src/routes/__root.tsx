@@ -22,12 +22,17 @@ function NotFoundComponent() {
       </p>
       <h1
         className="font-display text-text"
-        style={{ fontSize: "clamp(72px, 12vw, 120px)", lineHeight: "1.02", letterSpacing: "-0.03em" }}
+        style={{
+          fontSize: "clamp(72px, 12vw, 120px)",
+          lineHeight: "1.02",
+          letterSpacing: "-0.03em",
+        }}
       >
         Not found.
       </h1>
       <p className="mt-8 font-sans text-base text-text-soft max-w-sm leading-relaxed">
-        This route is not on the register. You may have followed an expired link or mistyped the URL.
+        This route is not on the register. You may have followed an expired link or mistyped the
+        URL.
       </p>
       <div className="mt-12 flex flex-col sm:flex-row justify-center gap-3">
         <Link
@@ -68,7 +73,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       </p>
       <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
         <button
-          onClick={() => { router.invalidate(); reset(); }}
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
           className="bg-gold px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
         >
           Try Again

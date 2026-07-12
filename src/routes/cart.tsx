@@ -48,7 +48,7 @@ function CartPage() {
       title: item.serviceName,
       description: item.notes ?? null,
       city,
-      budget: budget ? Number(budget) : item.basePrice ?? null,
+      budget: budget ? Number(budget) : (item.basePrice ?? null),
       needed_by: neededBy || null,
       status: "open" as const,
       client_name: profile?.full_name ?? null,
@@ -96,35 +96,48 @@ function CartPage() {
     <div className="bg-background pt-24 min-h-screen">
       <div className="container-page py-12 md:py-20">
         <div className="flex items-center gap-4">
-            <span className="h-px w-8 bg-gold/40" />
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-                Mission Briefing
-            </span>
+          <span className="h-px w-8 bg-gold/40" />
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+            Mission Briefing
+          </span>
         </div>
         <h1 className="mt-4 font-display text-5xl font-bold text-foreground md:text-6xl">
-            Review your <span className="italic text-gold">Brief.</span>
+          Review your <span className="italic text-gold">Brief.</span>
         </h1>
         <p className="mt-6 font-body text-lg font-light text-foreground/60">
-            Each item in your brief will be broadcast to our verified network in that domain.
+          Each item in your brief will be broadcast to our verified network in that domain.
         </p>
 
         <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_400px]">
           <div className="space-y-6">
             {items.map((item) => (
-              <div key={item.id} className="border border-gold/10 bg-card p-8 md:p-10 transition-all hover:border-gold/30">
+              <div
+                key={item.id}
+                className="border border-gold/10 bg-card p-8 md:p-10 transition-all hover:border-gold/30"
+              >
                 <div className="flex items-start justify-between gap-6">
                   <div className="min-w-0">
                     <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/60">
                       {item.categoryName}
-                      {item.isCustom && <span className="ml-3 border border-gold/20 px-2 py-0.5 text-[9px] font-bold text-gold bg-gold/5">Bespoke</span>}
+                      {item.isCustom && (
+                        <span className="ml-3 border border-gold/20 px-2 py-0.5 text-[9px] font-bold text-gold bg-gold/5">
+                          Bespoke
+                        </span>
+                      )}
                     </p>
-                    <h3 className="mt-4 font-display text-2xl font-bold text-foreground">{item.serviceName}</h3>
+                    <h3 className="mt-4 font-display text-2xl font-bold text-foreground">
+                      {item.serviceName}
+                    </h3>
                   </div>
                   <div className="text-right">
                     {item.basePrice != null ? (
-                      <p className="font-display text-2xl font-bold text-foreground">${Number(item.basePrice).toFixed(0)}</p>
+                      <p className="font-display text-2xl font-bold text-foreground">
+                        ${Number(item.basePrice).toFixed(0)}
+                      </p>
                     ) : (
-                      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/40">Audit Pending</p>
+                      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/40">
+                        Audit Pending
+                      </p>
                     )}
                     <button
                       onClick={() => remove(item.id)}
@@ -146,10 +159,16 @@ function CartPage() {
           </div>
 
           <aside className="border border-gold/20 bg-card p-10 h-fit lg:sticky lg:top-32">
-            <h2 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">Op Specs</h2>
+            <h2 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">
+              Op Specs
+            </h2>
             <div className="mt-10 space-y-8">
               <Field label="Mission City">
-                <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold">
+                <select
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
+                >
                   {CITIES.map((c) => (
                     <option key={c} value={c}>
                       {c}
@@ -178,7 +197,9 @@ function CartPage() {
             </div>
 
             <div className="mt-12 flex items-center justify-between border-t border-gold/10 pt-8">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">Est. Engagement</span>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
+                Est. Engagement
+              </span>
               <span className="font-display text-4xl font-bold text-gold">${total.toFixed(0)}</span>
             </div>
 
@@ -215,13 +236,7 @@ function CartPage() {
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
       <label className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">

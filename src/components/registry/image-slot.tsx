@@ -32,16 +32,11 @@ export function ImageSlot({
       <div
         className={cn(
           "w-full overflow-hidden bg-[#1A4630] rounded-[6px]",
-          ASPECT_CLASS[aspectRatio]
+          ASPECT_CLASS[aspectRatio],
         )}
       >
         {src ? (
-          <img
-            src={src}
-            alt={alt}
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
+          <img src={src} alt={alt} loading="lazy" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <span
@@ -54,15 +49,10 @@ export function ImageSlot({
 
       {caption && (
         <figcaption className="mt-3 flex items-start gap-3">
-          <span
-            aria-hidden
-            className="mt-1 h-px w-6 shrink-0 bg-[#E7A020]"
-          />
+          <span aria-hidden className="mt-1 h-px w-6 shrink-0 bg-[#E7A020]" />
           <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-[#5C6B60] leading-relaxed">
             {caption}
-            {date && (
-              <span className="ml-2 text-[#5C6B60]/60">{date}</span>
-            )}
+            {date && <span className="ml-2 text-[#5C6B60]/60">{date}</span>}
           </span>
         </figcaption>
       )}

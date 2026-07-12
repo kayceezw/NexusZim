@@ -63,7 +63,8 @@ function ForgotPasswordPage() {
               Credential <span className="italic text-gold">Recovery.</span>
             </h1>
             <p className="mt-4 font-body text-base text-foreground/60">
-              Enter your registered email address. We will dispatch a secure recovery link within moments.
+              Enter your registered email address. We will dispatch a secure recovery link within
+              moments.
             </p>
 
             {error && (
@@ -115,7 +116,8 @@ function ForgotPasswordPage() {
               </p>
               <p className="font-body text-sm text-foreground/60">
                 A secure recovery link has been sent to{" "}
-                <span className="text-foreground font-bold">{email}</span>. Follow the link to reset your credentials.
+                <span className="text-foreground font-bold">{email}</span>. Follow the link to reset
+                your credentials.
               </p>
             </div>
             <ul className="mt-6 space-y-3">
@@ -124,7 +126,10 @@ function ForgotPasswordPage() {
                 "Scan your spam or junk folder if it's not visible.",
                 "The link expires after 1 hour for your security.",
               ].map((tip) => (
-                <li key={tip} className="flex items-start gap-3 font-body text-sm text-foreground/50">
+                <li
+                  key={tip}
+                  className="flex items-start gap-3 font-body text-sm text-foreground/50"
+                >
                   <span className="mt-[6px] h-1.5 w-1.5 shrink-0 bg-gold/40" />
                   {tip}
                 </li>
@@ -140,8 +145,8 @@ function ForgotPasswordPage() {
                 {resendCountdown > 0
                   ? `Resend available in ${resendCountdown}s`
                   : loading
-                  ? "Sending..."
-                  : "Resend Recovery Link"}
+                    ? "Sending..."
+                    : "Resend Recovery Link"}
               </button>
               <Link
                 to="/login"
@@ -152,7 +157,11 @@ function ForgotPasswordPage() {
             </div>
             <button
               type="button"
-              onClick={() => { setSent(false); setEmail(""); setResendCountdown(0); }}
+              onClick={() => {
+                setSent(false);
+                setEmail("");
+                setResendCountdown(0);
+              }}
               className="mt-4 block w-full py-3 text-center font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30 hover:text-foreground/60 transition-colors"
             >
               Try a different email

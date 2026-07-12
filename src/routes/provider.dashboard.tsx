@@ -3,7 +3,16 @@ import { useEffect, useState } from "react";
 import { RequireAuth } from "@/components/require-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ChevronDown, ChevronUp, Send, CheckCircle2, TrendingUp, Eye, Zap, Star } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Send,
+  CheckCircle2,
+  TrendingUp,
+  Eye,
+  Zap,
+  Star,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/provider/dashboard")({
@@ -35,7 +44,10 @@ function profileCompletion(p: ProviderRow): { pct: number; missing: string[] } {
     { label: "Website / Portfolio", ok: !!p.website },
   ];
   const done = checks.filter((c) => c.ok).length;
-  return { pct: Math.round((done / checks.length) * 100), missing: checks.filter((c) => !c.ok).map((c) => c.label) };
+  return {
+    pct: Math.round((done / checks.length) * 100),
+    missing: checks.filter((c) => !c.ok).map((c) => c.label),
+  };
 }
 
 const TIER_LABELS: Record<number, string> = { 1: "Listed", 2: "Checked", 3: "Trusted", 4: "Elite" };
@@ -92,7 +104,9 @@ function ProviderDashboard() {
       if (prov?.category_id) {
         const { data: reqs } = await supabase
           .from("requests")
-          .select("id, title, description, service_name, city, budget, needed_by, created_at, client_name, client_phone, client_email, client_whatsapp")
+          .select(
+            "id, title, description, service_name, city, budget, needed_by, created_at, client_name, client_phone, client_email, client_whatsapp",
+          )
           .eq("category_id", prov.category_id)
           .eq("status", "open")
           .order("created_at", { ascending: false })
@@ -109,7 +123,9 @@ function ProviderDashboard() {
       if (!cancelled) setLoading(false);
     }
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   async function sendQuote(requestId: string) {
@@ -136,8 +152,16 @@ function ProviderDashboard() {
     if (data) {
       setMyQuotes((q) => [...q, data]);
       setExpandedId(null);
-      setQuoteAmounts((prev) => { const n = { ...prev }; delete n[requestId]; return n; });
-      setQuoteMessages((prev) => { const n = { ...prev }; delete n[requestId]; return n; });
+      setQuoteAmounts((prev) => {
+        const n = { ...prev };
+        delete n[requestId];
+        return n;
+      });
+      setQuoteMessages((prev) => {
+        const n = { ...prev };
+        delete n[requestId];
+        return n;
+      });
       toast.success("Quote submitted successfully.");
     }
   }
@@ -166,7 +190,9 @@ function ProviderDashboard() {
                 {provider?.categories?.name ?? "Category Pending"}
               </span>
               <span className="text-foreground/20">·</span>
-              <span className={`border px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${TIER_COLORS[tier]}`}>
+              <span
+                className={`border px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${TIER_COLORS[tier]}`}
+              >
                 T{tier} {TIER_LABELS[tier]}
               </span>
               {provider?.verified ? (
@@ -193,10 +219,30 @@ function ProviderDashboard() {
 
         {/* Visibility Stats */}
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <VisibilityStat icon={<Eye className="h-4 w-4 text-gold" />} label="Profile Views" value="284" trend="+12% this week" />
-          <VisibilityStat icon={<TrendingUp className="h-4 w-4 text-gold" />} label="Enquiry Rate" value="18.4%" trend="From 284 views" />
-          <VisibilityStat icon={<Zap className="h-4 w-4 text-gold" />} label="Avg. Response" value="2.3h" trend="Top 10% of fixers" />
-          <VisibilityStat icon={<Star className="h-4 w-4 text-gold" />} label="Conversion" value="6.7%" trend="4 confirmed this month" />
+          <VisibilityStat
+            icon={<Eye className="h-4 w-4 text-gold" />}
+            label="Profile Views"
+            value="284"
+            trend="+12% this week"
+          />
+          <VisibilityStat
+            icon={<TrendingUp className="h-4 w-4 text-gold" />}
+            label="Enquiry Rate"
+            value="18.4%"
+            trend="From 284 views"
+          />
+          <VisibilityStat
+            icon={<Zap className="h-4 w-4 text-gold" />}
+            label="Avg. Response"
+            value="2.3h"
+            trend="Top 10% of fixers"
+          />
+          <VisibilityStat
+            icon={<Star className="h-4 w-4 text-gold" />}
+            label="Conversion"
+            value="6.7%"
+            trend="4 confirmed this month"
+          />
         </div>
 
         {/* Profile Completion */}
@@ -236,12 +282,15 @@ function ProviderDashboard() {
         {tier < 3 && (
           <div className="mt-8 border border-gold/30 bg-card/50 p-6 md:p-8 grid gap-6 md:grid-cols-[1fr_auto] items-center">
             <div>
-              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">Upgrade Your Visibility</p>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
+                Upgrade Your Visibility
+              </p>
               <h3 className="mt-2 font-display text-xl font-bold text-foreground">
                 Featured listings get <span className="text-gold">8× more enquiries.</span>
               </h3>
               <p className="mt-2 font-body text-sm text-foreground/50">
-                Claim a Featured slot to appear at the top of your category directory and on the landing page. Starts at $15/month.
+                Claim a Featured slot to appear at the top of your category directory and on the
+                landing page. Starts at $15/month.
               </p>
             </div>
             <Link
@@ -307,7 +356,9 @@ function ProviderDashboard() {
                           <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
                             <span>{r.city ?? "—"}</span>
                             {r.budget && (
-                              <span className="text-gold">Budget: ${Number(r.budget).toFixed(0)}</span>
+                              <span className="text-gold">
+                                Budget: ${Number(r.budget).toFixed(0)}
+                              </span>
                             )}
                             <span>Needed: {r.needed_by ?? "ASAP"}</span>
                             <span className="text-foreground/20">{timeAgo(r.created_at)}</span>
@@ -436,20 +487,36 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="border border-gold/20 bg-card p-8">
       <p className="font-display text-4xl font-bold text-gold">{value}</p>
-      <p className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">{label}</p>
+      <p className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
+        {label}
+      </p>
     </div>
   );
 }
 
-function VisibilityStat({ icon, label, value, trend }: { icon: React.ReactNode; label: string; value: string; trend: string }) {
+function VisibilityStat({
+  icon,
+  label,
+  value,
+  trend,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  trend: string;
+}) {
   return (
     <div className="border border-foreground/5 bg-card/40 p-6 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         {icon}
-        <span className="font-mono text-[9px] text-foreground/30 uppercase tracking-widest">{trend}</span>
+        <span className="font-mono text-[9px] text-foreground/30 uppercase tracking-widest">
+          {trend}
+        </span>
       </div>
       <p className="font-display text-3xl font-bold text-foreground">{value}</p>
-      <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/40">{label}</p>
+      <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/40">
+        {label}
+      </p>
     </div>
   );
 }

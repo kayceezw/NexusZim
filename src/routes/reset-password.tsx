@@ -22,7 +22,9 @@ function ResetPasswordPage() {
   useEffect(() => {
     let fallback: ReturnType<typeof setTimeout> | null = null;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
         if (fallback) clearTimeout(fallback);
         setPageState("ready");
@@ -102,7 +104,8 @@ function ResetPasswordPage() {
               Link <span className="italic text-rose-500">Expired.</span>
             </h1>
             <p className="mt-4 font-body text-base text-foreground/60">
-              This recovery link is no longer valid. Links expire after 1 hour as a security measure. Request a new one to continue.
+              This recovery link is no longer valid. Links expire after 1 hour as a security
+              measure. Request a new one to continue.
             </p>
             <Link
               to="/forgot-password"
@@ -173,7 +176,9 @@ function ResetPasswordPage() {
                       ))}
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className={`font-mono text-[9px] font-bold uppercase tracking-widest transition-colors ${strength.textColor}`}>
+                      <p
+                        className={`font-mono text-[9px] font-bold uppercase tracking-widest transition-colors ${strength.textColor}`}
+                      >
                         {strength.label}
                       </p>
                     </div>
@@ -200,8 +205,8 @@ function ResetPasswordPage() {
                       confirmsMatch
                         ? "text-emerald-500"
                         : confirmsMismatch
-                        ? "text-rose-500"
-                        : "text-gold/60"
+                          ? "text-rose-500"
+                          : "text-gold/60"
                     }`}
                   >
                     Confirm Password
@@ -227,8 +232,8 @@ function ResetPasswordPage() {
                       confirmsMatch
                         ? "border-emerald-500/50 focus:border-emerald-500"
                         : confirmsMismatch
-                        ? "border-rose-500/50 focus:border-rose-500"
-                        : "border-gold/20 focus:border-gold"
+                          ? "border-rose-500/50 focus:border-rose-500"
+                          : "border-gold/20 focus:border-gold"
                     }`}
                   />
                   <button
@@ -264,7 +269,8 @@ function ResetPasswordPage() {
                 Security Override Complete
               </p>
               <p className="font-body text-sm text-foreground/60">
-                Your credentials have been successfully updated. Use your new password the next time you access the portal.
+                Your credentials have been successfully updated. Use your new password the next time
+                you access the portal.
               </p>
             </div>
             <p className="mt-6 font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30">
@@ -303,7 +309,16 @@ function getPasswordStrength(password: string) {
 
 function EyeIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
@@ -312,7 +327,16 @@ function EyeIcon() {
 
 function EyeOffIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
       <line x1="1" y1="1" x2="23" y2="23" />
     </svg>

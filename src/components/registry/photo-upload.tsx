@@ -94,12 +94,11 @@ export function PhotoUpload({
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {/* Existing photos */}
         {photos.map((url) => (
-          <div key={url} className="relative group aspect-square rounded-[6px] overflow-hidden bg-[#1A4630]">
-            <img
-              src={url}
-              alt="Provider proof photo"
-              className="h-full w-full object-cover"
-            />
+          <div
+            key={url}
+            className="relative group aspect-square rounded-[6px] overflow-hidden bg-[#1A4630]"
+          >
+            <img src={url} alt="Provider proof photo" className="h-full w-full object-cover" />
             <button
               type="button"
               onClick={() => removePhoto(url)}
@@ -120,7 +119,7 @@ export function PhotoUpload({
             className={cn(
               "aspect-square rounded-[6px] border-2 border-dashed border-hairline flex flex-col items-center justify-center gap-1.5 transition-colors",
               "hover:border-forest hover:bg-forest/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest",
-              uploading && "opacity-50 cursor-wait"
+              uploading && "opacity-50 cursor-wait",
             )}
           >
             {uploading ? (
@@ -149,7 +148,8 @@ export function PhotoUpload({
       </div>
 
       <p className="font-sans text-[11px] text-text-soft/60 leading-relaxed">
-        Upload up to {maxPhotos} photos. These appear on your public profile as proof of your premises and work. Max 5 MB each.
+        Upload up to {maxPhotos} photos. These appear on your public profile as proof of your
+        premises and work. Max 5 MB each.
       </p>
 
       <input
