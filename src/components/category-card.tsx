@@ -4,20 +4,36 @@ import { PROVIDERS } from "@/lib/mock-data";
 import {
   Crown,
   PartyPopper,
-  FileCheck2,
+  Stamp,
+  Building2,
   Car,
   Scissors,
+  Dumbbell,
+  Shirt,
   Briefcase,
+  Home,
+  Stethoscope,
+  GraduationCap,
+  UtensilsCrossed,
+  Wrench,
 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
   Crown,
   PartyPopper,
-  FileCheck2,
+  Stamp,
+  Building2,
   Car,
   Scissors,
+  Dumbbell,
+  Shirt,
   Briefcase,
+  Home,
+  Stethoscope,
+  GraduationCap,
+  UtensilsCrossed,
+  Wrench,
 };
 
 const ACCENT_MAP = {
@@ -47,12 +63,13 @@ export function CategoryCard({ category }: { category: Category }) {
   const count = PROVIDERS.filter((p) => p.category === category.slug).length;
   const accent = ACCENT_MAP[category.accent] ?? ACCENT_MAP.accent;
   const Icon = ICON_MAP[category.icon];
+  const visibleSubs = category.subCategories.slice(0, 3);
 
   return (
     <Link
       to="/categories/$slug"
       params={{ slug: category.slug }}
-      className="group flex flex-col gap-5 bg-cream-raised border border-hairline p-6 rounded-[6px] transition-all duration-200 hover:border-forest hover:shadow-[0_4px_20px_rgba(15,51,35,0.1)] relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest"
+      className="group flex flex-col gap-4 bg-cream-raised border border-hairline p-6 rounded-[6px] transition-all duration-200 hover:border-forest hover:shadow-[0_4px_20px_rgba(15,51,35,0.1)] relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest"
     >
       {/* Hover gold rule */}
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-200" />
@@ -76,9 +93,26 @@ export function CategoryCard({ category }: { category: Category }) {
         <h3 className="font-display text-xl text-text group-hover:text-forest transition-colors leading-tight">
           {category.name}
         </h3>
-        <p className="mt-2 font-sans text-[13px] text-text-soft leading-relaxed line-clamp-2">
+        <p className="mt-1.5 font-sans text-[13px] text-text-soft leading-relaxed line-clamp-2">
           {category.tagline}
         </p>
+      </div>
+
+      {/* Sub-category tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {visibleSubs.map((sub) => (
+          <span
+            key={sub}
+            className="font-mono text-[9px] uppercase tracking-[0.06em] text-text-soft/60 bg-hairline/50 border border-hairline px-2 py-0.5 rounded-[3px]"
+          >
+            {sub}
+          </span>
+        ))}
+        {category.subCategories.length > 3 && (
+          <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-text-soft/40 px-1 py-0.5">
+            +{category.subCategories.length - 3} more
+          </span>
+        )}
       </div>
 
       {/* Footer */}

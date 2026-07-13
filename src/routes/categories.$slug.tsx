@@ -50,6 +50,7 @@ function CategoryDetailPage() {
   const [dbCategory, setDbCategory] = useState<DbCategory | null>(null);
   const [services, setServices] = useState<DbService[]>([]);
   const [loadingServices, setLoadingServices] = useState(true);
+  const [selectedSub, setSelectedSub] = useState<string>("all");
 
   useEffect(() => {
     let cancelled = false;
@@ -79,8 +80,18 @@ function CategoryDetailPage() {
     };
   }, [category.slug]);
 
+  const filteredProviders =
+    selectedSub === "all"
+      ? providers
+      : providers.filter((p) => p.services.includes(selectedSub));
+
+  function subCount(sub: string) {
+    return providers.filter((p) => p.services.includes(sub)).length;
+  }
+
   return (
     <div className="bg-background pt-24 min-h-screen">
+      {/* Header */}
       <div className="border-b border-gold/10">
         <div className="container-page py-16 md:py-24">
           <div className="flex items-center gap-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/40">
@@ -101,6 +112,47 @@ function CategoryDetailPage() {
         </div>
       </div>
 
+      {/* Sub-category filter strip */}
+      <div className="sticky top-[64px] z-40 bg-background/95 backdrop-blur-sm border-b border-gold/10">
+        <div className="container-page">
+          <div className="flex items-center gap-2 py-3 overflow-x-auto no-scrollbar">
+            <button
+              onClick={() => setSelectedSub("all")}
+              className={`shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.08em] px-3 py-1.5 rounded-[3px] border transition-colors ${
+                selectedSub === "all"
+                  ? "bg-gold border-gold text-forest-ink"
+                  : "border-hairline text-text-soft hover:border-gold/40 hover:text-text"
+              }`}
+            >
+              All ({providers.length})
+            </button>
+            {category.subCategories.map((sub) => {
+              const count = subCount(sub);
+              const active = selectedSub === sub;
+              return (
+                <button
+                  key={sub}
+                  onClick={() => setSelectedSub(active ? "all" : sub)}
+                  className={`shrink-0 font-mono text-[10px] font-bold uppercase tracking-[0.08em] px-3 py-1.5 rounded-[3px] border transition-colors ${
+                    active
+                      ? "bg-gold border-gold text-forest-ink"
+                      : "border-hairline text-text-soft hover:border-gold/40 hover:text-text"
+                  }`}
+                >
+                  {sub}
+                  {count > 0 && (
+                    <span className={`ml-1.5 ${active ? "opacity-70" : "opacity-40"}`}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Services section */}
       <div className="container-page py-20">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 border-b border-gold/10 pb-10">
           <div>
@@ -144,7 +196,8 @@ function CategoryDetailPage() {
         />
       </div>
 
-      {providers.some((p) => p.featured) && (
+      {/* Featured fixers — filtered by sub-category */}
+      {filteredProviders.some((p) => p.featured) && (
         <div className="bg-card/30 border-y border-gold/10 py-20">
           <div className="container-page">
             <div className="flex items-center gap-4">
@@ -157,7 +210,7 @@ function CategoryDetailPage() {
               Featured <span className="italic text-gold">Fixers.</span>
             </h2>
             <div className="mt-12 grid gap-8 md:grid-cols-3">
-              {providers
+              {filteredProviders
                 .filter((p) => p.featured)
                 .slice(0, 3)
                 .map((p) => (
@@ -168,26 +221,48 @@ function CategoryDetailPage() {
         </div>
       )}
 
+      {/* Verified directory — filtered by sub-category */}
       <div className="container-page py-20">
         <div className="flex items-center gap-4 border-b border-gold/10 pb-8">
           <h2 className="font-display text-3xl font-bold text-foreground">
             Verified <span className="italic text-gold">Directory.</span>
           </h2>
+          {selectedSub !== "all" && (
+            <span className="font-mono text-[10px] px-2.5 py-1 bg-gold/10 border border-gold/30 text-gold font-bold uppercase tracking-[0.06em] rounded-[3px]">
+              {selectedSub}
+            </span>
+          )}
           <div className="h-px flex-1 bg-gold/5 ml-4" />
           <span className="font-mono text-[10px] text-foreground/40 font-bold uppercase tracking-widest">
-            {providers.length} Available
+            {filteredProviders.length} Available
           </span>
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {providers.map((p) => (
+          {filteredProviders.map((p) => (
             <ProviderCard key={p.id} provider={p} />
           ))}
         </div>
-        {providers.length === 0 && (
+        {filteredProviders.length === 0 && (
           <div className="border border-dashed border-gold/20 p-20 text-center bg-card/20">
-            <p className="font-body text-sm text-foreground/40 italic">
-              Our network for this category is currently being audited. Check back shortly.
-            </p>
+            {selectedSub !== "all" ? (
+              <>
+                <p className="font-body text-sm text-foreground/40 italic">
+                  No providers listed under{" "}
+                  <span className="not-italic font-semibold text-foreground/60">{selectedSub}</span>{" "}
+                  yet.
+                </p>
+                <button
+                  onClick={() => setSelectedSub("all")}
+                  className="mt-6 font-mono text-[10px] font-bold uppercase tracking-widest text-gold hover:underline"
+                >
+                  Show all {providers.length} in {category.name}
+                </button>
+              </>
+            ) : (
+              <p className="font-body text-sm text-foreground/40 italic">
+                Our network for this category is currently being audited. Check back shortly.
+              </p>
+            )}
           </div>
         )}
       </div>

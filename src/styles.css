@@ -254,6 +254,11 @@
   animation-delay: 0.4s;
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

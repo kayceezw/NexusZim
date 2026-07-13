@@ -1,10 +1,18 @@
 export type CategorySlug =
-  | "elite"
-  | "events"
-  | "documentation"
-  | "transport"
-  | "personal"
-  | "business";
+  | "elite-concierge"
+  | "events-production"
+  | "visa-immigration"
+  | "company-registration"
+  | "transport-logistics"
+  | "beauty-grooming-wellness"
+  | "fitness-personal-training"
+  | "fashion-tailoring-styling"
+  | "business-professional"
+  | "property-services"
+  | "health-medical"
+  | "education-tutoring"
+  | "food-catering"
+  | "repairs-home-services";
 
 export interface Category {
   slug: CategorySlug;
@@ -12,7 +20,7 @@ export interface Category {
   tagline: string;
   description: string;
   icon: string; // lucide name
-  services: string[];
+  subCategories: string[];
   accent: "primary" | "teal" | "gold" | "accent";
 }
 
@@ -60,95 +68,182 @@ export const CITIES = [
 
 export const CATEGORIES: Category[] = [
   {
-    slug: "elite",
+    slug: "elite-concierge",
     name: "Elite Concierge",
     tagline: "Discreet, high-touch services for VIP clients.",
     description:
       "An invitation-level tier of vetted specialists handling lifestyle, security, travel, private events and family-office support for high-net-worth clients.",
     icon: "Crown",
     accent: "gold",
-    services: [
-      "Personal concierge & lifestyle management",
-      "VIP liaison & protocol handling",
-      "Private event planning & full production",
-      "Executive transport & airport meet-and-greet",
-      "Personal security & crowd control",
-      "Premium travel & visa coordination",
-      "Corporate & personal admin support",
-      "Luxury gifting & surprise experiences",
-      "Home & office upkeep coordination",
-      "Private chef, catering & fine dining",
-      "Wardrobe, styling & grooming",
-      "Short-notice hotel, venue & transport bookings",
-      "Wealth, investment & family-office support",
+    subCategories: [
+      "Personal Assistants & Errands",
+      "VIP / Airport Meet & Greet",
+      "Household Staff Placement",
+      "Personal Security & Close Protection",
     ],
   },
   {
-    slug: "events",
+    slug: "events-production",
     name: "Events & Production",
-    tagline: "Plan, produce, and run unforgettable events.",
+    tagline: "Plan, produce, and execute unforgettable events.",
     description:
-      "Event planning, coordination, AV & production, MC, décor, security, and VIP liaison teams.",
+      "Event planning, coordination, AV and production, MC, decor, catering, security, and VIP liaison teams.",
     icon: "PartyPopper",
     accent: "teal",
-    services: [
-      "Event planning",
-      "Event coordination",
-      "Production & AV",
-      "MC & hosting",
-      "Décor & styling",
-      "Security & VIP liaison",
+    subCategories: [
+      "Wedding Planning & Coordination",
+      "Corporate Events & Conferences",
+      "Photography & Videography",
+      "Decor, Hire & Catering",
+      "Sound, Lighting & AV",
     ],
   },
   {
-    slug: "documentation",
-    name: "Visa & Business Docs",
-    tagline: "Documentation support, done right.",
+    slug: "visa-immigration",
+    name: "Visa & Immigration Support",
+    tagline: "Visa applications and immigration assistance, done right.",
     description:
-      "Visa applications, permits, company registration, and business compliance support — consultancy and document assistance.",
-    icon: "FileCheck2",
+      "Visa applications, appointment booking, document preparation, certified translation, notary, and affidavit services.",
+    icon: "Stamp",
     accent: "primary",
-    services: [
-      "Visa application support",
-      "Permit application support",
-      "Company registration support",
-      "Business compliance support",
+    subCategories: [
+      "Visa Applications & Appointments",
+      "Document Prep & Certified Translation",
+      "Notary & Affidavits",
     ],
   },
   {
-    slug: "transport",
-    name: "Transport & Logistics",
-    tagline: "Move people and goods, on time.",
+    slug: "company-registration",
+    name: "Company Registration & Compliance",
+    tagline: "Formal business registration and regulatory compliance.",
     description:
-      "Airport transfers, chauffeur services, executive transport, logistics, and last-mile delivery.",
+      "Business registration, ZIMRA compliance, annual returns, licensing, and regulatory consultancy for PBC, PVT, and NGO entities.",
+    icon: "Building2",
+    accent: "primary",
+    subCategories: ["Business Registration", "Tax & Regulatory Compliance", "Licensing"],
+  },
+  {
+    slug: "transport-logistics",
+    name: "Transport & Logistics",
+    tagline: "Move people and goods, on time and on spec.",
+    description:
+      "Airport transfers, chauffeur and executive transport, freight, courier, relocation, and corporate fleet management.",
     icon: "Car",
     accent: "accent",
-    services: [
-      "Airport transfers",
-      "Chauffeur services",
-      "Executive transport",
-      "Logistics",
-      "Delivery",
+    subCategories: [
+      "Car Hire & Chauffeur Services",
+      "Freight, Courier & Relocation",
+      "Fleet & Corporate Transport",
     ],
   },
   {
-    slug: "personal",
-    name: "Personal & Lifestyle",
-    tagline: "Look good. Feel good. Locally.",
-    description: "Barbering, grooming, beauty, wellness, and at-home personal services.",
+    slug: "beauty-grooming-wellness",
+    name: "Beauty, Grooming & Wellness",
+    tagline: "Look and feel your best, from Harare to Victoria Falls.",
+    description:
+      "Salons, barbershops, bridal makeup, mobile beauty, spa, skincare, and wellness practitioners.",
     icon: "Scissors",
     accent: "gold",
-    services: ["Barbering", "Grooming", "Beauty", "Wellness", "At-home services"],
+    subCategories: ["Salons & Barbers", "Spa & Skincare", "Wellness Practitioners"],
   },
   {
-    slug: "business",
-    name: "Business & Professional",
-    tagline: "Specialists for everything else.",
+    slug: "fitness-personal-training",
+    name: "Fitness & Personal Training",
+    tagline: "Structured training, real results, qualified coaches.",
     description:
-      "General business and professional services — expandable with new sub-categories anytime.",
+      "Personal trainers, corporate fitness programmes, studio memberships, and nutrition and coaching services.",
+    icon: "Dumbbell",
+    accent: "teal",
+    subCategories: ["Personal Trainers", "Studios & Gyms", "Nutrition & Coaching"],
+  },
+  {
+    slug: "fashion-tailoring-styling",
+    name: "Fashion, Tailoring & Styling",
+    tagline: "Custom cuts, personal styling, and master tailoring.",
+    description:
+      "Made-to-measure tailoring, personal stylists, fashion designers, and alteration specialists.",
+    icon: "Shirt",
+    accent: "gold",
+    subCategories: ["Tailors & Designers", "Personal Stylists", "Alterations"],
+  },
+  {
+    slug: "business-professional",
+    name: "Business & Professional Services",
+    tagline: "Specialists in legal, finance, digital, and advisory work.",
+    description:
+      "Legal services, accounting, tax, marketing, design, IT, web development, and business consulting.",
     icon: "Briefcase",
     accent: "teal",
-    services: ["Consulting", "Marketing", "IT support", "Bookkeeping", "Legal admin"],
+    subCategories: [
+      "Legal Services",
+      "Accounting & Tax",
+      "Marketing, Design & Branding",
+      "IT, Web & Software",
+      "Business Consulting & Advisory",
+    ],
+  },
+  {
+    slug: "property-services",
+    name: "Property Services",
+    tagline: "Find, move, renovate, and maintain property in Zimbabwe.",
+    description:
+      "Real estate agents, movers and relocation specialists, home renovation contractors, and cleaning services.",
+    icon: "Home",
+    accent: "primary",
+    subCategories: [
+      "Real Estate Agents",
+      "Movers & Relocation",
+      "Home Renovation",
+      "Cleaning Services",
+    ],
+  },
+  {
+    slug: "health-medical",
+    name: "Health & Medical",
+    tagline: "Private clinical care, dental, and specialist referrals.",
+    description:
+      "Private clinics, specialist consultations, dental services, and medical concierge and referral coordination.",
+    icon: "Stethoscope",
+    accent: "primary",
+    subCategories: [
+      "Private Clinics & Specialists",
+      "Dental",
+      "Medical Concierge & Referrals",
+    ],
+  },
+  {
+    slug: "education-tutoring",
+    name: "Education & Tutoring",
+    tagline: "Private tutoring and school placement from qualified educators.",
+    description:
+      "Subject tutors, exam preparation, school placement consultants, and academic advisory services.",
+    icon: "GraduationCap",
+    accent: "accent",
+    subCategories: ["Private Tutors & Exam Prep", "School Placement Consultants"],
+  },
+  {
+    slug: "food-catering",
+    name: "Food & Catering",
+    tagline: "Private chefs, catering crews, and meal solutions.",
+    description:
+      "Private chef services, full catering companies for events and corporate functions, and meal preparation services.",
+    icon: "UtensilsCrossed",
+    accent: "gold",
+    subCategories: ["Private Chefs", "Catering Companies", "Meal Prep Services"],
+  },
+  {
+    slug: "repairs-home-services",
+    name: "Repairs & Home Services",
+    tagline: "Qualified tradespeople for electrical, plumbing, and solar.",
+    description:
+      "Electricians, plumbers, appliance repair specialists, and generator and solar installation technicians.",
+    icon: "Wrench",
+    accent: "accent",
+    subCategories: [
+      "Electricians & Plumbers",
+      "Appliance Repair",
+      "Generator & Solar Installation",
+    ],
   },
 ];
 
@@ -172,12 +267,11 @@ const RAW_PROVIDERS: Provider[] = [
     id: "e1",
     name: "Anesu Mukomberanwa",
     business: "Sable & Co. Private Concierge",
-    category: "elite",
+    category: "elite-concierge",
     services: [
-      "Personal concierge & lifestyle management",
-      "VIP liaison & protocol handling",
-      "Luxury gifting & surprise experiences",
-      "Short-notice hotel, venue & transport bookings",
+      "Personal Assistants & Errands",
+      "VIP / Airport Meet & Greet",
+      "Household Staff Placement",
     ],
     city: "Harare",
     rating: 5.0,
@@ -197,11 +291,10 @@ const RAW_PROVIDERS: Provider[] = [
     id: "e2",
     name: "Captain Tatenda Mhuriro",
     business: "Onyx Protective Services",
-    category: "elite",
+    category: "elite-concierge",
     services: [
-      "Personal security & crowd control",
-      "VIP liaison & protocol handling",
-      "Executive transport & airport meet-and-greet",
+      "Personal Security & Close Protection",
+      "VIP / Airport Meet & Greet",
     ],
     city: "Harare",
     rating: 4.95,
@@ -221,8 +314,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "e3",
     name: "Chef Rutendo Madziva",
     business: "Maison Rutendo Private Dining",
-    category: "elite",
-    services: ["Private chef, catering & fine dining", "Private event planning & full production"],
+    category: "food-catering",
+    services: ["Private Chefs", "Catering Companies"],
     city: "Harare",
     rating: 4.97,
     reviews: 64,
@@ -237,13 +330,12 @@ const RAW_PROVIDERS: Provider[] = [
     initials: "RM",
     verifiedAt: "2025-02-20",
   },
-
   {
     id: "p1",
     name: "Tanaka Moyo",
     business: "Moyo Signature Events",
-    category: "events",
-    services: ["Event planning", "Décor & styling", "MC & hosting"],
+    category: "events-production",
+    services: ["Wedding Planning & Coordination", "Decor, Hire & Catering"],
     city: "Harare",
     rating: 4.9,
     reviews: 124,
@@ -262,8 +354,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p2",
     name: "Rumbi Chikomo",
     business: "Stagecraft AV & Production",
-    category: "events",
-    services: ["Production & AV", "Event coordination", "Security & VIP liaison"],
+    category: "events-production",
+    services: ["Sound, Lighting & AV", "Corporate Events & Conferences"],
     city: "Bulawayo",
     rating: 4.8,
     reviews: 86,
@@ -282,8 +374,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p3",
     name: "Kuda Sibanda",
     business: "Sibanda Visa & Permits",
-    category: "documentation",
-    services: ["Visa application support", "Permit application support"],
+    category: "visa-immigration",
+    services: ["Visa Applications & Appointments", "Document Prep & Certified Translation"],
     city: "Harare",
     rating: 4.95,
     reviews: 58,
@@ -302,8 +394,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p4",
     name: "Nyasha Dube",
     business: "Dube Compliance Partners",
-    category: "documentation",
-    services: ["Company registration support", "Business compliance support"],
+    category: "company-registration",
+    services: ["Business Registration", "Tax & Regulatory Compliance"],
     city: "Harare",
     rating: 4.7,
     reviews: 41,
@@ -322,8 +414,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p5",
     name: "Tendai Marange",
     business: "Apex Chauffeurs ZW",
-    category: "transport",
-    services: ["Airport transfers", "Chauffeur services", "Executive transport"],
+    category: "transport-logistics",
+    services: ["Car Hire & Chauffeur Services", "Fleet & Corporate Transport"],
     city: "Harare",
     rating: 4.85,
     reviews: 173,
@@ -342,8 +434,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p6",
     name: "Brian Hove",
     business: "SwiftMove Logistics",
-    category: "transport",
-    services: ["Logistics", "Delivery"],
+    category: "transport-logistics",
+    services: ["Freight, Courier & Relocation"],
     city: "Bulawayo",
     rating: 4.6,
     reviews: 64,
@@ -362,8 +454,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p7",
     name: "Lloyd Banda",
     business: "The Cutroom Barbershop",
-    category: "personal",
-    services: ["Barbering", "Grooming"],
+    category: "beauty-grooming-wellness",
+    services: ["Salons & Barbers"],
     city: "Harare",
     rating: 4.9,
     reviews: 312,
@@ -382,8 +474,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p8",
     name: "Chiedza Ncube",
     business: "Glow by Chiedza",
-    category: "personal",
-    services: ["Beauty", "Wellness", "At-home services"],
+    category: "beauty-grooming-wellness",
+    services: ["Spa & Skincare", "Wellness Practitioners"],
     city: "Mutare",
     rating: 4.8,
     reviews: 98,
@@ -402,8 +494,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p9",
     name: "Farai Gumbo",
     business: "Gumbo Digital Studio",
-    category: "business",
-    services: ["Marketing", "IT support"],
+    category: "business-professional",
+    services: ["Marketing, Design & Branding", "IT, Web & Software"],
     city: "Harare",
     rating: 4.7,
     reviews: 52,
@@ -421,8 +513,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p10",
     name: "Patience Sithole",
     business: "Sithole Bookkeeping Co.",
-    category: "business",
-    services: ["Bookkeeping", "Consulting"],
+    category: "business-professional",
+    services: ["Accounting & Tax", "Business Consulting & Advisory"],
     city: "Gweru",
     rating: 4.85,
     reviews: 39,
@@ -441,12 +533,11 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p11",
     name: "Simba Ndlovu",
     business: "Falls Luxury Concierge",
-    category: "elite",
+    category: "elite-concierge",
     services: [
-      "Premium travel & visa coordination",
-      "Executive transport & airport meet-and-greet",
-      "Short-notice hotel, venue & transport bookings",
-      "VIP liaison & protocol handling",
+      "VIP / Airport Meet & Greet",
+      "Personal Assistants & Errands",
+      "Household Staff Placement",
     ],
     city: "Victoria Falls",
     rating: 4.98,
@@ -466,8 +557,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p12",
     name: "Melody Chigwanda",
     business: "Chigwanda Photography Studio",
-    category: "events",
-    services: ["Production & AV", "Event coordination", "MC & hosting"],
+    category: "events-production",
+    services: ["Photography & Videography", "Wedding Planning & Coordination"],
     city: "Harare",
     rating: 4.92,
     reviews: 201,
@@ -486,8 +577,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p13",
     name: "Tafadzwa Gono",
     business: "Gono Wellness & Fitness",
-    category: "personal",
-    services: ["Wellness", "At-home services", "Grooming"],
+    category: "fitness-personal-training",
+    services: ["Personal Trainers", "Nutrition & Coaching"],
     city: "Bulawayo",
     rating: 4.88,
     reviews: 77,
@@ -506,12 +597,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p14",
     name: "Constance Zvobgo",
     business: "Zvobgo Legal & Docs",
-    category: "documentation",
-    services: [
-      "Company registration support",
-      "Business compliance support",
-      "Permit application support",
-    ],
+    category: "company-registration",
+    services: ["Business Registration", "Tax & Regulatory Compliance", "Licensing"],
     city: "Masvingo",
     rating: 4.75,
     reviews: 55,
@@ -530,8 +617,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p15",
     name: "Kudzai Mupfumi",
     business: "Mupfumi Digital Agency",
-    category: "business",
-    services: ["Marketing", "IT support", "Consulting"],
+    category: "business-professional",
+    services: ["Marketing, Design & Branding", "IT, Web & Software", "Business Consulting & Advisory"],
     city: "Harare",
     rating: 4.8,
     reviews: 63,
@@ -550,8 +637,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p16",
     name: "Fortune Chikomba",
     business: "VF Transfers & Logistics",
-    category: "transport",
-    services: ["Airport transfers", "Chauffeur services", "Logistics"],
+    category: "transport-logistics",
+    services: ["Car Hire & Chauffeur Services", "Freight, Courier & Relocation"],
     city: "Victoria Falls",
     rating: 4.9,
     reviews: 112,
@@ -570,8 +657,8 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p17",
     name: "Rudo Mazvimbakupa",
     business: "Rudo Bridal & Beauty",
-    category: "personal",
-    services: ["Beauty", "At-home services"],
+    category: "beauty-grooming-wellness",
+    services: ["Salons & Barbers", "Spa & Skincare"],
     city: "Harare",
     rating: 5.0,
     reviews: 156,
@@ -590,11 +677,10 @@ const RAW_PROVIDERS: Provider[] = [
     id: "p18",
     name: "Innocent Chisaka",
     business: "Chisaka Secure Logistics",
-    category: "elite",
+    category: "elite-concierge",
     services: [
-      "Personal security & crowd control",
-      "Executive transport & airport meet-and-greet",
-      "Corporate & personal admin support",
+      "Personal Security & Close Protection",
+      "VIP / Airport Meet & Greet",
     ],
     city: "Bulawayo",
     rating: 4.93,

@@ -29,7 +29,7 @@ function RequestPage() {
   const search = Route.useSearch();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
-    category: search.category ?? ("events" as CategorySlug),
+    category: search.category ?? ("events-production" as CategorySlug),
     title: "",
     details: "",
     city: "Harare",
