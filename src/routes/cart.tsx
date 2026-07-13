@@ -5,14 +5,14 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCart, type CartItem } from "@/hooks/use-cart";
 
 export const Route = createFileRoute("/cart")({
-  head: () => ({ meta: [{ title: "Your cart — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Your brief — NexusZim" }] }),
   component: CartPage,
 });
 
 const CITIES = ["Harare", "Bulawayo", "Mutare", "Gweru", "Masvingo", "Victoria Falls", "Other"];
 
 function CartPage() {
-  const { items, remove, updateNotes, clear, total } = useCart();
+  const { items, remove, updateNotes, clear } = useCart();
   const { user, hasRole } = useAuth();
   const navigate = useNavigate();
   const [city, setCity] = useState("Harare");
@@ -75,17 +75,18 @@ function CartPage() {
             <span className="font-mono text-gold/20 text-3xl font-bold">00</span>
           </div>
           <p className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold/60">
-            Mission Brief
+            Enquiry Brief
           </p>
-          <h1 className="mt-4 font-display text-5xl font-bold text-foreground">Cart is Empty.</h1>
+          <h1 className="mt-4 font-display text-5xl font-bold text-foreground">Brief is empty.</h1>
           <p className="mt-6 font-body text-lg font-light text-foreground/40 max-w-md mx-auto">
-            Your mission brief is currently empty. Initialize a search to find verified fixers.
+            Browse service categories to add what you need, then submit your brief to get responses
+            from verified providers.
           </p>
           <Link
             to="/categories"
-            className="mt-12 inline-block bg-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+            className="mt-12 inline-block bg-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors"
           >
-            Access Network
+            Browse Services
           </Link>
         </div>
       </div>
@@ -98,14 +99,15 @@ function CartPage() {
         <div className="flex items-center gap-4">
           <span className="h-px w-8 bg-gold/40" />
           <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-            Mission Briefing
+            Enquiry Brief
           </span>
         </div>
         <h1 className="mt-4 font-display text-5xl font-bold text-foreground md:text-6xl">
           Review your <span className="italic text-gold">Brief.</span>
         </h1>
         <p className="mt-6 font-body text-lg font-light text-foreground/60">
-          Each item in your brief will be broadcast to our verified network in that domain.
+          Providers matching your requirements will contact you directly to discuss scope and agree on
+          a fee. No payment goes through NexusZim.
         </p>
 
         <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_400px]">
@@ -129,21 +131,17 @@ function CartPage() {
                       {item.serviceName}
                     </h3>
                   </div>
-                  <div className="text-right">
-                    {item.basePrice != null ? (
-                      <p className="font-display text-2xl font-bold text-foreground">
-                        ${Number(item.basePrice).toFixed(0)}
-                      </p>
-                    ) : (
-                      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/40">
-                        Audit Pending
+                  <div className="text-right shrink-0">
+                    {item.basePrice != null && (
+                      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-foreground/40">
+                        From ${Number(item.basePrice).toFixed(0)}
                       </p>
                     )}
                     <button
                       onClick={() => remove(item.id)}
-                      className="mt-4 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/30 hover:text-rose-500 transition-colors"
+                      className="mt-3 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/30 hover:text-rose-500 transition-colors"
                     >
-                      Remove Item
+                      Remove
                     </button>
                   </div>
                 </div>
@@ -158,12 +156,11 @@ function CartPage() {
             ))}
           </div>
 
-          <aside className="border border-gold/20 bg-card p-10 h-fit lg:sticky lg:top-32">
-            <h2 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">
-              Op Specs
-            </h2>
-            <div className="mt-10 space-y-8">
-              <Field label="Mission City">
+          <aside className="border border-gold/20 bg-card p-8 h-fit lg:sticky lg:top-32 space-y-6">
+            <h2 className="font-display text-2xl font-bold text-foreground">Brief details</h2>
+
+            <div className="space-y-5">
+              <Field label="City">
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -176,7 +173,7 @@ function CartPage() {
                   ))}
                 </select>
               </Field>
-              <Field label="Target Date">
+              <Field label="Date needed">
                 <input
                   type="date"
                   value={neededBy}
@@ -184,27 +181,27 @@ function CartPage() {
                   className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
                 />
               </Field>
-              <Field label="Override Budget (USD)">
+              <Field label="Your budget (USD, optional)">
                 <input
                   type="number"
                   min={0}
                   value={budget}
                   onChange={(e) => setBudget(e.target.value)}
-                  placeholder="Standard Base Rates"
+                  placeholder="e.g. 500"
                   className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
                 />
               </Field>
             </div>
 
-            <div className="mt-12 flex items-center justify-between border-t border-gold/10 pt-8">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
-                Est. Engagement
-              </span>
-              <span className="font-display text-4xl font-bold text-gold">${total.toFixed(0)}</span>
+            <div className="border border-forest/20 bg-forest/5 rounded-[3px] p-4">
+              <p className="font-sans text-[12px] text-forest leading-relaxed">
+                <strong>You pay the provider directly.</strong> NexusZim never holds money or charges
+                a fee. Providers will respond with their rates.
+              </p>
             </div>
 
             {error && (
-              <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-xs text-rose-500 italic">
+              <div role="alert" className="border border-rose-500/30 bg-rose-500/5 p-4 font-body text-xs text-rose-600">
                 {error}
               </div>
             )}
@@ -212,23 +209,19 @@ function CartPage() {
             {!user ? (
               <Link
                 to="/login"
-                className="mt-10 block w-full bg-gold py-5 text-center font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+                className="block w-full bg-gold py-4 text-center font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors rounded-[3px]"
               >
-                Authenticate to Deploy
+                Log in to send brief
               </Link>
             ) : (
               <button
                 onClick={placeOrder}
                 disabled={submitting}
-                className="mt-10 block w-full bg-gold py-5 text-center font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
+                className="w-full bg-gold py-4 text-center font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60 rounded-[3px]"
               >
-                {submitting ? "Deploying Brief..." : "Submit Mission Brief"}
+                {submitting ? "Sending brief…" : "Send enquiry brief"}
               </button>
             )}
-
-            <p className="mt-8 text-center font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30 leading-relaxed">
-              Matched fixers will reach out with bespoke proposals. No upfront payment required.
-            </p>
           </aside>
         </div>
       </div>

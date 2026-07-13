@@ -113,9 +113,9 @@ function CategoryDetailPage() {
           </div>
           <Link
             to="/cart"
-            className="bg-gold px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+            className="bg-gold px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors"
           >
-            Access Cart
+            View Brief
           </Link>
         </div>
 
@@ -254,18 +254,18 @@ function ServiceCard({
           disabled={inCart}
           className={`w-full py-4 font-display text-[11px] font-bold uppercase tracking-widest transition-colors ${
             inCart
-              ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 cursor-not-allowed"
-              : "bg-gold/10 text-gold border border-gold/30 hover:bg-gold hover:text-white"
+              ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30 cursor-not-allowed"
+              : "bg-gold/10 text-gold border border-gold/30 hover:bg-gold hover:text-forest-ink"
           }`}
         >
-          {inCart ? "In Mission Brief" : "Add to Mission"}
+          {inCart ? "Added to brief" : "Add to brief"}
         </button>
         {inCart && (
           <button
             onClick={() => navigate({ to: "/cart" })}
             className="w-full border border-gold/20 py-3 font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors"
           >
-            Review Cart
+            View brief
           </button>
         )}
       </div>
@@ -328,15 +328,15 @@ function CustomRequestCard({
         <button
           onClick={handleAdd}
           disabled={!text.trim() || !dbCategory}
-          className="bg-gold px-10 py-4 font-display text-[11px] font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
+          className="bg-gold px-10 py-4 font-display text-[11px] font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
         >
-          {added ? "Brief Added!" : "Add to Mission"}
+          {added ? "Added to brief!" : "Add to brief"}
         </button>
         <button
           onClick={() => navigate({ to: "/cart" })}
           className="border border-gold/30 px-6 py-4 font-display text-[11px] font-bold uppercase tracking-widest text-gold hover:bg-gold/5 transition-colors"
         >
-          Review Cart
+          View brief
         </button>
       </div>
     </div>

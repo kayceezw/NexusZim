@@ -45,23 +45,23 @@ function RequestPage() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center bg-gold/10 border border-gold/30 mb-8">
             <span className="font-mono text-gold font-bold">OK</span>
           </div>
-          <h1 className="font-display text-4xl font-bold text-foreground">Request Lodged.</h1>
+          <h1 className="font-display text-4xl font-bold text-foreground">Brief submitted.</h1>
           <p className="mt-6 font-body text-lg font-light text-foreground/60">
-            Your enquiry has been broadcast to the NexusZim network. Verified providers will respond
-            shortly with formal quotes.
+            Matched providers will contact you directly to discuss scope and agree on a fee.
+            No payment goes through NexusZim.
           </p>
           <div className="mt-12 flex flex-col gap-4">
             <Link
               to="/dashboard"
-              className="bg-gold px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+              className="bg-gold px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors"
             >
-              Access My Dashboard
+              My Dashboard
             </Link>
             <Link
               to="/search"
               className="border border-gold/30 px-8 py-4 font-display text-sm font-bold uppercase tracking-widest text-gold hover:bg-gold/5"
             >
-              Browse More Fixers
+              Browse Directory
             </Link>
           </div>
         </div>
@@ -126,20 +126,20 @@ function RequestPage() {
               </Field>
             </div>
 
-            <Field label="Operational Details & Requirements">
+            <Field label="Details & requirements">
               <textarea
                 required
                 value={form.details}
                 onChange={(e) => setForm((f) => ({ ...f, details: e.target.value }))}
                 rows={6}
-                placeholder="Describe scope, expectations, and any mission-critical requirements..."
+                placeholder="Describe scope, guest count, timeline, and any specific requirements..."
                 className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-y"
               />
             </Field>
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               <div className="lg:col-span-2">
-                <Field label="Mission Location">
+                <Field label="City">
                   <select
                     value={form.city}
                     onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
@@ -153,7 +153,7 @@ function RequestPage() {
                   </select>
                 </Field>
               </div>
-              <Field label="Target Date">
+              <Field label="Date needed">
                 <input
                   type="date"
                   required
@@ -177,18 +177,18 @@ function RequestPage() {
             <div className="border-t border-gold/10 pt-8">
               {search.providerId && (
                 <p className="mb-8 font-mono text-[10px] font-bold uppercase tracking-widest text-gold text-center bg-gold/5 border border-gold/20 py-3">
-                  This request will be sent directly to the selected elite provider.
+                  This brief will be sent directly to the selected provider.
                 </p>
               )}
 
               <button
                 type="submit"
-                className="w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-[0.2em] text-white hover:bg-foreground transition-colors"
+                className="w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-[0.2em] text-forest-ink hover:bg-gold-deep transition-colors"
               >
-                Broadcast Request & Access proposals
+                Send Brief
               </button>
               <p className="mt-6 text-center font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-foreground/30">
-                By posting, you agree to the NexusZim Terms of Engagement.
+                Providers contact you directly. You pay them — not NexusZim.
               </p>
             </div>
           </form>

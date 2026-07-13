@@ -1,7 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-
 import { findProvider } from "@/lib/mock-data";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { ArrowLeft, Clock, MapPin } from "lucide-react";
+import { Hallmark } from "@/components/registry/hallmark";
 
 export const Route = createFileRoute("/book/$providerId")({
   loader: ({ params }) => {
@@ -10,53 +13,111 @@ export const Route = createFileRoute("/book/$providerId")({
     return { provider };
   },
   head: ({ loaderData }) => ({
-    meta: loaderData ? [{ title: `Book ${loaderData.provider.business} — NexusZim` }] : [],
+    meta: loaderData
+      ? [{ title: `Enquire — ${loaderData.provider.business} — NexusZim` }]
+      : [],
   }),
-  component: CheckoutPage,
+  component: EnquiryPage,
   notFoundComponent: () => (
     <div className="container-page py-24 text-center">
-      <h1 className="font-display text-2xl font-bold">Provider not found</h1>
+      <h1 className="font-display text-2xl text-text">Provider not found</h1>
+      <Link to="/search" className="mt-4 inline-block font-sans text-sm text-forest hover:underline">
+        Back to directory
+      </Link>
     </div>
   ),
 });
 
-function CheckoutPage() {
+function EnquiryPage() {
   const { provider } = Route.useLoaderData();
-  const [paymentType, setPaymentType] = useState<"deposit" | "full">("deposit");
-  const [agreed, setAgreed] = useState(false);
-  const [done, setDone] = useState(false);
+  const { user } = useAuth();
 
-  const total = provider.priceFrom;
-  const deposit = Math.round(total * 0.3);
-  const balance = total - deposit;
-  const platformFee = Math.round((paymentType === "full" ? total : deposit) * 0.07);
-  const due = (paymentType === "full" ? total : deposit) + platformFee;
+  const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [date, setDate] = useState("");
+  const [location, setLocation] = useState("");
+  const [notes, setNotes] = useState("");
+  const [budget, setBudget] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState(user?.email ?? "");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    if (user) {
+      const { error: e } = await supabase.from("requests").insert({
+        client_id: user.id,
+        category_id: provider.category,
+        service_name: provider.business,
+        title: `Enquiry to ${provider.business}`,
+        description: notes,
+        city: location || provider.city,
+        budget: budget ? Number(budget) : null,
+        needed_by: date || null,
+        status: "open",
+        client_name: name || null,
+        client_email: email || null,
+        client_phone: phone || null,
+        client_whatsapp: phone || null,
+      });
+      if (e) {
+        setError(e.message);
+        setSubmitting(false);
+        return;
+      }
+    }
+    setSubmitting(false);
+    setDone(true);
+  }
 
   if (done) {
     return (
-      <div className="bg-background pt-24 min-h-screen grid place-items-center">
-        <div className="container-page py-16 text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center bg-gold/5 border border-gold/10 mb-8">
-            <span className="font-mono text-gold font-bold">OK</span>
+      <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+        <div className="container-page py-20 text-center max-w-xl mx-auto">
+          <div className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 border border-emerald-200">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
           </div>
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold/60">
-            Booking Protocol
+          <p className="eyebrow text-text-soft mb-4">
+            <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+            Enquiry sent
           </p>
-          <h1 className="mt-4 font-display text-5xl font-bold text-foreground">
-            Mission Confirmed.
+          <h1
+            className="font-display text-text"
+            style={{ fontSize: "clamp(28px, 4vw, 44px)", lineHeight: "1.08", letterSpacing: "-0.02em" }}
+          >
+            {provider.business} has your details.
           </h1>
-          <p className="mt-6 font-body text-lg font-light text-foreground/40 max-w-md mx-auto">
-            We've notified {provider.business} and placed ${due} in secure escrow.
-            {paymentType === "deposit" && (
-              <> The remaining balance of ${balance} is scheduled for finalization.</>
-            )}
+          <p className="mt-5 font-sans text-base text-text-soft leading-relaxed">
+            They typically respond within{" "}
+            <strong className="text-text font-medium">
+              {provider.responseTime.replace("Replies in ~", "")}
+            </strong>
+            . They'll reach out directly to discuss your requirements and agree on a fee.
           </p>
-          <div className="mt-12 flex flex-col sm:flex-row justify-center gap-6">
+          <div className="mt-6 mx-auto max-w-sm border border-forest/20 bg-forest/5 rounded-[6px] p-5">
+            <p className="font-sans text-[13px] text-forest leading-relaxed">
+              <strong>You pay the provider directly.</strong> NexusZim never holds money or charges a
+              fee. The final rate is whatever you agree with the provider.
+            </p>
+          </div>
+          <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
             <Link
-              to="/dashboard"
-              className="bg-gold px-10 py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
+              to="/search"
+              className="bg-gold px-8 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
             >
-              Command Dashboard
+              Browse Directory
+            </Link>
+            <Link
+              to="/"
+              className="border border-forest px-8 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+            >
+              Return Home
             </Link>
           </div>
         </div>
@@ -65,236 +126,215 @@ function CheckoutPage() {
   }
 
   return (
-    <div className="bg-background pt-32 min-h-screen">
-      <div className="container-page pb-24">
+    <div className="bg-cream pt-16 min-h-screen">
+      <div className="container-page pt-8 pb-2">
         <Link
           to="/providers/$providerId"
           params={{ providerId: provider.id }}
-          className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/60 hover:text-gold transition-colors"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft hover:text-forest transition-colors"
         >
-          ← Return to Profile
+          <ArrowLeft className="h-3 w-3" />
+          Back to profile
         </Link>
-        <h1 className="mt-10 font-display text-5xl font-bold text-foreground md:text-6xl">
-          Confirm <span className="italic text-gold">Deployment.</span>
-        </h1>
+      </div>
 
-        <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_400px]">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!agreed) return;
-              setDone(true);
-            }}
-            className="space-y-12"
-          >
-            <Section title="Operational Details">
-              <div className="grid gap-8 md:grid-cols-2">
-                <Field label="Target Date">
-                  <input
-                    type="date"
-                    required
-                    className="w-full bg-card border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
-                  />
-                </Field>
-                <Field label="Deployment Time">
-                  <input
-                    type="time"
-                    required
-                    className="w-full bg-card border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
-                  />
-                </Field>
-                <div className="md:col-span-2">
-                  <Field label="Mission Location / Address">
-                    <input
-                      required
-                      placeholder="Street address, city complex..."
-                      className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                    />
-                  </Field>
-                </div>
-                <div className="md:col-span-2">
-                  <Field label="Additional Intelligence / Notes">
-                    <textarea
-                      rows={4}
-                      placeholder="Describe specific requirements or operational constraints..."
-                      className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-none"
-                    />
-                  </Field>
-                </div>
-              </div>
-            </Section>
-
-            <Section title="Representative Contact">
-              <div className="grid gap-8 md:grid-cols-2">
-                <Field label="Identity Name">
-                  <input
-                    required
-                    placeholder="Full name"
-                    className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                  />
-                </Field>
-                <Field label="Secure Line">
-                  <input
-                    required
-                    type="tel"
-                    placeholder="+263..."
-                    className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                  />
-                </Field>
-                <div className="md:col-span-2">
-                  <Field label="Secure Email">
-                    <input
-                      required
-                      type="email"
-                      placeholder="you@domain.zw"
-                      className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                    />
-                  </Field>
-                </div>
-              </div>
-            </Section>
-
-            <Section title="Payment Authorization">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <PayOption
-                  checked={paymentType === "deposit"}
-                  onChange={() => setPaymentType("deposit")}
-                  title="30% Commitment"
-                  desc={`$${deposit} Immediate · $${balance} on Terminal`}
-                />
-                <PayOption
-                  checked={paymentType === "full"}
-                  onChange={() => setPaymentType("full")}
-                  title="Full Settlement"
-                  desc={`$${total} Initialized · Held in Escrow`}
-                />
-              </div>
-
-              <div className="mt-8 grid gap-8 md:grid-cols-2">
-                <div className="md:col-span-2">
-                  <Field label="Cardholder Identity">
-                    <input
-                      required
-                      placeholder="Name as shown on card"
-                      className="w-full bg-card border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                    />
-                  </Field>
-                </div>
-                <div className="md:col-span-2">
-                  <Field label="Credential Number">
-                    <input
-                      required
-                      inputMode="numeric"
-                      placeholder="4242 4242 4242 4242"
-                      className="w-full bg-card border border-gold/20 p-4 font-mono text-sm tracking-widest text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                    />
-                  </Field>
-                </div>
-                <Field label="Expiry Code">
-                  <input
-                    required
-                    placeholder="MM / YY"
-                    className="w-full bg-card border border-gold/20 p-4 font-mono text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                  />
-                </Field>
-                <Field label="Security CVC">
-                  <input
-                    required
-                    inputMode="numeric"
-                    placeholder="123"
-                    className="w-full bg-card border border-gold/20 p-4 font-mono text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                  />
-                </Field>
-              </div>
-            </Section>
-
-            <Section title="Cancellation Protocol">
-              <ul className="space-y-4">
-                <PolicyRow tone="text-emerald-500" label="72+ Hours Notice" value="100% Refund" />
-                <PolicyRow tone="text-gold" label="24 – 72 Hours Notice" value="50% Refund" />
-                <PolicyRow
-                  tone="text-rose-500"
-                  label="Under 24 Hours / No-Show"
-                  value="Non-Refundable"
-                />
-              </ul>
-              <div className="mt-8 p-6 bg-gold/5 border border-gold/10">
-                <p className="font-body text-xs text-foreground/60 leading-relaxed italic">
-                  Funds stay in secure escrow until mission delivery is confirmed. Provider-side
-                  cancellations are authorized for full refund.
-                </p>
-              </div>
-              <label className="mt-8 flex items-start gap-4 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                  className="mt-1 h-4 w-4 accent-gold"
-                />
-                <span className="font-body text-sm text-foreground/70 group-hover:text-foreground transition-colors">
-                  I authorize this deployment and agree to the NexusZim{" "}
-                  <Link
-                    to="/terms"
-                    className="text-gold underline underline-offset-4 decoration-gold/30"
-                  >
-                    Terms
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    to="/policies/cancellation"
-                    className="text-gold underline underline-offset-4 decoration-gold/30"
-                  >
-                    Cancellation Protocol
-                  </Link>
-                  .
-                </span>
-              </label>
-            </Section>
-
-            <button
-              type="submit"
-              disabled={!agreed}
-              className="w-full bg-gold py-6 font-display text-sm font-bold uppercase tracking-[0.2em] text-white hover:bg-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+      <div className="container-page pb-20">
+        <div className="grid gap-10 lg:grid-cols-[1fr_340px]">
+          {/* Form */}
+          <div>
+            <p className="eyebrow text-text-soft mb-4">
+              <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+              Direct Enquiry
+            </p>
+            <h1
+              className="font-display text-text mb-2"
+              style={{ fontSize: "clamp(28px, 4vw, 44px)", lineHeight: "1.08", letterSpacing: "-0.02em" }}
             >
-              Authorize & Deploy (${due})
-            </button>
-          </form>
+              Send enquiry to{" "}
+              <em className="italic text-forest">{provider.business}</em>
+            </h1>
+            <p className="font-sans text-[14px] text-text-soft mb-8 max-w-lg">
+              Share your requirements. The provider will contact you directly to discuss scope and
+              agree on a fee — no payment goes through NexusZim.
+            </p>
 
-          <aside className="h-fit border border-gold/20 bg-card p-10 lg:sticky lg:top-32">
-            <h3 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">
-              Op Summary
-            </h3>
-            <div className="mt-8 flex items-center gap-6 border-b border-gold/10 pb-8">
-              <div
-                className={`grid h-16 w-16 place-items-center font-display text-xl font-bold border border-gold/20 ${provider.avatarColor}`}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Requirements */}
+              <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 space-y-5">
+                <h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-text-soft">
+                  Your requirements
+                </h2>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Preferred date" id="eq-date">
+                    <input
+                      id="eq-date"
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="field-input"
+                    />
+                  </Field>
+                  <Field label="Location / venue" id="eq-location">
+                    <input
+                      id="eq-location"
+                      type="text"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder={provider.city}
+                      className="field-input"
+                    />
+                  </Field>
+                </div>
+
+                <Field label="What do you need?" id="eq-notes">
+                  <textarea
+                    id="eq-notes"
+                    required
+                    rows={4}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Describe your requirements — guest count, event type, scope, timeline, anything the provider should know..."
+                    className="field-input resize-none"
+                  />
+                </Field>
+
+                <Field
+                  label="Budget range — optional, helps the provider respond accurately"
+                  id="eq-budget"
+                >
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[12px] text-text-soft pointer-events-none">
+                      $
+                    </span>
+                    <input
+                      id="eq-budget"
+                      type="number"
+                      min={0}
+                      value={budget}
+                      onChange={(e) => setBudget(e.target.value)}
+                      placeholder="e.g. 500"
+                      className="field-input pl-6"
+                    />
+                  </div>
+                </Field>
+              </div>
+
+              {/* Contact */}
+              <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 space-y-5">
+                <div>
+                  <h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-text-soft">
+                    Your contact details
+                  </h2>
+                  <p className="mt-1 font-sans text-[12px] text-text-soft">
+                    The provider uses these to reach you directly.
+                  </p>
+                </div>
+
+                <Field label="Full name" id="eq-name">
+                  <input
+                    id="eq-name"
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your name"
+                    autoComplete="name"
+                    className="field-input"
+                  />
+                </Field>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Phone / WhatsApp" id="eq-phone">
+                    <input
+                      id="eq-phone"
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+263..."
+                      autoComplete="tel"
+                      className="field-input"
+                    />
+                  </Field>
+                  <Field label="Email" id="eq-email">
+                    <input
+                      id="eq-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      className="field-input"
+                    />
+                  </Field>
+                </div>
+              </div>
+
+              {error && (
+                <div role="alert" className="border border-rose-300 bg-rose-50 rounded-[3px] p-4 font-sans text-sm text-rose-700">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-gold py-4 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
               >
-                {provider.initials}
+                {submitting ? "Sending…" : `Send enquiry to ${provider.business}`}
+              </button>
+
+              <p className="text-center font-sans text-[12px] text-text-soft">
+                NexusZim does not take a fee. You pay the provider directly after agreeing on terms.
+              </p>
+            </form>
+          </div>
+
+          {/* Provider sidebar */}
+          <aside className="lg:sticky lg:top-24 lg:self-start space-y-4">
+            <div className="bg-cream-raised border border-hairline rounded-[6px] overflow-hidden">
+              <div
+                className={`flex items-center justify-center py-10 border-b border-hairline ${provider.avatarColor}`}
+              >
+                <span className="font-sans text-3xl font-bold tracking-tight">
+                  {provider.initials}
+                </span>
               </div>
-              <div>
-                <p className="font-display text-xl font-bold text-foreground">
-                  {provider.business}
-                </p>
-                <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
-                  {provider.city}
-                </p>
+              <div className="p-5 space-y-4">
+                <div>
+                  <h3 className="font-display text-xl text-text">{provider.business}</h3>
+                  <p className="mt-0.5 font-sans text-[13px] text-text-soft">{provider.name}</p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <Hallmark tier={provider.tier} />
+                  <span className="flex items-center gap-1 font-mono text-[11px] text-text-soft">
+                    <MapPin className="h-3 w-3 shrink-0" strokeWidth={1.5} />
+                    {provider.city}
+                  </span>
+                </div>
+
+                <div className="pt-3 border-t border-hairline space-y-2">
+                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-text-soft">
+                    <Clock className="h-3 w-3 shrink-0" strokeWidth={1.5} />
+                    {provider.responseTime}
+                  </div>
+                  <p className="font-mono text-[11px] text-text-soft">
+                    Starts from{" "}
+                    <strong className="text-text">${provider.priceFrom}</strong>
+                    <span className="text-text-soft/60"> — final rate agreed directly</span>
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8 space-y-4">
-              <Row label="Mission Base Rate" value={`$${total}`} />
-              <Row
-                label={paymentType === "full" ? "Authorization Amount" : "Commitment (30%)"}
-                value={`$${paymentType === "full" ? total : deposit}`}
-              />
-              {paymentType === "deposit" && <Row label="Deferred Balance" value={`$${balance}`} />}
-              <Row label="Brokerage Fee (7%)" value={`$${platformFee}`} />
-            </div>
-
-            <div className="mt-10 flex items-center justify-between border-t border-gold/10 pt-8">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
-                Due for Deployment
-              </span>
-              <span className="font-display text-4xl font-bold text-gold">${due}</span>
+            <div className="border border-forest/20 bg-forest/5 rounded-[6px] p-4">
+              <p className="font-sans text-[12px] text-forest leading-relaxed">
+                <strong>You pay the provider directly.</strong> NexusZim never holds money or charges
+                a commission. The starting rate shown is indicative — the final amount is whatever you
+                and the provider agree.
+              </p>
             </div>
           </aside>
         </div>
@@ -303,76 +343,24 @@ function CheckoutPage() {
   );
 }
 
-function PolicyRow({ tone, label, value }: { tone: string; label: string; value: string }) {
+function Field({
+  label,
+  id,
+  children,
+}: {
+  label: string;
+  id: string;
+  children: React.ReactNode;
+}) {
   return (
-    <li className="flex items-center justify-between border border-gold/5 bg-background/30 p-4">
-      <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/60">
-        {label}
-      </span>
-      <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${tone}`}>
-        {value}
-      </span>
-    </li>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-4">
-        <span className="h-px w-8 bg-gold/40" />
-        <h2 className="font-display text-2xl font-bold text-foreground uppercase tracking-widest">
-          {title}
-        </h2>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="space-y-3">
-      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+    <div>
+      <label
+        htmlFor={id}
+        className="mb-1.5 block font-mono text-[9px] font-bold uppercase tracking-widest text-text-soft/70"
+      >
         {label}
       </label>
       {children}
-    </div>
-  );
-}
-
-function PayOption({
-  checked,
-  onChange,
-  title,
-  desc,
-}: {
-  checked: boolean;
-  onChange: () => void;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onChange}
-      className={`border p-6 text-left transition-all ${
-        checked
-          ? "border-gold bg-gold/5 ring-1 ring-gold"
-          : "border-gold/10 bg-card hover:border-gold/30"
-      }`}
-    >
-      <p className="font-display text-lg font-bold text-foreground">{title}</p>
-      <p className="mt-2 font-body text-xs text-foreground/40 leading-relaxed">{desc}</p>
-    </button>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className="font-body text-sm text-foreground/50">{label}</span>
-      <span className="font-mono text-sm font-bold text-foreground">{value}</span>
     </div>
   );
 }
