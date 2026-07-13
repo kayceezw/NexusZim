@@ -137,6 +137,7 @@ function SearchPage() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search by name, service, or city..."
+                aria-label="Search providers"
                 className="w-full h-11 pl-10 pr-4 bg-forest-soft border border-cream/20 font-sans text-sm text-cream placeholder:text-cream/40 outline-none focus:border-cream/60 transition-colors"
                 style={{ borderRadius: "3px 0 0 3px" }}
               />
@@ -291,19 +292,20 @@ function SearchPage() {
 
               {/* Available now */}
               <div className="px-5 py-4">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <span className="font-sans text-[13px] text-text-soft">Available now only</span>
+                <div className="flex items-center justify-between">
+                  <span id="available-label" className="font-sans text-[13px] text-text-soft">Available now only</span>
                   <button
                     role="switch"
                     aria-checked={availableOnly}
+                    aria-labelledby="available-label"
                     onClick={() => setAvailableOnly((v) => !v)}
-                    className={`relative h-5 w-9 rounded-full transition-colors ${availableOnly ? "bg-forest" : "bg-hairline"}`}
+                    className={`relative h-5 w-9 rounded-full transition-colors cursor-pointer ${availableOnly ? "bg-forest" : "bg-hairline"}`}
                   >
                     <span
                       className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${availableOnly ? "left-4" : "left-0.5"}`}
                     />
                   </button>
-                </label>
+                </div>
               </div>
             </div>
 
@@ -323,10 +325,11 @@ function SearchPage() {
                 {results.length} result{results.length !== 1 ? "s" : ""}
               </p>
               <div className="flex items-center gap-2">
-                <label className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft shrink-0">
+                <label htmlFor="sort-select" className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft shrink-0">
                   Sort:
                 </label>
                 <select
+                  id="sort-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortKey)}
                   className="bg-cream-raised border border-hairline rounded-[3px] px-3 py-1.5 font-sans text-[13px] text-text outline-none focus:border-forest transition-colors cursor-pointer"

@@ -56,7 +56,7 @@ function SignupPage() {
         </p>
 
         {error && (
-          <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
+          <div role="alert" className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
             {error}
           </div>
         )}
@@ -72,23 +72,29 @@ function SignupPage() {
 
         <div className="mt-10 space-y-8">
           <Input
+            id="signup-name"
             label="Full Identity Name"
             required
+            autoComplete="name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
           <Input
+            id="signup-email"
             label="Secure Email"
             type="email"
             required
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
+            id="signup-password"
             label="Security Password"
             type="password"
             required
             minLength={8}
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -97,7 +103,7 @@ function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
+          className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
         >
           {loading ? "Authenticating..." : "Initialize Account"}
         </button>
@@ -128,7 +134,7 @@ function RoleBtn({
       onClick={onClick}
       className={`border px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-widest transition-all ${
         active
-          ? "border-gold bg-gold text-white"
+          ? "border-gold bg-gold text-forest-ink"
           : "border-gold/20 text-gold/40 hover:border-gold/40"
       }`}
     >
@@ -139,14 +145,16 @@ function RoleBtn({
 
 function Input({
   label,
+  id,
   ...rest
 }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="space-y-3">
-      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+      <label htmlFor={id} className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
         {label}
       </label>
       <input
+        id={id}
         {...rest}
         className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
       />

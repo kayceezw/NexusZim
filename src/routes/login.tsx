@@ -48,23 +48,25 @@ function LoginPage() {
         </p>
 
         {error && (
-          <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
+          <div role="alert" className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
             {error}
           </div>
         )}
 
         <div className="mt-10 space-y-8">
           <Input
+            id="login-email"
             label="Secure Email"
             type="email"
             required
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="operator@nexus.zw"
           />
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+              <label htmlFor="login-password" className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
                 Security Password
               </label>
               <Link
@@ -76,8 +78,10 @@ function LoginPage() {
             </div>
             <div className="relative">
               <input
+                id="login-password"
                 type={showPassword ? "text" : "password"}
                 required
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-background border border-gold/20 p-4 pr-12 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
@@ -85,7 +89,6 @@ function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                tabIndex={-1}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground/30 hover:text-gold transition-colors"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
@@ -98,7 +101,7 @@ function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
+          className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
         >
           {loading ? "Authenticating..." : "Authorize Entry"}
         </button>
@@ -116,14 +119,16 @@ function LoginPage() {
 
 function Input({
   label,
+  id,
   ...rest
 }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="space-y-3">
-      <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+      <label htmlFor={id} className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
         {label}
       </label>
       <input
+        id={id}
         {...rest}
         className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
       />

@@ -174,9 +174,15 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-[3px] focus:bg-gold focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-forest-ink"
+          >
+            Skip to main content
+          </a>
           <div className="flex min-h-screen flex-col">
             <SiteHeader />
-            <main className="flex-1">
+            <main id="main-content" className="flex-1">
               <Outlet />
             </main>
             <SiteFooter />

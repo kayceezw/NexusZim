@@ -5,6 +5,7 @@ import { CATEGORIES, PROVIDERS, type CategorySlug } from "@/lib/mock-data";
 import { Hallmark } from "@/components/registry/hallmark";
 import { Ledger, type LedgerEntry } from "@/components/registry/ledger";
 import { CategoryCard } from "@/components/category-card";
+import { ProviderCard } from "@/components/provider-card";
 import { HeroImageUpload } from "@/components/registry/photo-upload";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,17 +92,17 @@ function LandingPage() {
           <div className="grid gap-14 lg:grid-cols-2 lg:items-start">
             {/* Left: editorial headline */}
             <div className="space-y-8 lg:pt-6">
-              <p className="eyebrow text-text-soft">
+              <p className="eyebrow text-text-soft animate-fade-up">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                 Zimbabwe Service Registry
               </p>
 
               <h1
-                className="text-text"
+                className="text-text animate-fade-up delay-100"
                 style={{
-                  fontSize: "clamp(40px, 5.5vw, 68px)",
-                  lineHeight: "1.06",
-                  letterSpacing: "-0.02em",
+                  fontSize: "clamp(44px, 6vw, 76px)",
+                  lineHeight: "1.04",
+                  letterSpacing: "-0.025em",
                 }}
               >
                 Find providers.
@@ -111,12 +112,12 @@ function LandingPage() {
                 Brief with confidence.
               </h1>
 
-              <p className="font-sans text-base text-text-soft leading-relaxed max-w-[440px]">
+              <p className="font-sans text-base text-text-soft leading-relaxed max-w-[440px] animate-fade-up delay-200">
                 NexusZim maintains a public register of vetted service providers across Zimbabwe.
                 Every listing shows what was checked, by whom, and when.
               </p>
 
-              <form onSubmit={handleSearch} className="flex max-w-[480px]">
+              <form onSubmit={handleSearch} className="flex max-w-[480px] animate-fade-up delay-300">
                 <div className="relative flex-1">
                   <Search
                     className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-soft/50"
@@ -127,6 +128,7 @@ function LandingPage() {
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="Service, city, or provider name..."
+                    aria-label="Search for a service or provider"
                     className="w-full h-11 pl-10 pr-3 bg-cream-raised border border-hairline font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest transition-colors"
                     style={{ borderRadius: "3px 0 0 3px" }}
                   />
@@ -222,12 +224,15 @@ function LandingPage() {
             {STATS.map((s, i) => (
               <div
                 key={s.label}
-                className={`py-8 px-4 text-center ${i < STATS.length - 1 ? "border-r border-cream/10" : ""}`}
+                className={`py-10 px-4 text-center ${i < STATS.length - 1 ? "border-r border-cream/10" : ""}`}
               >
-                <p className="font-display text-3xl text-cream" style={{ lineHeight: "1.1" }}>
+                <p
+                  className="font-display text-cream"
+                  style={{ fontSize: "clamp(40px, 5vw, 64px)", lineHeight: "1.0" }}
+                >
                   {s.value}
                 </p>
-                <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.1em] text-cream/50">
+                <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
                   {s.label}
                 </p>
               </div>
@@ -294,46 +299,9 @@ function LandingPage() {
             </div>
 
             <div className="space-y-3">
-              {FEATURED.map((p) => {
-                const idx = PROVIDERS.indexOf(p);
-                const regId = `NX-2024-${String(idx + 147).padStart(5, "0")}`;
-                return (
-                  <article
-                    key={p.id}
-                    className="group bg-cream-raised border border-hairline rounded-[6px] hover:border-forest transition-all duration-150 hover:shadow-[0_1px_4px_rgba(15,51,35,0.08)] relative overflow-hidden"
-                  >
-                    <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-150" />
-                    <div className="flex gap-0 min-h-[96px]">
-                      <div
-                        className={`flex-shrink-0 w-[72px] flex items-center justify-center font-sans text-lg font-bold border-r border-hairline ${p.avatarColor}`}
-                      >
-                        {p.initials}
-                      </div>
-                      <div className="flex-1 px-4 py-3 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <Link
-                            to="/providers/$providerId"
-                            params={{ providerId: p.id }}
-                            className="font-display text-lg text-text group-hover:text-forest transition-colors"
-                          >
-                            {p.business}
-                          </Link>
-                          <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft/60 shrink-0 mt-0.5">
-                            {regId}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex flex-wrap items-center gap-3">
-                          <Hallmark tier={p.tier} />
-                          <span className="font-mono text-[11px] text-text-soft">{p.city}</span>
-                        </div>
-                        <p className="mt-1 font-mono text-[11px] text-text-soft line-clamp-1">
-                          On file: {p.services.slice(0, 2).join(", ")}
-                        </p>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
+              {FEATURED.map((p) => (
+                <ProviderCard key={p.id} provider={p} />
+              ))}
             </div>
           </div>
         </section>

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useAuth, dashboardPathForRoles } from "@/hooks/use-auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NexusZimLogo } from "./registry/logo";
 
 const NAV = [
@@ -17,6 +17,13 @@ export function SiteHeader() {
   const dashboardTo = dashboardPathForRoles(roles, onboardingCompleted);
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
   async function handleSignOut() {
     await signOut();
@@ -26,7 +33,13 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-cream-raised border-b border-hairline">
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${
+          scrolled
+            ? "bg-cream-raised/95 backdrop-blur-md border-hairline shadow-[0_1px_12px_rgba(15,51,35,0.08)]"
+            : "bg-cream-raised border-hairline"
+        }`}
+      >
         <div className="container-page flex h-16 items-center justify-between gap-6">
           <NexusZimLogo variant="color" size="sm" />
 

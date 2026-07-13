@@ -214,11 +214,52 @@
   animation: shimmer 2s infinite linear;
 }
 
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@utility animate-fade-in {
+  animation: fade-in 0.4s ease both;
+}
+
+@utility delay-100 {
+  animation-delay: 0.1s;
+}
+
+@utility delay-200 {
+  animation-delay: 0.2s;
+}
+
+@utility delay-300 {
+  animation-delay: 0.3s;
+}
+
+@utility delay-400 {
+  animation-delay: 0.4s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
   }
 }
