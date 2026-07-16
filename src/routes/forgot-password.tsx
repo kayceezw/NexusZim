@@ -3,7 +3,7 @@ import { useState, useEffect, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/forgot-password")({
-  head: () => ({ meta: [{ title: "Recovery Protocol — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Reset password — NexusZim" }] }),
   component: ForgotPasswordPage,
 });
 
@@ -48,126 +48,139 @@ function ForgotPasswordPage() {
   }
 
   return (
-    <div className="bg-background pt-24 min-h-screen grid place-items-center">
-      <div className="w-full max-w-xl bg-card border border-gold/20 p-10 md:p-14 my-12">
-        <div className="flex items-center gap-4">
-          <span className="h-px w-8 bg-gold/40" />
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-            Recovery Protocol
-          </p>
+    <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+      <div className="w-full max-w-md my-10 px-5 sm:px-0">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <span className="inline-block h-2 w-2 rotate-45 bg-gold" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft">
+              NexusZim
+            </span>
+          </div>
         </div>
 
-        {!sent ? (
-          <form onSubmit={onSubmit}>
-            <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
-              Credential <span className="italic text-gold">Recovery.</span>
-            </h1>
-            <p className="mt-4 font-body text-base text-foreground/60">
-              Enter your registered email address. We will dispatch a secure recovery link within
-              moments.
-            </p>
-
-            {error && (
-              <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
-                {error}
+        <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9">
+          {!sent ? (
+            <form onSubmit={onSubmit} className="space-y-5">
+              <div>
+                <p className="eyebrow text-text-soft mb-2">
+                  <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+                  Password reset
+                </p>
+                <h1 className="font-display text-2xl text-text">
+                  Forgot your <em className="italic text-gold">password?</em>
+                </h1>
+                <p className="mt-2 font-sans text-sm text-text-soft">
+                  Enter your email and we'll send you a reset link.
+                </p>
               </div>
-            )}
 
-            <div className="mt-10">
-              <div className="space-y-3">
-                <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
-                  Registered Email
+              {error && (
+                <div className="border border-rose-200 bg-rose-50 rounded-[3px] px-4 py-3 font-sans text-sm text-rose-600">
+                  {error}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+                  Email <span className="text-gold">*</span>
                 </label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="operator@nexus.zw"
+                  placeholder="you@email.com"
                   autoFocus
-                  className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+                  className="field-input"
                 />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-60"
-            >
-              {loading ? "Dispatching Link..." : "Send Recovery Link"}
-            </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gold py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
+              >
+                {loading ? "Sending link..." : "Send reset link"}
+              </button>
 
-            <p className="mt-8 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/30">
-              Credentials recovered?{" "}
-              <Link to="/login" className="text-gold hover:text-foreground transition-colors">
-                Return to Portal
-              </Link>
-            </p>
-          </form>
-        ) : (
-          <div>
-            <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
-              Link <span className="italic text-gold">Dispatched.</span>
-            </h1>
-            <div className="mt-8 border border-gold/20 bg-gold/5 p-6 space-y-3">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold">
-                Recovery Transmission Sent
+              <p className="text-center font-sans text-[13px] text-text-soft">
+                Remembered it?{" "}
+                <Link to="/login" className="text-forest hover:underline font-medium">
+                  Back to login
+                </Link>
               </p>
-              <p className="font-body text-sm text-foreground/60">
-                A secure recovery link has been sent to{" "}
-                <span className="text-foreground font-bold">{email}</span>. Follow the link to reset
-                your credentials.
-              </p>
-            </div>
-            <ul className="mt-6 space-y-3">
-              {[
-                "Check your inbox — the link arrives within 2 minutes.",
-                "Scan your spam or junk folder if it's not visible.",
-                "The link expires after 1 hour for your security.",
-              ].map((tip) => (
-                <li
-                  key={tip}
-                  className="flex items-start gap-3 font-body text-sm text-foreground/50"
+            </form>
+          ) : (
+            <div className="space-y-5">
+              <div>
+                <p className="eyebrow text-text-soft mb-2">
+                  <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+                  Check your inbox
+                </p>
+                <h1 className="font-display text-2xl text-text">
+                  Link <em className="italic text-gold">sent.</em>
+                </h1>
+              </div>
+
+              <div className="border border-gold/20 bg-gold/5 rounded-[3px] p-5 space-y-1.5">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-gold">
+                  Reset link dispatched
+                </p>
+                <p className="font-sans text-sm text-text-soft">
+                  A reset link was sent to{" "}
+                  <span className="font-medium text-text">{email}</span>.
+                </p>
+              </div>
+
+              <ul className="space-y-2">
+                {[
+                  "Check your inbox — the link arrives within 2 minutes.",
+                  "Check spam if it's not visible.",
+                  "The link expires after 1 hour.",
+                ].map((tip) => (
+                  <li key={tip} className="flex items-start gap-2 font-sans text-[13px] text-text-soft">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 border border-current" />
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={onResend}
+                  disabled={resendCountdown > 0 || loading}
+                  className="w-full border border-forest/30 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <span className="mt-[6px] h-1.5 w-1.5 shrink-0 bg-gold/40" />
-                  {tip}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8 flex flex-col gap-3">
+                  {resendCountdown > 0
+                    ? `Resend in ${resendCountdown}s`
+                    : loading
+                      ? "Sending..."
+                      : "Resend link"}
+                </button>
+                <Link
+                  to="/login"
+                  className="block w-full border border-hairline py-3 text-center rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+                >
+                  Back to login
+                </Link>
+              </div>
+
               <button
                 type="button"
-                onClick={onResend}
-                disabled={resendCountdown > 0 || loading}
-                className="block w-full border border-gold/20 py-4 font-display text-sm font-bold uppercase tracking-widest text-gold hover:bg-gold hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                onClick={() => {
+                  setSent(false);
+                  setEmail("");
+                  setResendCountdown(0);
+                }}
+                className="w-full text-center font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-text-soft transition-colors"
               >
-                {resendCountdown > 0
-                  ? `Resend available in ${resendCountdown}s`
-                  : loading
-                    ? "Sending..."
-                    : "Resend Recovery Link"}
+                Try a different email
               </button>
-              <Link
-                to="/login"
-                className="block w-full border border-gold/10 py-4 text-center font-display text-sm font-bold uppercase tracking-widest text-foreground/40 hover:text-gold hover:border-gold/20 transition-colors"
-              >
-                Return to Portal
-              </Link>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                setSent(false);
-                setEmail("");
-                setResendCountdown(0);
-              }}
-              className="mt-4 block w-full py-3 text-center font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30 hover:text-foreground/60 transition-colors"
-            >
-              Try a different email
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

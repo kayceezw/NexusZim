@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CATEGORIES, PROVIDERS } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { CATEGORIES } from "@/lib/mock-data";
 import { CategoryCard } from "@/components/category-card";
+import { fetchCategories } from "@/lib/queries";
 import {
   Crown,
   PartyPopper,
@@ -42,22 +44,31 @@ export const Route = createFileRoute("/categories/")({
 type ViewMode = "grid" | "list";
 
 function CategoriesPage() {
-  const totalProviders = PROVIDERS.length;
+  const { data: dbCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const countMap = Object.fromEntries(
+    (dbCategories ?? []).map((c) => [c.slug, c.provider_count]),
+  );
+  const totalProviders = (dbCategories ?? []).reduce((s, c) => s + c.provider_count, 0);
 
   return (
-    <div className="bg-background pt-20 min-h-screen">
-      {/* Header strip */}
-      <div className="bg-[#00301c] py-14">
+    <div className="bg-cream pt-16 min-h-screen">
+      {/* Forest header */}
+      <div className="bg-forest border-b border-cream/10 py-12">
         <div className="container-page">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/50 mb-2">
-            Service Network
+          <p className="eyebrow text-cream/40 mb-3">
+            <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+            Service network
           </p>
-          <h1 className="font-display text-4xl font-bold text-white md:text-5xl">
+          <h1 className="font-display text-cream" style={{ fontSize: "clamp(32px, 4.5vw, 56px)", lineHeight: "1.06", letterSpacing: "-0.02em" }}>
             Browse by Category
           </h1>
-          <p className="mt-3 max-w-lg text-base text-white/70 leading-relaxed">
-            {CATEGORIES.length} service categories. {totalProviders} verified providers across
-            Zimbabwe.
+          <p className="mt-3 max-w-lg font-sans text-sm text-cream/60 leading-relaxed">
+            {dbCategories?.length ?? CATEGORIES.length} service categories · {totalProviders} verified providers across Zimbabwe.
           </p>
         </div>
       </div>
@@ -66,7 +77,7 @@ function CategoriesPage() {
       <div className="container-page py-12 pb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CATEGORIES.map((c) => (
-            <CategoryCard key={c.slug} category={c} />
+            <CategoryCard key={c.slug} category={c} count={countMap[c.slug]} />
           ))}
         </div>
       </div>
@@ -82,7 +93,7 @@ function CategoriesPage() {
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {CATEGORIES.map((cat) => {
-              const count = PROVIDERS.filter((p) => p.category === cat.slug).length;
+              const count = countMap[cat.slug] ?? 0;
               const Icon = ICON_MAP[cat.icon];
               return (
                 <div

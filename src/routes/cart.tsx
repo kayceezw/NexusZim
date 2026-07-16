@@ -34,7 +34,6 @@ function CartPage() {
     setSubmitting(true);
     setError(null);
 
-    // Snapshot client contact so matched providers can reach out directly
     const [{ data: profile }, { data: clientProfile }] = await Promise.all([
       supabase.from("profiles").select("full_name, email").eq("id", user.id).maybeSingle(),
       supabase.from("client_profiles").select("phone").eq("user_id", user.id).maybeSingle(),
@@ -69,22 +68,25 @@ function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-background pt-24 min-h-screen grid place-items-center">
-        <div className="container-page py-16 text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center bg-gold/5 border border-gold/10 mb-8">
-            <span className="font-mono text-gold/20 text-3xl font-bold">00</span>
+      <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+        <div className="container-page max-w-lg py-20 text-center">
+          <div className="flex justify-center mb-6">
+            <div className="h-16 w-16 rounded-[6px] bg-cream-raised border border-hairline flex items-center justify-center">
+              <span className="font-mono text-text-soft/30 text-2xl">00</span>
+            </div>
           </div>
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold/60">
-            Enquiry Brief
+          <p className="eyebrow text-text-soft mb-3">
+            <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+            Enquiry brief
           </p>
-          <h1 className="mt-4 font-display text-5xl font-bold text-foreground">Brief is empty.</h1>
-          <p className="mt-6 font-body text-lg font-light text-foreground/40 max-w-md mx-auto">
+          <h1 className="font-display text-3xl text-text mb-3">Brief is empty.</h1>
+          <p className="font-sans text-sm text-text-soft leading-relaxed mb-10 max-w-sm mx-auto">
             Browse service categories to add what you need, then submit your brief to get responses
             from verified providers.
           </p>
           <Link
             to="/categories"
-            className="mt-12 inline-block bg-gold px-10 py-4 font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors"
+            className="bg-gold px-9 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
           >
             Browse Services
           </Link>
@@ -94,52 +96,54 @@ function CartPage() {
   }
 
   return (
-    <div className="bg-background pt-24 min-h-screen">
-      <div className="container-page py-12 md:py-20">
-        <div className="flex items-center gap-4">
-          <span className="h-px w-8 bg-gold/40" />
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-            Enquiry Brief
-          </span>
+    <div className="bg-cream pt-16 min-h-screen">
+      {/* Forest header */}
+      <div className="bg-forest border-b border-cream/10">
+        <div className="container-page py-10">
+          <p className="eyebrow text-cream/40 mb-3">
+            <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+            Enquiry brief
+          </p>
+          <h1 className="font-display text-2xl text-cream">
+            Review your <em className="italic text-gold">Brief.</em>
+          </h1>
+          <p className="mt-3 font-sans text-sm text-cream/60 leading-relaxed max-w-xl">
+            Providers matching your requirements will contact you directly. No payment goes through
+            NexusZim.
+          </p>
         </div>
-        <h1 className="mt-4 font-display text-5xl font-bold text-foreground md:text-6xl">
-          Review your <span className="italic text-gold">Brief.</span>
-        </h1>
-        <p className="mt-6 font-body text-lg font-light text-foreground/60">
-          Providers matching your requirements will contact you directly to discuss scope and agree on
-          a fee. No payment goes through NexusZim.
-        </p>
+      </div>
 
-        <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_400px]">
-          <div className="space-y-6">
+      <div className="container-page py-10 md:py-14">
+        <div className="grid gap-10 lg:grid-cols-[1fr_360px] items-start">
+          {/* Item list */}
+          <div className="space-y-4">
             {items.map((item) => (
               <div
                 key={item.id}
-                className="border border-gold/10 bg-card p-8 md:p-10 transition-all hover:border-gold/30"
+                className="bg-cream-raised border border-hairline rounded-[6px] p-6 md:p-8 transition-all hover:border-forest"
               >
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex items-start justify-between gap-5">
                   <div className="min-w-0">
-                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gold/60">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft">
                       {item.categoryName}
                       {item.isCustom && (
-                        <span className="ml-3 border border-gold/20 px-2 py-0.5 text-[9px] font-bold text-gold bg-gold/5">
+                        <span className="ml-3 border border-gold/30 bg-gold/5 px-2 py-0.5 text-[9px] text-gold">
                           Bespoke
                         </span>
                       )}
                     </p>
-                    <h3 className="mt-4 font-display text-2xl font-bold text-foreground">
-                      {item.serviceName}
-                    </h3>
+                    <h3 className="mt-3 font-display text-xl text-text">{item.serviceName}</h3>
                   </div>
                   <div className="text-right shrink-0">
                     {item.basePrice != null && (
-                      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-foreground/40">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft/60">
                         From ${Number(item.basePrice).toFixed(0)}
                       </p>
                     )}
                     <button
                       onClick={() => remove(item.id)}
-                      className="mt-3 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/30 hover:text-rose-500 transition-colors"
+                      className="mt-2 font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-rose-500 transition-colors"
                     >
                       Remove
                     </button>
@@ -148,60 +152,64 @@ function CartPage() {
                 <textarea
                   value={item.notes ?? ""}
                   onChange={(e) => updateNotes(item.id, e.target.value)}
-                  placeholder="Provide operational details: dates, scope, guest count, or specific technical requirements..."
+                  placeholder="Provide details: dates, scope, guest count, technical requirements..."
                   rows={3}
-                  className="mt-8 w-full bg-background border border-gold/10 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20 resize-none"
+                  className="mt-6 field-input resize-none"
                 />
               </div>
             ))}
           </div>
 
-          <aside className="border border-gold/20 bg-card p-8 h-fit lg:sticky lg:top-32 space-y-6">
-            <h2 className="font-display text-2xl font-bold text-foreground">Brief details</h2>
+          {/* Sidebar */}
+          <aside className="bg-cream-raised border border-hairline rounded-[6px] p-6 lg:sticky lg:top-24 space-y-5">
+            <p className="eyebrow text-text-soft">
+              <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+              Brief details
+            </p>
 
-            <div className="space-y-5">
-              <Field label="City">
-                <select
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
-                >
-                  {CITIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Date needed">
-                <input
-                  type="date"
-                  value={neededBy}
-                  onChange={(e) => setNeededBy(e.target.value)}
-                  className="w-full bg-background border border-gold/20 p-4 font-mono text-[11px] font-bold uppercase tracking-widest text-foreground outline-none focus:border-gold"
-                />
-              </Field>
-              <Field label="Your budget (USD, optional)">
-                <input
-                  type="number"
-                  min={0}
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                  placeholder="e.g. 500"
-                  className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-                />
-              </Field>
-            </div>
+            <CartField label="City">
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="field-input"
+              >
+                {CITIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </CartField>
+
+            <CartField label="Date needed">
+              <input
+                type="date"
+                value={neededBy}
+                onChange={(e) => setNeededBy(e.target.value)}
+                className="field-input"
+              />
+            </CartField>
+
+            <CartField label="Budget (USD)" hint="optional">
+              <input
+                type="number"
+                min={0}
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                placeholder="e.g. 500"
+                className="field-input"
+              />
+            </CartField>
 
             <div className="border border-forest/20 bg-forest/5 rounded-[3px] p-4">
               <p className="font-sans text-[12px] text-forest leading-relaxed">
-                <strong>You pay the provider directly.</strong> NexusZim never holds money or charges
-                a fee. Providers will respond with their rates.
+                <strong>You pay providers directly.</strong> NexusZim never holds money or charges a
+                fee.
               </p>
             </div>
 
             {error && (
-              <div role="alert" className="border border-rose-500/30 bg-rose-500/5 p-4 font-body text-xs text-rose-600">
+              <div role="alert" className="border border-rose-200 bg-rose-50 rounded-[3px] p-4 font-sans text-[13px] text-rose-600">
                 {error}
               </div>
             )}
@@ -209,7 +217,7 @@ function CartPage() {
             {!user ? (
               <Link
                 to="/login"
-                className="block w-full bg-gold py-4 text-center font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors rounded-[3px]"
+                className="block w-full bg-gold py-3.5 text-center rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
               >
                 Log in to send brief
               </Link>
@@ -217,7 +225,7 @@ function CartPage() {
               <button
                 onClick={placeOrder}
                 disabled={submitting}
-                className="w-full bg-gold py-4 text-center font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60 rounded-[3px]"
+                className="w-full bg-gold py-3.5 text-center rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
               >
                 {submitting ? "Sending brief…" : "Send enquiry brief"}
               </button>
@@ -229,11 +237,24 @@ function CartPage() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function CartField({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div>
-      <label className="mb-3 block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
+    <div className="space-y-1.5">
+      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
         {label}
+        {hint && (
+          <span className="ml-2 normal-case tracking-normal text-text-soft/60 font-sans text-[11px]">
+            {hint}
+          </span>
+        )}
       </label>
       {children}
     </div>

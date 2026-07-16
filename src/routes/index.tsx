@@ -1,14 +1,21 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
-import { CATEGORIES, PROVIDERS, type CategorySlug } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { CATEGORIES, type CategorySlug } from "@/lib/mock-data";
 import { Hallmark } from "@/components/registry/hallmark";
 import { Ledger, type LedgerEntry } from "@/components/registry/ledger";
 import { CategoryCard } from "@/components/category-card";
-import { ProviderCard } from "@/components/provider-card";
+import { LiveProviderCard } from "@/components/provider-card";
 import { HeroImageUpload } from "@/components/registry/photo-upload";
+import { ProviderCardSkeleton, StatSkeleton } from "@/components/skeletons";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  fetchFeaturedProviders,
+  fetchPlatformStats,
+  fetchCategories,
+} from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,18 +38,6 @@ const SPECIMEN_LEDGER: LedgerEntry[] = [
   { key: "Portfolio audit", value: "Passed", date: "Apr 2024", verified: true },
 ];
 
-const STATS = [
-  { value: String(PROVIDERS.length), label: "Providers on register" },
-  { value: String(CATEGORIES.length), label: "Service categories" },
-  {
-    value: String(PROVIDERS.filter((p) => p.tier >= 3).length),
-    label: "Trust Certified",
-  },
-  { value: String(new Set(PROVIDERS.map((p) => p.city)).size), label: "Cities covered" },
-];
-
-const FEATURED = PROVIDERS.filter((p) => p.featured).slice(0, 3);
-
 function LandingPage() {
   const [q, setQ] = useState("");
   const [heroBg, setHeroBg] = useState<string | null>(null);
@@ -56,6 +51,37 @@ function LandingPage() {
     setHeroBg(data.publicUrl);
   }, []);
 
+  const { data: stats, isLoading: statsLoading } = useQuery({
+    queryKey: ["platform-stats"],
+    queryFn: fetchPlatformStats,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: featured, isLoading: featuredLoading } = useQuery({
+    queryKey: ["featured-providers"],
+    queryFn: fetchFeaturedProviders,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: dbCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const categoryCountMap = Object.fromEntries(
+    (dbCategories ?? []).map((c) => [c.slug, c.provider_count]),
+  );
+
+  const STATS = statsLoading || !stats
+    ? null
+    : [
+        { value: String(stats.totalProviders), label: "Providers on register" },
+        { value: String(stats.totalCategories), label: "Service categories" },
+        { value: String(stats.trustCertified), label: "Trust Certified" },
+        { value: String(stats.citiesCount), label: "Cities covered" },
+      ];
+
   function handleSearch(e?: React.FormEvent) {
     e?.preventDefault();
     navigate({ to: "/search", search: q.trim() ? { q: q.trim() } : {} });
@@ -65,7 +91,6 @@ function LandingPage() {
     <div className="bg-cream pt-16 overflow-x-hidden">
       {/* ─── HERO ─── */}
       <section className="relative py-20 lg:py-28 border-b border-hairline overflow-hidden">
-        {/* Background image (renders only when loaded) */}
         {heroBg && (
           <>
             <img
@@ -76,12 +101,10 @@ function LandingPage() {
               className="absolute inset-0 h-full w-full object-cover"
               onError={() => setHeroBg(null)}
             />
-            {/* Semi-transparent cream overlay so text stays readable */}
             <div className="absolute inset-0 bg-cream/88" />
           </>
         )}
 
-        {/* Admin hero image upload — bottom-left corner */}
         {isAdmin && (
           <div className="absolute bottom-4 left-4 z-20">
             <HeroImageUpload currentUrl={heroBg} onUpload={(url) => setHeroBg(url)} />
@@ -90,7 +113,6 @@ function LandingPage() {
 
         <div className="container-page relative z-10">
           <div className="grid gap-14 lg:grid-cols-2 lg:items-start">
-            {/* Left: editorial headline */}
             <div className="space-y-8 lg:pt-6">
               <p className="eyebrow text-text-soft animate-fade-up">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -221,22 +243,28 @@ function LandingPage() {
       <section className="bg-forest border-b border-forest/20">
         <div className="container-page">
           <div className="grid grid-cols-2 lg:grid-cols-4">
-            {STATS.map((s, i) => (
-              <div
-                key={s.label}
-                className={`py-10 px-4 text-center ${i < STATS.length - 1 ? "border-r border-cream/10" : ""}`}
-              >
-                <p
-                  className="font-display text-cream"
-                  style={{ fontSize: "clamp(40px, 5vw, 64px)", lineHeight: "1.0" }}
-                >
-                  {s.value}
-                </p>
-                <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
-                  {s.label}
-                </p>
-              </div>
-            ))}
+            {statsLoading || !STATS
+              ? [0, 1, 2, 3].map((i) => (
+                  <div key={i} className={i < 3 ? "border-r border-cream/10" : ""}>
+                    <StatSkeleton />
+                  </div>
+                ))
+              : STATS.map((s, i) => (
+                  <div
+                    key={s.label}
+                    className={`py-10 px-4 text-center animate-fade-in ${i < STATS.length - 1 ? "border-r border-cream/10" : ""}`}
+                  >
+                    <p
+                      className="font-display text-cream"
+                      style={{ fontSize: "clamp(40px, 5vw, 64px)", lineHeight: "1.0" }}
+                    >
+                      {s.value}
+                    </p>
+                    <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
+                      {s.label}
+                    </p>
+                  </div>
+                ))}
           </div>
         </div>
       </section>
@@ -267,45 +295,62 @@ function LandingPage() {
 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {CATEGORIES.slice(0, 6).map((c) => (
-              <CategoryCard key={c.slug} category={c} />
+              <CategoryCard
+                key={c.slug}
+                category={c}
+                count={categoryCountMap[c.slug]}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* ─── FEATURED PROVIDERS ─── */}
-      {FEATURED.length > 0 && (
-        <section className="py-20 border-b border-hairline">
-          <div className="container-page">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
-              <div className="space-y-2">
-                <p className="eyebrow text-text-soft">
-                  <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                  Featured records
-                </p>
-                <h2 className="font-display text-3xl lg:text-4xl text-text">
-                  Providers from the register
-                </h2>
-              </div>
-              <Link
-                to="/search"
-                className="font-sans text-sm font-semibold text-forest hover:text-gold-deep transition-colors mt-4 md:mt-0 flex items-center gap-1 group"
-              >
-                Full directory
-                <span className="transition-transform group-hover:translate-x-[3px] duration-150">
-                  →
-                </span>
-              </Link>
+      <section className="py-20 border-b border-hairline">
+        <div className="container-page">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
+            <div className="space-y-2">
+              <p className="eyebrow text-text-soft">
+                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+                Featured records
+              </p>
+              <h2 className="font-display text-3xl lg:text-4xl text-text">
+                Providers from the register
+              </h2>
             </div>
-
-            <div className="space-y-3">
-              {FEATURED.map((p) => (
-                <ProviderCard key={p.id} provider={p} />
-              ))}
-            </div>
+            <Link
+              to="/search"
+              className="font-sans text-sm font-semibold text-forest hover:text-gold-deep transition-colors mt-4 md:mt-0 flex items-center gap-1 group"
+            >
+              Full directory
+              <span className="transition-transform group-hover:translate-x-[3px] duration-150">
+                →
+              </span>
+            </Link>
           </div>
-        </section>
-      )}
+
+          <div className="space-y-3">
+            {featuredLoading
+              ? [0, 1, 2].map((i) => <ProviderCardSkeleton key={i} />)
+              : featured && featured.length > 0
+                ? featured.map((p) => <LiveProviderCard key={p.user_id} provider={p} />)
+                : (
+                  <div className="border border-dashed border-hairline rounded-[6px] p-12 text-center bg-cream-raised">
+                    <p className="font-display text-xl text-text">Building the register</p>
+                    <p className="mt-2 font-sans text-[13px] text-text-soft">
+                      Verified providers will appear here as they join NexusZim.
+                    </p>
+                    <Link
+                      to="/onboarding/provider"
+                      className="mt-5 inline-flex items-center gap-2 bg-gold px-6 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+                    >
+                      Apply as a provider →
+                    </Link>
+                  </div>
+                )}
+          </div>
+        </div>
+      </section>
 
       {/* ─── PROVIDER CTA ─── */}
       <section className="bg-forest py-20">

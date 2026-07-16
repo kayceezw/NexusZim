@@ -3,7 +3,7 @@ import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({ meta: [{ title: "Sign up — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Create account — NexusZim" }] }),
   component: SignupPage,
 });
 
@@ -37,84 +37,113 @@ function SignupPage() {
   }
 
   return (
-    <div className="bg-background pt-24 min-h-screen grid place-items-center">
-      <form
-        onSubmit={onSubmit}
-        className="w-full max-w-xl bg-card border border-gold/20 p-10 md:p-14 my-12"
-      >
-        <div className="flex items-center gap-4">
-          <span className="h-px w-8 bg-gold/40" />
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-            Identity Protocol
+    <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+      <div className="w-full max-w-md my-10 px-5 sm:px-0">
+        {/* Brand mark */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <span className="inline-block h-2 w-2 rotate-45 bg-gold" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft">
+              NexusZim
+            </span>
+          </div>
+          <h1 className="font-display text-3xl text-text">
+            Join the <em className="italic text-gold">register.</em>
+          </h1>
+          <p className="mt-2 font-sans text-sm text-text-soft">
+            Create your account to post briefs or list your business.
           </p>
         </div>
-        <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
-          Join the <span className="italic text-gold">Network.</span>
-        </h1>
-        <p className="mt-4 font-body text-base text-foreground/60">
-          Establish your credentials on Africa's premier brokerage platform.
-        </p>
 
-        {error && (
-          <div role="alert" className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
-            {error}
-          </div>
-        )}
-
-        <div className="mt-10 grid grid-cols-2 gap-4">
-          <RoleBtn active={role === "client"} onClick={() => setRole("client")}>
-            I'm a client
-          </RoleBtn>
-          <RoleBtn active={role === "service_provider"} onClick={() => setRole("service_provider")}>
-            I'm a provider
-          </RoleBtn>
-        </div>
-
-        <div className="mt-10 space-y-8">
-          <Input
-            id="signup-name"
-            label="Full Identity Name"
-            required
-            autoComplete="name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
-          <Input
-            id="signup-email"
-            label="Secure Email"
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            id="signup-password"
-            label="Security Password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
+        <form
+          onSubmit={onSubmit}
+          className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9 space-y-5"
         >
-          {loading ? "Authenticating..." : "Initialize Account"}
-        </button>
+          {error && (
+            <div role="alert" className="border border-rose-200 bg-rose-50 rounded-[3px] px-4 py-3 font-sans text-sm text-rose-600">
+              {error}
+            </div>
+          )}
 
-        <p className="mt-8 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/30">
-          Already established?{" "}
-          <Link to="/login" className="text-gold hover:text-foreground transition-colors">
-            Access Portal
-          </Link>
-        </p>
-      </form>
+          {/* Role selector */}
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft mb-2">
+              I am joining as
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <RoleBtn active={role === "client"} onClick={() => setRole("client")}>
+                Looking for services
+              </RoleBtn>
+              <RoleBtn active={role === "service_provider"} onClick={() => setRole("service_provider")}>
+                Service provider
+              </RoleBtn>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="signup-name" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+              Full name <span className="text-gold">*</span>
+            </label>
+            <input
+              id="signup-name"
+              required
+              autoComplete="name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Your full name"
+              className="field-input"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="signup-email" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+              Email <span className="text-gold">*</span>
+            </label>
+            <input
+              id="signup-email"
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@email.com"
+              className="field-input"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="signup-password" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+              Password <span className="text-gold">*</span>
+            </label>
+            <input
+              id="signup-password"
+              type="password"
+              required
+              minLength={8}
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="At least 8 characters"
+              className="field-input"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gold py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
+          >
+            {loading ? "Creating account..." : "Create account"}
+          </button>
+
+          <p className="text-center font-sans text-[13px] text-text-soft">
+            Already have an account?{" "}
+            <Link to="/login" className="text-forest hover:underline font-medium">
+              Log in
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
@@ -132,32 +161,13 @@ function RoleBtn({
     <button
       type="button"
       onClick={onClick}
-      className={`border px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-widest transition-all ${
+      className={`border px-4 py-3 rounded-[3px] font-sans text-[12px] font-semibold transition-all ${
         active
           ? "border-gold bg-gold text-forest-ink"
-          : "border-gold/20 text-gold/40 hover:border-gold/40"
+          : "border-hairline text-text-soft hover:border-forest hover:text-forest"
       }`}
     >
       {children}
     </button>
-  );
-}
-
-function Input({
-  label,
-  id,
-  ...rest
-}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <div className="space-y-3">
-      <label htmlFor={id} className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
-        {label}
-      </label>
-      <input
-        id={id}
-        {...rest}
-        className="w-full bg-background border border-gold/20 p-4 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
-      />
-    </div>
   );
 }

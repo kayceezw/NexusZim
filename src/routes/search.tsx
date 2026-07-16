@@ -1,8 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { CATEGORIES, CITIES, PROVIDERS, type CategorySlug } from "@/lib/mock-data";
-import { ProviderCard } from "@/components/provider-card";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { CATEGORIES, CITIES } from "@/lib/mock-data";
+import { LiveProviderCard } from "@/components/provider-card";
+import { ProviderCardSkeleton } from "@/components/skeletons";
 import { Search, X } from "lucide-react";
+import {
+  fetchProviders,
+  fetchCitiesWithCounts,
+  fetchCategories,
+} from "@/lib/queries";
 
 interface SearchParams {
   q?: string;
@@ -25,13 +32,13 @@ export const Route = createFileRoute("/search")({
   component: SearchPage,
 });
 
-type SortKey = "rating" | "price_asc" | "price_desc" | "response";
+type SortKey = "tier" | "name" | "city" | "newest";
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "rating", label: "Highest rated" },
-  { value: "price_asc", label: "Price: low to high" },
-  { value: "price_desc", label: "Price: high to low" },
-  { value: "response", label: "Fastest response" },
+  { value: "tier", label: "Highest tier" },
+  { value: "name", label: "Name A–Z" },
+  { value: "city", label: "By city" },
+  { value: "newest", label: "Newest first" },
 ];
 
 const TIER_OPTIONS = [
@@ -40,68 +47,75 @@ const TIER_OPTIONS = [
   { value: 3, label: "Trust Certified" },
 ];
 
-function parseResponseMinutes(s: string): number {
-  const num = parseInt(s.match(/\d+/)?.[0] ?? "999", 10);
-  if (s.includes("hr")) return num * 60;
-  return num;
-}
-
-function tierCount(tier: number) {
-  return PROVIDERS.filter((p) => p.tier >= tier).length;
-}
-
-function cityCount(city: string) {
-  return PROVIDERS.filter((p) => p.city === city).length;
-}
-
-function categoryCount(slug: string) {
-  return PROVIDERS.filter((p) => p.category === slug).length;
-}
+const PAGE_SIZE = 20;
 
 function SearchPage() {
   const { q: initialQ } = Route.useSearch();
   const [q, setQ] = useState(initialQ ?? "");
+  const [debouncedQ, setDebouncedQ] = useState(initialQ ?? "");
   const [city, setCity] = useState<string>("all");
-  const [category, setCategory] = useState<"all" | CategorySlug>("all");
+  const [categorySlug, setCategorySlug] = useState<string>("all");
   const [minTier, setMinTier] = useState<number>(1);
-  const [sortBy, setSortBy] = useState<SortKey>("rating");
-  const [availableOnly, setAvailableOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<SortKey>("tier");
+  const [page, setPage] = useState(0);
 
-  const activeFilterCount = [city !== "all", category !== "all", minTier > 1, availableOnly].filter(
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQ(q);
+      setPage(0);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [q]);
+
+  // Reset page when filters change
+  useEffect(() => setPage(0), [city, categorySlug, minTier, sortBy]);
+
+  const activeFilterCount = [city !== "all", categorySlug !== "all", minTier > 1].filter(
     Boolean,
   ).length;
 
   function resetFilters() {
     setQ("");
+    setDebouncedQ("");
     setCity("all");
-    setCategory("all");
+    setCategorySlug("all");
     setMinTier(1);
-    setAvailableOnly(false);
+    setPage(0);
   }
 
-  const results = useMemo(() => {
-    const term = q.trim().toLowerCase();
-    const filtered = PROVIDERS.filter((p) => {
-      if (availableOnly && p.availability !== "available") return false;
-      if (city !== "all" && p.city !== city) return false;
-      if (category !== "all" && p.category !== category) return false;
-      if (p.tier < minTier) return false;
-      if (term) {
-        const hay = [p.name, p.business, p.bio, p.city, ...p.services].join(" ").toLowerCase();
-        if (!hay.includes(term)) return false;
-      }
-      return true;
-    });
+  const { data: results, isLoading } = useQuery({
+    queryKey: ["providers", debouncedQ, city, categorySlug, minTier, sortBy, page],
+    queryFn: () =>
+      fetchProviders({
+        search: debouncedQ || undefined,
+        city: city !== "all" ? city : undefined,
+        categorySlug: categorySlug !== "all" ? categorySlug : undefined,
+        minTier,
+        sortBy,
+        limit: PAGE_SIZE,
+        offset: page * PAGE_SIZE,
+      }),
+    staleTime: 60 * 1000,
+    placeholderData: (prev) => prev,
+  });
 
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "rating") return b.rating - a.rating;
-      if (sortBy === "price_asc") return a.priceFrom - b.priceFrom;
-      if (sortBy === "price_desc") return b.priceFrom - a.priceFrom;
-      if (sortBy === "response")
-        return parseResponseMinutes(a.responseTime) - parseResponseMinutes(b.responseTime);
-      return 0;
-    });
-  }, [q, city, category, minTier, sortBy, availableOnly]);
+  const { data: citiesData } = useQuery({
+    queryKey: ["cities-with-counts"],
+    queryFn: fetchCitiesWithCounts,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: dbCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  const activeCities = citiesData ?? CITIES.map((c) => ({ city: c, count: 0 }));
+  const activeCategories = dbCategories ?? CATEGORIES.map((c) => ({ id: c.slug, name: c.name, slug: c.slug, description: c.description, provider_count: 0 }));
+
+  const hasMore = (results?.length ?? 0) === PAGE_SIZE;
 
   return (
     <div className="bg-cream pt-16 min-h-screen">
@@ -116,16 +130,16 @@ function SearchPage() {
             <h1 className="font-display text-3xl lg:text-4xl text-cream">
               Service providers on register
             </h1>
-            <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/40">
-              {results.length} record{results.length !== 1 ? "s" : ""} found
-            </p>
+            {!isLoading && results && (
+              <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/40 animate-fade-in">
+                {results.length === PAGE_SIZE ? `${PAGE_SIZE}+` : results.length} record
+                {results.length !== 1 ? "s" : ""} found
+              </p>
+            )}
           </div>
 
-          {/* Search bar */}
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
+            onSubmit={(e) => e.preventDefault()}
             className="mt-6 flex max-w-xl"
           >
             <div className="relative flex-1">
@@ -136,7 +150,7 @@ function SearchPage() {
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search by name, service, or city..."
+                placeholder="Search by name, category, or city..."
                 aria-label="Search providers"
                 className="w-full h-11 pl-10 pr-4 bg-forest-soft border border-cream/20 font-sans text-sm text-cream placeholder:text-cream/40 outline-none focus:border-cream/60 transition-colors"
                 style={{ borderRadius: "3px 0 0 3px" }}
@@ -200,9 +214,6 @@ function SearchPage() {
                         {t.label}+
                       </span>
                     </div>
-                    <span className="font-mono text-[10px] text-text-soft/50">
-                      {tierCount(t.value)}
-                    </span>
                   </label>
                 ))}
               </div>
@@ -223,25 +234,24 @@ function SearchPage() {
                       All cities
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-text-soft/50">
-                    {PROVIDERS.length}
-                  </span>
                 </label>
-                {CITIES.filter((c) => cityCount(c) > 0).map((c) => (
-                  <label key={c} className="flex items-center justify-between cursor-pointer group">
+                {activeCities.filter((c) => c.count > 0 || c.count === 0).slice(0, 10).map((c) => (
+                  <label key={c.city} className="flex items-center justify-between cursor-pointer group">
                     <div className="flex items-center gap-2.5">
                       <input
                         type="radio"
                         name="city"
-                        checked={city === c}
-                        onChange={() => setCity(c)}
+                        checked={city === c.city}
+                        onChange={() => setCity(c.city)}
                         className="accent-forest"
                       />
                       <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
-                        {c}
+                        {c.city}
                       </span>
                     </div>
-                    <span className="font-mono text-[10px] text-text-soft/50">{cityCount(c)}</span>
+                    {c.count > 0 && (
+                      <span className="font-mono text-[10px] text-text-soft/50">{c.count}</span>
+                    )}
                   </label>
                 ))}
               </div>
@@ -254,19 +264,16 @@ function SearchPage() {
                     <input
                       type="radio"
                       name="category"
-                      checked={category === "all"}
-                      onChange={() => setCategory("all")}
+                      checked={categorySlug === "all"}
+                      onChange={() => setCategorySlug("all")}
                       className="accent-forest"
                     />
                     <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
                       All specialties
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-text-soft/50">
-                    {PROVIDERS.length}
-                  </span>
                 </label>
-                {CATEGORIES.map((c) => (
+                {activeCategories.map((c) => (
                   <label
                     key={c.slug}
                     className="flex items-center justify-between cursor-pointer group"
@@ -275,37 +282,21 @@ function SearchPage() {
                       <input
                         type="radio"
                         name="category"
-                        checked={category === c.slug}
-                        onChange={() => setCategory(c.slug as CategorySlug)}
+                        checked={categorySlug === c.slug}
+                        onChange={() => setCategorySlug(c.slug)}
                         className="accent-forest"
                       />
                       <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
                         {c.name}
                       </span>
                     </div>
-                    <span className="font-mono text-[10px] text-text-soft/50">
-                      {categoryCount(c.slug)}
-                    </span>
+                    {c.provider_count > 0 && (
+                      <span className="font-mono text-[10px] text-text-soft/50">
+                        {c.provider_count}
+                      </span>
+                    )}
                   </label>
                 ))}
-              </div>
-
-              {/* Available now */}
-              <div className="px-5 py-4">
-                <div className="flex items-center justify-between">
-                  <span id="available-label" className="font-sans text-[13px] text-text-soft">Available now only</span>
-                  <button
-                    role="switch"
-                    aria-checked={availableOnly}
-                    aria-labelledby="available-label"
-                    onClick={() => setAvailableOnly((v) => !v)}
-                    className={`relative h-5 w-9 rounded-full transition-colors cursor-pointer ${availableOnly ? "bg-forest" : "bg-hairline"}`}
-                  >
-                    <span
-                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all ${availableOnly ? "left-4" : "left-0.5"}`}
-                    />
-                  </button>
-                </div>
               </div>
             </div>
 
@@ -322,7 +313,16 @@ function SearchPage() {
             {/* Sort row */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-soft">
-                {results.length} result{results.length !== 1 ? "s" : ""}
+                {isLoading ? (
+                  <span className="animate-pulse">Searching...</span>
+                ) : (
+                  <>
+                    {(results?.length ?? 0) === PAGE_SIZE
+                      ? `${PAGE_SIZE}+`
+                      : results?.length ?? 0}{" "}
+                    result{(results?.length ?? 0) !== 1 ? "s" : ""}
+                  </>
+                )}
               </p>
               <div className="flex items-center gap-2">
                 <label htmlFor="sort-select" className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft shrink-0">
@@ -346,14 +346,11 @@ function SearchPage() {
             {/* Active filter chips */}
             {activeFilterCount > 0 && (
               <div className="flex flex-wrap gap-2">
-                {availableOnly && (
-                  <FilterChip label="Available Now" onRemove={() => setAvailableOnly(false)} />
-                )}
                 {city !== "all" && <FilterChip label={city} onRemove={() => setCity("all")} />}
-                {category !== "all" && (
+                {categorySlug !== "all" && (
                   <FilterChip
-                    label={CATEGORIES.find((c) => c.slug === category)?.name ?? category}
-                    onRemove={() => setCategory("all")}
+                    label={activeCategories.find((c) => c.slug === categorySlug)?.name ?? categorySlug}
+                    onRemove={() => setCategorySlug("all")}
                   />
                 )}
                 {minTier > 1 && (
@@ -365,14 +362,26 @@ function SearchPage() {
               </div>
             )}
 
-            {/* Registry rows */}
+            {/* Results */}
             <div className="space-y-3">
-              {results.map((p) => (
-                <ProviderCard key={p.id} provider={p} />
-              ))}
+              {isLoading
+                ? [0, 1, 2, 3, 4].map((i) => <ProviderCardSkeleton key={i} />)
+                : results?.map((p) => <LiveProviderCard key={p.user_id} provider={p} />)}
             </div>
 
-            {results.length === 0 && (
+            {/* Load more */}
+            {!isLoading && hasMore && (
+              <div className="pt-2 flex justify-center">
+                <button
+                  onClick={() => setPage((n) => n + 1)}
+                  className="border border-forest px-8 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                >
+                  Load more providers
+                </button>
+              </div>
+            )}
+
+            {!isLoading && results?.length === 0 && (
               <div className="border border-dashed border-hairline rounded-[6px] p-16 text-center bg-cream-raised">
                 <p className="font-display text-xl text-text">No records found</p>
                 <p className="mt-3 font-sans text-[13px] text-text-soft max-w-sm mx-auto">

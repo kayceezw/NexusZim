@@ -59,8 +59,8 @@ const ACCENT_MAP = {
   },
 } as const;
 
-export function CategoryCard({ category }: { category: Category }) {
-  const count = PROVIDERS.filter((p) => p.category === category.slug).length;
+export function CategoryCard({ category, count: countProp }: { category: Category; count?: number }) {
+  const count = countProp ?? PROVIDERS.filter((p) => p.category === category.slug).length;
   const accent = ACCENT_MAP[category.accent] ?? ACCENT_MAP.accent;
   const Icon = ICON_MAP[category.icon];
   const visibleSubs = category.subCategories.slice(0, 3);
