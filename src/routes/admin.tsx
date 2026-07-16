@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RequireAuth } from "@/components/require-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { createProviderFn } from "@/lib/create-provider";
@@ -314,6 +314,7 @@ function AdminPage() {
         </section>
 
         <AddProviderSection />
+        <HeroFeatureSection />
       </div>
     </div>
   );
@@ -598,5 +599,137 @@ function Tile({ label, value }: { label: string; value: string }) {
       <p className="font-display text-4xl text-gold">{value}</p>
       <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-text-soft">{label}</p>
     </div>
+  );
+}
+
+/* ─── HERO FEATURE ─── */
+
+function HeroFeatureSection() {
+  const [selectedId, setSelectedId] = useState("");
+  const [currentId, setCurrentId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const { data: providers } = useQuery({
+    queryKey: ["admin", "providers"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("provider_profiles")
+        .select("user_id, business_name, city, tier")
+        .order("tier", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  useEffect(() => {
+    const { data } = supabase.storage.from("site-assets").getPublicUrl("config.json");
+    fetch(`${data.publicUrl}?t=${Date.now()}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((cfg) => {
+        if (cfg?.featuredProviderId) {
+          setCurrentId(cfg.featuredProviderId);
+          setSelectedId(cfg.featuredProviderId);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const currentProvider = (providers ?? []).find((p) => p.user_id === currentId);
+
+  async function save() {
+    if (!selectedId) return;
+    setSaving(true);
+    const json = JSON.stringify({ featuredProviderId: selectedId });
+    const blob = new Blob([json], { type: "application/json" });
+    const { error } = await supabase.storage
+      .from("site-assets")
+      .upload("config.json", blob, { upsert: true, contentType: "application/json" });
+    setSaving(false);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setCurrentId(selectedId);
+      toast.success("Hero provider updated — refresh the homepage to see it.");
+    }
+  }
+
+  async function clearFeatured() {
+    setSaving(true);
+    const json = JSON.stringify({ featuredProviderId: null });
+    const blob = new Blob([json], { type: "application/json" });
+    await supabase.storage
+      .from("site-assets")
+      .upload("config.json", blob, { upsert: true, contentType: "application/json" });
+    setSaving(false);
+    setCurrentId(null);
+    setSelectedId("");
+    toast.success("Cleared — hero card will show NexusZim default.");
+  }
+
+  return (
+    <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
+      <div className="mb-6">
+        <h2 className="font-display text-xl text-text">Hero Featured Provider</h2>
+        <p className="font-sans text-[12px] text-text-soft mt-1">
+          The provider shown in the registry card on the homepage hero. Leave unset to show the NexusZim default.
+        </p>
+      </div>
+
+      {currentProvider && (
+        <div className="mb-5 flex items-center gap-3 border border-emerald-200 bg-emerald-50 rounded-[6px] px-5 py-3">
+          <span className="font-mono text-[8px] text-emerald-600 border border-emerald-200 bg-emerald-100 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider shrink-0">
+            Current
+          </span>
+          <p className="font-display text-sm text-text flex-1">
+            {currentProvider.business_name}
+            <span className="font-sans font-normal text-text-soft ml-2 text-[12px]">
+              · {currentProvider.city ?? "—"} · Tier {currentProvider.tier}
+            </span>
+          </p>
+          <button
+            onClick={clearFeatured}
+            disabled={saving}
+            className="font-mono text-[9px] uppercase tracking-widest text-text-soft/50 hover:text-rose-500 transition-colors"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
+      {!currentProvider && (
+        <div className="mb-5 border border-hairline rounded-[6px] px-5 py-3">
+          <p className="font-sans text-[13px] text-text-soft italic">
+            Showing default — "NexusZim"
+          </p>
+        </div>
+      )}
+
+      <div className="flex items-end gap-3">
+        <div className="flex-1 space-y-1.5">
+          <label className="block font-mono text-[10px] uppercase tracking-widest text-text-soft">
+            Select Provider
+          </label>
+          <select
+            value={selectedId}
+            onChange={(e) => setSelectedId(e.target.value)}
+            className="field-input"
+          >
+            <option value="">— Choose a provider —</option>
+            {(providers ?? []).map((p) => (
+              <option key={p.user_id} value={p.user_id}>
+                {p.business_name} · {p.city ?? "—"} · T{p.tier}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={save}
+          disabled={saving || !selectedId || selectedId === currentId}
+          className="bg-gold px-6 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-50 shrink-0"
+        >
+          {saving ? "Saving..." : "Set as Featured"}
+        </button>
+      </div>
+    </section>
   );
 }

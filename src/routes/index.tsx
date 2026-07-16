@@ -15,6 +15,7 @@ import {
   fetchFeaturedProviders,
   fetchPlatformStats,
   fetchCategories,
+  type ProviderListing,
 } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
@@ -41,15 +42,36 @@ const SPECIMEN_LEDGER: LedgerEntry[] = [
 function LandingPage() {
   const [q, setQ] = useState("");
   const [heroBg, setHeroBg] = useState<string | null>(null);
+  const [heroProviderId, setHeroProviderId] = useState<string | null>(null);
   const heroImgRef = useRef<HTMLImageElement>(null);
   const navigate = useNavigate();
   const { roles } = useAuth();
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
 
   useEffect(() => {
-    const { data } = supabase.storage.from("site-assets").getPublicUrl("hero-bg.jpg");
-    setHeroBg(data.publicUrl);
+    const { data: bgData } = supabase.storage.from("site-assets").getPublicUrl("hero-bg.jpg");
+    setHeroBg(bgData.publicUrl);
+
+    const { data: cfgData } = supabase.storage.from("site-assets").getPublicUrl("config.json");
+    fetch(`${cfgData.publicUrl}?t=${Date.now()}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((cfg) => { if (cfg?.featuredProviderId) setHeroProviderId(cfg.featuredProviderId); })
+      .catch(() => {});
   }, []);
+
+  const { data: heroProvider } = useQuery({
+    queryKey: ["hero-provider", heroProviderId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("provider_profiles")
+        .select("*, categories(id, name, slug)")
+        .eq("user_id", heroProviderId!)
+        .maybeSingle();
+      return data as ProviderListing | null;
+    },
+    enabled: !!heroProviderId,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["platform-stats"],
@@ -178,63 +200,8 @@ function LandingPage() {
               </div>
             </div>
 
-            {/* Right: specimen registry card */}
-            <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 shadow-[0_2px_12px_rgba(15,51,35,0.08)]">
-              <div className="flex items-start justify-between gap-3 pb-4 border-b border-hairline">
-                <div>
-                  <p className="eyebrow text-text-soft/60">
-                    <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
-                    Registry record
-                  </p>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-soft mt-1">
-                    NX-2024-00147
-                  </p>
-                </div>
-                <Hallmark tier={3} />
-              </div>
-
-              <div className="py-4 border-b border-hairline">
-                <p className="font-display text-2xl text-text leading-tight">
-                  Peerless Events Group
-                </p>
-                <p className="font-sans text-[13px] text-text-soft mt-1">
-                  Operated by Chiyedza Mutimba &middot; Harare
-                </p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {["Corporate Events", "AV Production", "Protocol Officers"].map((s) => (
-                    <span
-                      key={s}
-                      className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-soft px-2 py-0.5 border border-hairline rounded-[3px]"
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="py-4 border-b border-hairline">
-                <p className="eyebrow text-text-soft/60 mb-3">
-                  <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
-                  Verification record
-                </p>
-                <Ledger entries={SPECIMEN_LEDGER} variant="condensed" />
-              </div>
-
-              <div className="pt-4 flex items-center justify-between">
-                <span className="font-mono text-[11px] text-text-soft/60 uppercase tracking-[0.08em]">
-                  Next review: Apr 2025
-                </span>
-                <Link
-                  to="/search"
-                  className="font-sans text-[12px] font-semibold text-forest hover:text-gold-deep transition-colors flex items-center gap-1 group"
-                >
-                  Browse all records
-                  <span className="transition-transform group-hover:translate-x-[3px] duration-150">
-                    →
-                  </span>
-                </Link>
-              </div>
-            </div>
+            {/* Right: featured registry card */}
+            <HeroRegistryCard provider={heroProvider ?? null} />
           </div>
         </div>
       </section>
@@ -389,6 +356,76 @@ function LandingPage() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
+  const name = provider?.business_name ?? "NexusZim";
+  const categoryName = (provider?.categories as { name: string } | null)?.name ?? null;
+  const city = provider?.city ?? "Zimbabwe";
+  const tier = provider?.tier ?? 4;
+  const registryId = provider
+    ? `NX-${provider.user_id.slice(0, 4).toUpperCase()}-${provider.user_id.slice(4, 9).toUpperCase()}`
+    : "NX-0000-00001";
+  const tags = categoryName
+    ? [categoryName, "Verified Business", "Trust Record"]
+    : ["Verified Providers", "Business Records", "Trust Certificates"];
+
+  return (
+    <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 shadow-[0_2px_12px_rgba(15,51,35,0.08)]">
+      <div className="flex items-start justify-between gap-3 pb-4 border-b border-hairline">
+        <div>
+          <p className="eyebrow text-text-soft/60">
+            <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+            Registry record
+          </p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-soft mt-1">
+            {registryId}
+          </p>
+        </div>
+        <Hallmark tier={tier} />
+      </div>
+
+      <div className="py-4 border-b border-hairline">
+        <p className="font-display text-2xl text-text leading-tight">{name}</p>
+        <p className="font-sans text-[13px] text-text-soft mt-1">
+          {provider ? `${city}` : "Zimbabwe's Verified Service Registry · Harare"}
+        </p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {tags.map((s) => (
+            <span
+              key={s}
+              className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-soft px-2 py-0.5 border border-hairline rounded-[3px]"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="py-4 border-b border-hairline">
+        <p className="eyebrow text-text-soft/60 mb-3">
+          <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+          Verification record
+        </p>
+        <Ledger entries={SPECIMEN_LEDGER} variant="condensed" />
+      </div>
+
+      <div className="pt-4 flex items-center justify-between">
+        <span className="font-mono text-[11px] text-text-soft/60 uppercase tracking-[0.08em]">
+          {provider ? `Tier ${tier} · Verified` : "NexusZim Platform · Est. 2024"}
+        </span>
+        <Link
+          to="/search"
+          className="font-sans text-[12px] font-semibold text-forest hover:text-gold-deep transition-colors flex items-center gap-1 group"
+        >
+          Browse all records
+          <span className="transition-transform group-hover:translate-x-[3px] duration-150">
+            →
+          </span>
+        </Link>
+      </div>
     </div>
   );
 }
