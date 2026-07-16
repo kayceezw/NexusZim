@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Reset Credentials — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Reset password — NexusZim" }] }),
   component: ResetPasswordPage,
 });
 
@@ -59,7 +60,7 @@ function ResetPasswordPage() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
-      setError("Passwords do not match — verify both fields.");
+      setError("Passwords do not match.");
       return;
     }
     setError(null);
@@ -80,68 +81,81 @@ function ResetPasswordPage() {
   const confirmsMismatch = confirm.length > 0 && password !== confirm;
 
   return (
-    <div className="bg-background pt-24 min-h-screen grid place-items-center">
-      <div className="w-full max-w-xl bg-card border border-gold/20 p-10 md:p-14 my-12">
-        <div className="flex items-center gap-4">
-          <span className="h-px w-8 bg-gold/40" />
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-gold">
-            Security Override
-          </p>
+    <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+      <div className="w-full max-w-md my-10 px-5 sm:px-0">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <span className="inline-block h-2 w-2 rotate-45 bg-gold" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft">
+              NexusZim
+            </span>
+          </div>
         </div>
 
-        {pageState === "loading" && (
-          <div className="mt-16 mb-8 flex flex-col items-center gap-6">
-            <div className="h-8 w-8 border-2 border-gold/20 border-t-gold animate-spin" />
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-foreground/40">
-              Verifying recovery token...
-            </p>
-          </div>
-        )}
+        <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9">
+          {pageState === "loading" && (
+            <div className="py-16 flex flex-col items-center gap-5">
+              <div className="h-7 w-7 border-2 border-hairline border-t-forest rounded-full animate-spin" />
+              <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft/60">
+                Verifying reset link...
+              </p>
+            </div>
+          )}
 
-        {pageState === "expired" && (
-          <>
-            <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
-              Link <span className="italic text-rose-500">Expired.</span>
-            </h1>
-            <p className="mt-4 font-body text-base text-foreground/60">
-              This recovery link is no longer valid. Links expire after 1 hour as a security
-              measure. Request a new one to continue.
-            </p>
-            <Link
-              to="/forgot-password"
-              className="mt-10 block w-full bg-gold py-5 text-center font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
-            >
-              Request New Link
-            </Link>
-            <Link
-              to="/login"
-              className="mt-4 block w-full py-3 text-center font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30 hover:text-foreground/60 transition-colors"
-            >
-              Return to Portal
-            </Link>
-          </>
-        )}
-
-        {pageState === "ready" && (
-          <form onSubmit={onSubmit}>
-            <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
-              New <span className="italic text-gold">Credentials.</span>
-            </h1>
-            <p className="mt-4 font-body text-base text-foreground/60">
-              Establish your new security credentials. Choose something strong that only you know.
-            </p>
-
-            {error && (
-              <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-4 font-body text-sm text-rose-500 italic">
-                {error}
+          {pageState === "expired" && (
+            <div className="space-y-5">
+              <div>
+                <p className="eyebrow text-text-soft mb-2">
+                  <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+                  Link expired
+                </p>
+                <h1 className="font-display text-2xl text-text">
+                  Reset link <em className="italic text-rose-500">expired.</em>
+                </h1>
+                <p className="mt-2 font-sans text-sm text-text-soft">
+                  This link is no longer valid — links expire after 1 hour. Request a new one.
+                </p>
               </div>
-            )}
+              <Link
+                to="/forgot-password"
+                className="block w-full bg-gold py-3.5 text-center rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+              >
+                Request new link
+              </Link>
+              <Link
+                to="/login"
+                className="block w-full border border-hairline py-3 text-center rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+              >
+                Back to login
+              </Link>
+            </div>
+          )}
 
-            <div className="mt-10 space-y-8">
-              {/* New password field */}
-              <div className="space-y-3">
-                <label className="block font-mono text-[9px] font-bold uppercase tracking-widest text-gold/60">
-                  New Password
+          {pageState === "ready" && (
+            <form onSubmit={onSubmit} className="space-y-5">
+              <div>
+                <p className="eyebrow text-text-soft mb-2">
+                  <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+                  Reset password
+                </p>
+                <h1 className="font-display text-2xl text-text">
+                  Choose a new <em className="italic text-gold">password.</em>
+                </h1>
+                <p className="mt-2 font-sans text-sm text-text-soft">
+                  Pick something strong that only you know.
+                </p>
+              </div>
+
+              {error && (
+                <div className="border border-rose-200 bg-rose-50 rounded-[3px] px-4 py-3 font-sans text-sm text-rose-600">
+                  {error}
+                </div>
+              )}
+
+              {/* New password */}
+              <div className="space-y-1.5">
+                <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+                  New password <span className="text-gold">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -151,13 +165,13 @@ function ResetPasswordPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     autoFocus
-                    className="w-full bg-background border border-gold/20 p-4 pr-12 font-body text-sm text-foreground outline-none focus:border-gold placeholder:text-foreground/20"
+                    className="field-input pr-11"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     tabIndex={-1}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground/30 hover:text-gold transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-soft/40 hover:text-forest transition-colors"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -166,27 +180,29 @@ function ResetPasswordPage() {
 
                 {/* Strength meter */}
                 {password.length > 0 && (
-                  <div className="space-y-2 pt-1">
+                  <div className="space-y-1.5 pt-1">
                     <div className="flex gap-1">
                       {[0, 1, 2, 3].map((i) => (
                         <div
                           key={i}
-                          className={`h-0.5 flex-1 transition-all duration-300 ${i < strength.score ? strength.barColor : "bg-foreground/10"}`}
+                          className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                            i < strength.score ? strength.barColor : "bg-hairline"
+                          }`}
                         />
                       ))}
                     </div>
                     <div className="flex items-center justify-between">
-                      <p
-                        className={`font-mono text-[9px] font-bold uppercase tracking-widest transition-colors ${strength.textColor}`}
-                      >
+                      <p className={`font-mono text-[9px] uppercase tracking-widest ${strength.textColor}`}>
                         {strength.label}
                       </p>
                     </div>
-                    <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1">
+                    <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
                       {strength.requirements.map((req) => (
                         <li
                           key={req.label}
-                          className={`flex items-center gap-2 font-mono text-[9px] uppercase tracking-wider transition-colors ${req.met ? "text-emerald-500" : "text-foreground/25"}`}
+                          className={`flex items-center gap-2 font-mono text-[9px] uppercase tracking-wider transition-colors ${
+                            req.met ? "text-emerald-500" : "text-text-soft/30"
+                          }`}
                         >
                           <span className="shrink-0">{req.met ? "✓" : "○"}</span>
                           {req.label}
@@ -197,27 +213,27 @@ function ResetPasswordPage() {
                 )}
               </div>
 
-              {/* Confirm password field */}
-              <div className="space-y-3">
+              {/* Confirm password */}
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label
-                    className={`block font-mono text-[9px] font-bold uppercase tracking-widest transition-colors ${
+                    className={`font-mono text-[10px] uppercase tracking-[0.1em] transition-colors ${
                       confirmsMatch
                         ? "text-emerald-500"
                         : confirmsMismatch
                           ? "text-rose-500"
-                          : "text-gold/60"
+                          : "text-text-soft"
                     }`}
                   >
-                    Confirm Password
+                    Confirm password <span className="text-gold">*</span>
                   </label>
                   {confirmsMatch && (
-                    <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-emerald-500">
-                      ✓ Match confirmed
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-emerald-500">
+                      ✓ Matches
                     </span>
                   )}
                   {confirmsMismatch && (
-                    <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-rose-500">
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-rose-500">
                       ✗ Mismatch
                     </span>
                   )}
@@ -228,62 +244,67 @@ function ResetPasswordPage() {
                     required
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
-                    className={`w-full bg-background border p-4 pr-12 font-body text-sm text-foreground outline-none placeholder:text-foreground/20 transition-colors ${
+                    className={`field-input pr-11 transition-colors ${
                       confirmsMatch
-                        ? "border-emerald-500/50 focus:border-emerald-500"
+                        ? "border-emerald-300 focus:border-emerald-500"
                         : confirmsMismatch
-                          ? "border-rose-500/50 focus:border-rose-500"
-                          : "border-gold/20 focus:border-gold"
+                          ? "border-rose-300 focus:border-rose-500"
+                          : ""
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirm((v) => !v)}
                     tabIndex={-1}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground/30 hover:text-gold transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-soft/40 hover:text-forest transition-colors"
                     aria-label={showConfirm ? "Hide password" : "Show password"}
                   >
                     {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
                 </div>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading || confirmsMismatch || password.length < 8}
-              className="mt-12 block w-full bg-gold py-5 font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors disabled:opacity-40"
-            >
-              {loading ? "Updating Credentials..." : "Confirm New Credentials"}
-            </button>
-          </form>
-        )}
+              <button
+                type="submit"
+                disabled={loading || confirmsMismatch || password.length < 8}
+                className="w-full bg-gold py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-50"
+              >
+                {loading ? "Updating password..." : "Set new password"}
+              </button>
+            </form>
+          )}
 
-        {pageState === "success" && (
-          <>
-            <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
-              Credentials <span className="italic text-gold">Updated.</span>
-            </h1>
-            <div className="mt-8 border border-emerald-500/20 bg-emerald-500/5 p-6 space-y-2">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-500">
-                Security Override Complete
+          {pageState === "success" && (
+            <div className="space-y-5 text-center py-4">
+              <div className="flex justify-center mb-4">
+                <div className="h-14 w-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                  <CheckCircle2 className="h-7 w-7 text-emerald-500" strokeWidth={1.5} />
+                </div>
+              </div>
+              <p className="eyebrow text-text-soft">
+                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+                Password updated
               </p>
-              <p className="font-body text-sm text-foreground/60">
-                Your credentials have been successfully updated. Use your new password the next time
-                you access the portal.
+              <h1 className="font-display text-2xl text-text">
+                All <em className="italic text-gold">done.</em>
+              </h1>
+              <div className="border border-emerald-200 bg-emerald-50 rounded-[6px] p-5">
+                <p className="font-sans text-sm text-emerald-700 leading-relaxed">
+                  Your password has been updated. Use it to log in from now on.
+                </p>
+              </div>
+              <p className="font-mono text-[9px] uppercase tracking-widest text-text-soft/50">
+                Redirecting to login in 4 seconds...
               </p>
+              <Link
+                to="/login"
+                className="block w-full bg-gold py-3.5 text-center rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+              >
+                Go to login
+              </Link>
             </div>
-            <p className="mt-6 font-mono text-[9px] font-bold uppercase tracking-widest text-foreground/30">
-              Redirecting to portal in 4 seconds...
-            </p>
-            <Link
-              to="/login"
-              className="mt-4 block w-full bg-gold py-5 text-center font-display text-sm font-bold uppercase tracking-widest text-white hover:bg-foreground transition-colors"
-            >
-              Proceed to Portal
-            </Link>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
@@ -298,27 +319,18 @@ function getPasswordStrength(password: string) {
   ];
   const score = requirements.filter((r) => r.met).length;
   const levels = [
-    { label: "Compromised", barColor: "bg-rose-500", textColor: "text-rose-500" },
-    { label: "Minimal", barColor: "bg-orange-500", textColor: "text-orange-500" },
-    { label: "Adequate", barColor: "bg-amber-500", textColor: "text-amber-500" },
+    { label: "Weak", barColor: "bg-rose-500", textColor: "text-rose-500" },
+    { label: "Minimal", barColor: "bg-orange-400", textColor: "text-orange-500" },
+    { label: "Fair", barColor: "bg-amber-400", textColor: "text-amber-600" },
     { label: "Strong", barColor: "bg-gold", textColor: "text-gold" },
-    { label: "Secure", barColor: "bg-emerald-500", textColor: "text-emerald-500" },
+    { label: "Secure", barColor: "bg-emerald-500", textColor: "text-emerald-600" },
   ];
   return { score, requirements, ...levels[Math.min(score, 4)] };
 }
 
 function EyeIcon() {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
@@ -327,16 +339,7 @@ function EyeIcon() {
 
 function EyeOffIcon() {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
       <line x1="1" y1="1" x2="23" y2="23" />
     </svg>

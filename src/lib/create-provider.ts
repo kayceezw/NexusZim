@@ -37,6 +37,7 @@ export const createProviderFn = createServerFn({ method: "POST" })
       .insert({ user_id: userId, role: "service_provider" as const });
     if (roleError) throw new Error(roleError.message);
 
+    // Admin-created providers are always verified — KC has physically checked them
     const { error: profileError } = await supabaseAdmin.from("provider_profiles").insert({
       user_id: userId,
       business_name: data.businessName,
@@ -47,9 +48,15 @@ export const createProviderFn = createServerFn({ method: "POST" })
       website: data.website || null,
       bio: data.bio || null,
       tier: data.tier,
-      verified: data.tier > 1,
+      verified: true,
     });
     if (profileError) throw new Error(profileError.message);
+
+    // Mark onboarding complete so provider goes straight to dashboard on first login
+    await supabaseAdmin.from("profiles").upsert(
+      { id: userId, full_name: data.businessName, email: data.email, onboarding_completed: true },
+      { onConflict: "id" },
+    );
 
     return { userId, tempPassword, email: data.email };
   });

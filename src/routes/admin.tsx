@@ -5,7 +5,7 @@ import { RequireAuth } from "@/components/require-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { createProviderFn } from "@/lib/create-provider";
 import { toast } from "sonner";
-import { Plus, Copy, CheckCircle2, X } from "lucide-react";
+import { Plus, Copy, CheckCircle2, X, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — NexusZim" }] }),
@@ -25,7 +25,7 @@ function AdminPage() {
       const { data, error } = await supabase
         .from("provider_profiles")
         .select(
-          "user_id, business_name, city, phone, whatsapp, bio, website, verified, tier, created_at, category_id, categories(name)",
+          "user_id, business_name, city, phone, whatsapp, bio, website, verified, tier, created_at, category_id, categories(name), profiles(email)",
         )
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -64,7 +64,7 @@ function AdminPage() {
     mutationFn: async ({ userId, tier }: { userId: string; tier: number }) => {
       const { error } = await supabase
         .from("provider_profiles")
-        .update({ tier, verified: tier > 1 })
+        .update({ tier, verified: true })
         .eq("user_id", userId);
       if (error) throw error;
     },
@@ -74,6 +74,14 @@ function AdminPage() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  async function sendPasswordReset(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) toast.error(error.message);
+    else toast.success(`Password reset email sent to ${email}`);
+  }
 
   const pending = (providers ?? []).filter((p) => (p.tier ?? 1) === 1);
   const approved = (providers ?? []).filter((p) => (p.tier ?? 1) > 1);
@@ -133,42 +141,58 @@ function AdminPage() {
                 No providers awaiting tier upgrades.
               </p>
             )}
-            {pending.map((p) => (
-              <div
-                key={p.user_id}
-                className="flex flex-col gap-5 border border-hairline rounded-[3px] bg-cream p-5 md:flex-row md:items-center md:justify-between hover:border-forest transition-colors"
-              >
-                <div className="min-w-0">
-                  <p className="font-display text-lg text-text">{p.business_name}</p>
-                  <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-text-soft">
-                    {(p.categories as { name: string } | null)?.name ?? "No category"} ·{" "}
-                    {p.city ?? "—"}
-                  </p>
-                  {p.bio && (
-                    <p className="mt-3 font-sans text-[13px] text-text-soft line-clamp-1">
-                      {p.bio}
+            {pending.map((p) => {
+              const email = (p.profiles as { email: string } | null)?.email ?? null;
+              return (
+                <div
+                  key={p.user_id}
+                  className="flex flex-col gap-5 border border-hairline rounded-[3px] bg-cream p-5 md:flex-row md:items-center md:justify-between hover:border-forest transition-colors"
+                >
+                  <div className="min-w-0">
+                    <p className="font-display text-lg text-text">{p.business_name}</p>
+                    <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-text-soft">
+                      {(p.categories as { name: string } | null)?.name ?? "No category"} ·{" "}
+                      {p.city ?? "—"}
                     </p>
-                  )}
+                    {email && (
+                      <p className="mt-1 font-mono text-[9px] text-text-soft/50">{email}</p>
+                    )}
+                    {p.bio && (
+                      <p className="mt-2 font-sans text-[13px] text-text-soft line-clamp-1">
+                        {p.bio}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {email && (
+                      <button
+                        onClick={() => sendPasswordReset(email)}
+                        className="flex items-center gap-1.5 border border-hairline px-3 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-text-soft hover:border-forest hover:text-forest transition-colors"
+                        title="Send password reset email"
+                      >
+                        <Mail className="h-3 w-3" />
+                        Reset pwd
+                      </button>
+                    )}
+                    {[2, 3, 4].map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTier.mutate({ userId: p.user_id, tier: t })}
+                        className={`px-4 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest border transition-colors ${
+                          t === 2
+                            ? "border-blue-300 text-blue-500 hover:bg-blue-50"
+                            : t === 3
+                              ? "border-amber-300 text-amber-600 hover:bg-amber-50"
+                              : "border-gold/50 text-gold hover:bg-gold hover:text-forest-ink"
+                        }`}
+                      >
+                        Tier {t}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {[2, 3, 4].map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setTier.mutate({ userId: p.user_id, tier: t })}
-                      className={`px-4 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest border transition-colors ${
-                        t === 2
-                          ? "border-blue-300 text-blue-500 hover:bg-blue-50"
-                          : t === 3
-                            ? "border-amber-300 text-amber-600 hover:bg-amber-50"
-                            : "border-gold/50 text-gold hover:bg-gold hover:text-forest-ink"
-                      }`}
-                    >
-                      Tier {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -180,25 +204,46 @@ function AdminPage() {
               {approved.length === 0 && (
                 <p className="font-sans text-sm text-text-soft italic">None yet.</p>
               )}
-              {approved.map((p) => (
-                <div
-                  key={p.user_id}
-                  className="flex items-center justify-between border border-hairline rounded-[3px] px-4 py-3 hover:border-forest transition-colors"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate font-display text-sm text-text">{p.business_name}</p>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-soft">
-                      Tier {p.tier} · {p.city ?? "—"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setTier.mutate({ userId: p.user_id, tier: 1 })}
-                    className="font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-rose-500 transition-colors"
+              {approved.map((p) => {
+                const email = (p.profiles as { email: string } | null)?.email ?? null;
+                return (
+                  <div
+                    key={p.user_id}
+                    className="flex items-center justify-between border border-hairline rounded-[3px] px-4 py-3 hover:border-forest transition-colors"
                   >
-                    Demote
-                  </button>
-                </div>
-              ))}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="truncate font-display text-sm text-text">{p.business_name}</p>
+                        <span className="shrink-0 font-mono text-[8px] text-emerald-500 border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider">
+                          ✓ verified
+                        </span>
+                      </div>
+                      <p className="font-mono text-[9px] uppercase tracking-widest text-text-soft">
+                        Tier {p.tier} · {p.city ?? "—"}
+                        {email && ` · ${email}`}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 ml-4">
+                      {email && (
+                        <button
+                          onClick={() => sendPasswordReset(email)}
+                          className="flex items-center gap-1 border border-hairline px-2.5 py-1.5 rounded-[3px] font-mono text-[8px] uppercase tracking-widest text-text-soft hover:border-forest hover:text-forest transition-colors"
+                          title={`Send password reset to ${email}`}
+                        >
+                          <Mail className="h-3 w-3" />
+                          Reset
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setTier.mutate({ userId: p.user_id, tier: 1 })}
+                        className="font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-rose-500 transition-colors"
+                      >
+                        Demote
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
 
@@ -355,9 +400,14 @@ function AddProviderSection() {
     <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-display text-xl text-text">Add Provider</h2>
-          <p className="mt-1 font-sans text-[12px] text-text-soft">
-            Create an account for a provider you work with directly.
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="font-display text-xl text-text">Add Provider</h2>
+            <span className="font-mono text-[8px] text-emerald-600 border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider">
+              auto-verified
+            </span>
+          </div>
+          <p className="font-sans text-[12px] text-text-soft">
+            Providers you add here are automatically verified — you've checked them in person.
           </p>
         </div>
         <button
