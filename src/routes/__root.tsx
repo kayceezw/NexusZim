@@ -182,7 +182,7 @@ function RootComponent() {
           </a>
           <div className="flex min-h-screen flex-col">
             <SiteHeader />
-            <main id="main-content" className="flex-1">
+            <main id="main-content" className="flex-1 animate-page-enter">
               <Outlet />
             </main>
             <SiteFooter />

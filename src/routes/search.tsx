@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CATEGORIES, CITIES } from "@/lib/mock-data";
 import { LiveProviderCard } from "@/components/provider-card";
 import { ProviderCardSkeleton } from "@/components/skeletons";
-import { Search, X } from "lucide-react";
+import { Search, X, Loader2 } from "lucide-react";
 import {
   fetchProviders,
   fetchCitiesWithCounts,
@@ -58,8 +58,14 @@ function SearchPage() {
   const [minTier, setMinTier] = useState<number>(1);
   const [sortBy, setSortBy] = useState<SortKey>("tier");
   const [page, setPage] = useState(0);
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  // Debounce search query
+  // Auto-focus search on mount
+  useEffect(() => {
+    searchRef.current?.focus();
+  }, []);
+
+  // Debounce search query — 300ms, results filter immediately
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQ(q);
@@ -84,7 +90,10 @@ function SearchPage() {
     setPage(0);
   }
 
-  const { data: results, isLoading } = useQuery({
+  // isTyping tracks whether the user has typed something that hasn't finished debouncing
+  const isTyping = q !== debouncedQ;
+
+  const { data: results, isLoading, isFetching } = useQuery({
     queryKey: ["providers", debouncedQ, city, categorySlug, minTier, sortBy, page],
     queryFn: () =>
       fetchProviders({
@@ -113,64 +122,97 @@ function SearchPage() {
   });
 
   const activeCities = citiesData ?? CITIES.map((c) => ({ city: c, count: 0 }));
-  const activeCategories = dbCategories ?? CATEGORIES.map((c) => ({ id: c.slug, name: c.name, slug: c.slug, description: c.description, provider_count: 0 }));
+  const activeCategories =
+    dbCategories ??
+    CATEGORIES.map((c) => ({
+      id: c.slug,
+      name: c.name,
+      slug: c.slug,
+      description: c.description,
+      provider_count: 0,
+    }));
 
   const hasMore = (results?.length ?? 0) === PAGE_SIZE;
+  // Show spinner when debouncing OR when a new fetch is in flight
+  const showSpinner = isTyping || (isFetching && !isLoading);
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
-      {/* Forest header with search */}
-      <div className="bg-forest border-b border-cream/10">
-        <div className="container-page py-8">
-          <p className="eyebrow text-cream/40 mb-3">
-            <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-            Verified Directory
-          </p>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <h1 className="font-display text-3xl lg:text-4xl text-cream">
-              Service providers on register
-            </h1>
-            {!isLoading && results && (
-              <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/40 animate-fade-in">
-                {results.length === PAGE_SIZE ? `${PAGE_SIZE}+` : results.length} record
-                {results.length !== 1 ? "s" : ""} found
-              </p>
-            )}
+    <div className="bg-cream pt-16 min-h-screen animate-page-enter">
+      {/* ─── STICKY SEARCH BAR ─── */}
+      <div className="sticky top-16 z-30 bg-forest border-b border-cream/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
+        <div className="container-page py-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex-1 max-w-xl">
+              <form onSubmit={(e) => e.preventDefault()} className="flex">
+                <div className="relative flex-1">
+                  {showSpinner ? (
+                    <Loader2
+                      className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gold animate-spin"
+                      strokeWidth={2}
+                    />
+                  ) : (
+                    <Search
+                      className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-cream/40"
+                      strokeWidth={1.5}
+                    />
+                  )}
+                  <input
+                    ref={searchRef}
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Search by name, category, or city..."
+                    aria-label="Search providers"
+                    className="w-full h-11 pl-10 pr-10 bg-forest-soft border border-cream/20 font-sans text-sm text-cream placeholder:text-cream/40 outline-none focus:border-gold transition-colors"
+                    style={{ borderRadius: "3px 0 0 3px" }}
+                  />
+                  {q && (
+                    <button
+                      type="button"
+                      onClick={() => { setQ(""); searchRef.current?.focus(); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-cream/40 hover:text-cream transition-colors"
+                      aria-label="Clear search"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="bg-gold px-5 h-11 font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-all hover:brightness-110 active:scale-[0.98] shrink-0"
+                  style={{ borderRadius: "0 3px 3px 0" }}
+                >
+                  Search
+                </button>
+              </form>
+            </div>
+
+            {/* Record count — visible in sticky bar */}
+            <div className="shrink-0">
+              {!isLoading && !showSpinner && results !== undefined ? (
+                <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/50 animate-fade-in">
+                  {results.length === PAGE_SIZE ? `${PAGE_SIZE}+` : results.length} record
+                  {results.length !== 1 ? "s" : ""}
+                </p>
+              ) : showSpinner ? (
+                <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/40 animate-pulse">
+                  Searching...
+                </p>
+              ) : null}
+            </div>
           </div>
 
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="mt-6 flex max-w-xl"
-          >
-            <div className="relative flex-1">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-cream/40"
-                strokeWidth={1.5}
-              />
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Search by name, category, or city..."
-                aria-label="Search providers"
-                className="w-full h-11 pl-10 pr-4 bg-forest-soft border border-cream/20 font-sans text-sm text-cream placeholder:text-cream/40 outline-none focus:border-cream/60 transition-colors"
-                style={{ borderRadius: "3px 0 0 3px" }}
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-gold px-5 h-11 font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors shrink-0"
-              style={{ borderRadius: "0 3px 3px 0" }}
-            >
-              Search
-            </button>
-          </form>
+          {/* Eyebrow label */}
+          <p className="eyebrow text-cream/30 mt-2 text-[10px]">
+            <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+            NexusZim Verified Directory
+          </p>
         </div>
       </div>
 
-      <div className="container-page py-8">
+      <div className="container-page py-6">
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
           {/* ─── FILTER RAIL ─── */}
-          <aside className="space-y-0 lg:sticky lg:top-24 lg:self-start">
+          <aside className="space-y-0 lg:sticky lg:top-[calc(4rem+6.5rem)] lg:self-start">
             <div className="bg-cream-raised border border-hairline rounded-[6px] divide-y divide-hairline">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4">
@@ -235,25 +277,31 @@ function SearchPage() {
                     </span>
                   </div>
                 </label>
-                {activeCities.filter((c) => c.count > 0 || c.count === 0).slice(0, 10).map((c) => (
-                  <label key={c.city} className="flex items-center justify-between cursor-pointer group">
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="city"
-                        checked={city === c.city}
-                        onChange={() => setCity(c.city)}
-                        className="accent-forest"
-                      />
-                      <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
-                        {c.city}
-                      </span>
-                    </div>
-                    {c.count > 0 && (
-                      <span className="font-mono text-[10px] text-text-soft/50">{c.count}</span>
-                    )}
-                  </label>
-                ))}
+                {activeCities
+                  .filter((c) => c.count > 0 || c.count === 0)
+                  .slice(0, 10)
+                  .map((c) => (
+                    <label
+                      key={c.city}
+                      className="flex items-center justify-between cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <input
+                          type="radio"
+                          name="city"
+                          checked={city === c.city}
+                          onChange={() => setCity(c.city)}
+                          className="accent-forest"
+                        />
+                        <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
+                          {c.city}
+                        </span>
+                      </div>
+                      {c.count > 0 && (
+                        <span className="font-mono text-[10px] text-text-soft/50">{c.count}</span>
+                      )}
+                    </label>
+                  ))}
               </div>
 
               {/* Category */}
@@ -325,7 +373,10 @@ function SearchPage() {
                 )}
               </p>
               <div className="flex items-center gap-2">
-                <label htmlFor="sort-select" className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft shrink-0">
+                <label
+                  htmlFor="sort-select"
+                  className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft shrink-0"
+                >
                   Sort:
                 </label>
                 <select
@@ -349,7 +400,9 @@ function SearchPage() {
                 {city !== "all" && <FilterChip label={city} onRemove={() => setCity("all")} />}
                 {categorySlug !== "all" && (
                   <FilterChip
-                    label={activeCategories.find((c) => c.slug === categorySlug)?.name ?? categorySlug}
+                    label={
+                      activeCategories.find((c) => c.slug === categorySlug)?.name ?? categorySlug
+                    }
                     onRemove={() => setCategorySlug("all")}
                   />
                 )}
@@ -362,12 +415,45 @@ function SearchPage() {
               </div>
             )}
 
-            {/* Results */}
+            {/* Results grid — skeletons while loading initial fetch */}
             <div className="space-y-3">
-              {isLoading
-                ? [0, 1, 2, 3, 4].map((i) => <ProviderCardSkeleton key={i} />)
-                : results?.map((p) => <LiveProviderCard key={p.user_id} provider={p} />)}
+              {isLoading ? (
+                [0, 1, 2, 3, 4].map((i) => <ProviderCardSkeleton key={i} />)
+              ) : results && results.length > 0 ? (
+                results.map((p, i) => (
+                  <div
+                    key={p.user_id}
+                    className="animate-slide-up"
+                    style={{ animationDelay: `${i * 40}ms` }}
+                  >
+                    <LiveProviderCard provider={p} />
+                  </div>
+                ))
+              ) : null}
             </div>
+
+            {/* Empty state */}
+            {!isLoading && !showSpinner && results?.length === 0 && (
+              <div className="border border-dashed border-hairline rounded-[6px] p-16 text-center bg-cream-raised animate-fade-in">
+                <div className="mb-4 flex justify-center">
+                  <span className="h-12 w-12 rounded-full bg-gold/10 flex items-center justify-center">
+                    <Search className="h-5 w-5 text-gold" strokeWidth={1.5} />
+                  </span>
+                </div>
+                <p className="font-display text-xl text-text">No records found</p>
+                <p className="mt-3 font-sans text-[13px] text-text-soft max-w-sm mx-auto">
+                  {q
+                    ? `No providers match "${q}". Try a different term or remove filters.`
+                    : "Try broadening your search or removing filters to see more results."}
+                </p>
+                <button
+                  onClick={resetFilters}
+                  className="mt-6 border border-forest px-7 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                >
+                  Clear all filters
+                </button>
+              </div>
+            )}
 
             {/* Load more */}
             {!isLoading && hasMore && (
@@ -377,21 +463,6 @@ function SearchPage() {
                   className="border border-forest px-8 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
                 >
                   Load more providers
-                </button>
-              </div>
-            )}
-
-            {!isLoading && results?.length === 0 && (
-              <div className="border border-dashed border-hairline rounded-[6px] p-16 text-center bg-cream-raised">
-                <p className="font-display text-xl text-text">No records found</p>
-                <p className="mt-3 font-sans text-[13px] text-text-soft max-w-sm mx-auto">
-                  Try broadening your search or removing filters to see more results.
-                </p>
-                <button
-                  onClick={resetFilters}
-                  className="mt-6 border border-forest px-7 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
-                >
-                  Clear all filters
                 </button>
               </div>
             )}

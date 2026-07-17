@@ -254,9 +254,85 @@
   animation-delay: 0.4s;
 }
 
+/* Stagger delays for category cards */
+@utility delay-50 {
+  animation-delay: 0.05s;
+}
+
+@utility delay-150 {
+  animation-delay: 0.15s;
+}
+
+@utility delay-250 {
+  animation-delay: 0.25s;
+}
+
+@utility delay-350 {
+  animation-delay: 0.35s;
+}
+
+@utility delay-500 {
+  animation-delay: 0.5s;
+}
+
+/* Slide-in-from-bottom for result cards */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Form card entrance: fade + slide up */
+@keyframes form-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-form-enter {
+  animation: form-enter 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Page fade-in for route transitions */
+@keyframes page-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@utility animate-page-enter {
+  animation: page-enter 0.3s ease both;
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
+}
+
+/* ─── Button interaction micro-animations ─── */
+/* Applied globally to all gold/forest CTA buttons via [data-cta] or .btn-cta */
+@utility btn-cta {
+  transition: filter 150ms ease, transform 100ms ease;
+  &:hover {
+    filter: brightness(1.05);
+    transform: scale(1.02);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

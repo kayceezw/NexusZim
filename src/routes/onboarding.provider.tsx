@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { RequireAuth } from "@/components/require-auth";
 import { PhotoUpload } from "@/components/registry/photo-upload";
-import { CheckCircle2, ChevronRight } from "lucide-react";
+import { CheckCircle2, ChevronRight, Search } from "lucide-react";
+import { createCategoryFn } from "@/lib/create-category";
 
 export const Route = createFileRoute("/onboarding/provider")({
   head: () => ({ meta: [{ title: "Provider registration — NexusZim" }] }),
@@ -68,6 +69,9 @@ function ProviderOnboarding() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [catSearch, setCatSearch] = useState("");
+  const [showCustom, setShowCustom] = useState(false);
+  const [customCategory, setCustomCategory] = useState("");
 
   const { data: categories = [] } = useQuery<DbCategory[]>({
     queryKey: ["categories-onboarding"],
@@ -97,7 +101,9 @@ function ProviderOnboarding() {
 
   function validateStep2(): boolean {
     const errs: Partial<Record<keyof FormState, string>> = {};
-    if (!form.categoryId) errs.categoryId = "Please select a service category";
+    if (!form.categoryId && !(showCustom && customCategory.trim())) {
+      errs.categoryId = "Please select a category or define your own";
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
@@ -121,12 +127,26 @@ function ProviderOnboarding() {
     setSubmitting(true);
     setSubmitError(null);
 
+    let categoryId = form.categoryId;
+
+    // If provider defined a custom category, create it first
+    if (showCustom && customCategory.trim() && !categoryId) {
+      try {
+        const newCat = await createCategoryFn({ data: { name: customCategory.trim() } });
+        categoryId = newCat.id;
+      } catch (e) {
+        setSubmitError((e as Error).message);
+        setSubmitting(false);
+        return;
+      }
+    }
+
     const whatsappNum = form.sameAsPhone ? form.phone : form.whatsapp;
 
     const { error: e1 } = await supabase.from("provider_profiles").upsert({
       user_id: user.id,
       business_name: form.businessName.trim(),
-      category_id: form.categoryId || null,
+      category_id: categoryId || null,
       city: form.city,
       phone: form.phone.trim(),
       whatsapp: whatsappNum.trim() || null,
@@ -158,6 +178,9 @@ function ProviderOnboarding() {
   }
 
   const selectedCategory = categories.find((c) => c.id === form.categoryId);
+  const filteredCategories = categories.filter((c) =>
+    c.name.toLowerCase().includes(catSearch.toLowerCase()),
+  );
 
   return (
     <div className="bg-cream pt-16 pb-20 min-h-screen">
@@ -298,40 +321,104 @@ function ProviderOnboarding() {
         {step === 2 && (
           <StepCard
             title="Service category"
-            subtitle="What type of services do you provide?"
+            subtitle="What type of services do you provide? Search or browse below."
             step={2}
             total={4}
           >
             {errors.categoryId && (
-              <p className="text-rose-600 font-sans text-[12px] mb-2">{errors.categoryId}</p>
+              <p className="text-rose-600 font-sans text-[12px] -mt-1 mb-1">{errors.categoryId}</p>
             )}
-            <div className="grid sm:grid-cols-2 gap-3">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => set("categoryId", cat.id)}
-                  className={`text-left p-4 rounded-[6px] border transition-all ${
-                    form.categoryId === cat.id
-                      ? "border-forest bg-forest/5 ring-1 ring-forest"
-                      : "border-hairline bg-cream-raised hover:border-forest/40"
-                  }`}
-                >
-                  <p className="font-display text-base text-text">{cat.name}</p>
-                  {cat.description && (
-                    <p className="mt-1 font-sans text-[12px] text-text-soft leading-snug line-clamp-2">
-                      {cat.description}
+
+            {!showCustom && (
+              <>
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-soft/40" strokeWidth={1.5} />
+                  <input
+                    type="text"
+                    value={catSearch}
+                    onChange={(e) => setCatSearch(e.target.value)}
+                    placeholder="Search categories..."
+                    className="field-input pl-10"
+                    autoFocus
+                  />
+                </div>
+
+                {/* Category list */}
+                <div className="max-h-[380px] overflow-y-auto -mx-1 px-1 space-y-1.5 pr-2">
+                  {filteredCategories.length === 0 && (
+                    <p className="font-sans text-sm text-text-soft italic py-4 text-center">
+                      No match — try defining your own below.
                     </p>
                   )}
-                  {form.categoryId === cat.id && (
-                    <div className="mt-2 flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.06em] text-forest">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      Selected
-                    </div>
-                  )}
+                  {filteredCategories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => { set("categoryId", cat.id); setShowCustom(false); }}
+                      className={`w-full text-left px-4 py-3 rounded-[6px] border transition-all ${
+                        form.categoryId === cat.id
+                          ? "border-forest bg-forest/5 ring-1 ring-forest"
+                          : "border-hairline bg-cream-raised hover:border-forest/40"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-display text-[15px] text-text">{cat.name}</p>
+                        {form.categoryId === cat.id && (
+                          <CheckCircle2 className="h-4 w-4 text-forest shrink-0" />
+                        )}
+                      </div>
+                      {cat.description && (
+                        <p className="mt-0.5 font-sans text-[12px] text-text-soft leading-snug line-clamp-1">
+                          {cat.description}
+                        </p>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Custom option toggle */}
+                <div className="border-t border-hairline pt-4">
+                  <button
+                    type="button"
+                    onClick={() => { setShowCustom(true); set("categoryId", ""); }}
+                    className="w-full border border-dashed border-hairline rounded-[6px] py-3.5 px-4 text-left hover:border-forest transition-colors group"
+                  >
+                    <p className="font-sans text-[13px] text-text-soft group-hover:text-forest transition-colors">
+                      My category isn't listed — <span className="font-semibold">define my own</span>
+                    </p>
+                  </button>
+                </div>
+              </>
+            )}
+
+            {showCustom && (
+              <div className="space-y-4">
+                <div className="border border-gold/30 bg-gold/5 rounded-[6px] px-4 py-3">
+                  <p className="font-sans text-[13px] text-text-soft leading-relaxed">
+                    Describe your service category in a few words. It will be added to the platform register.
+                  </p>
+                </div>
+                <Field label="Your category name" required>
+                  <input
+                    type="text"
+                    autoFocus
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    placeholder="e.g. Solar Panel Installation, Drone Photography..."
+                    className="field-input"
+                    maxLength={60}
+                  />
+                </Field>
+                <button
+                  type="button"
+                  onClick={() => { setShowCustom(false); setCustomCategory(""); }}
+                  className="font-sans text-[12px] text-text-soft hover:text-forest transition-colors"
+                >
+                  ← Back to category list
                 </button>
-              ))}
-            </div>
+              </div>
+            )}
 
             <StepNav onBack={() => setStep(1)} onNext={goNext} />
           </StepCard>
@@ -406,7 +493,7 @@ function ProviderOnboarding() {
               )}
               <ReviewRow
                 label="Category"
-                value={selectedCategory?.name ?? "—"}
+                value={showCustom && customCategory ? `${customCategory} (custom)` : (selectedCategory?.name ?? "—")}
                 onEdit={() => setStep(2)}
               />
               <div className="flex items-start gap-4 px-5 py-4">

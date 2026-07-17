@@ -48,9 +48,10 @@ function ForgotPasswordPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+    <div className="bg-cream pt-16 min-h-screen grid place-items-center animate-page-enter">
       <div className="w-full max-w-md my-10 px-5 sm:px-0">
-        <div className="text-center mb-8">
+        {/* Brand mark */}
+        <div className="text-center mb-8 animate-fade-up">
           <div className="inline-flex items-center gap-2 mb-4">
             <span className="inline-block h-2 w-2 rotate-45 bg-gold" />
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft">
@@ -59,7 +60,7 @@ function ForgotPasswordPage() {
           </div>
         </div>
 
-        <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9">
+        <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9 animate-form-enter">
           {!sent ? (
             <form onSubmit={onSubmit} className="space-y-5">
               <div>
@@ -71,35 +72,39 @@ function ForgotPasswordPage() {
                   Forgot your <em className="italic text-gold">password?</em>
                 </h1>
                 <p className="mt-2 font-sans text-sm text-text-soft">
-                  Enter your email and we'll send you a reset link.
+                  Enter your email and we'll send you a reset link right away.
                 </p>
               </div>
 
               {error && (
-                <div className="border border-rose-200 bg-rose-50 rounded-[3px] px-4 py-3 font-sans text-sm text-rose-600">
+                <div className="border border-amber-300 bg-amber-50 rounded-[3px] px-4 py-3 font-sans text-sm text-amber-800">
                   {error}
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
-                  Email <span className="text-gold">*</span>
+                <label
+                  htmlFor="fp-email"
+                  className="block font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium"
+                >
+                  Email address <span className="text-gold">*</span>
                 </label>
                 <input
+                  id="fp-email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@email.com"
                   autoFocus
-                  className="field-input"
+                  className="w-full h-11 px-4 bg-cream border border-hairline rounded-[3px] font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest focus:ring-2 focus:ring-forest/10 transition-all"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gold py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
+                className="w-full bg-gold py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep hover:brightness-105 active:scale-[0.98] transition-all disabled:opacity-60"
               >
                 {loading ? "Sending link..." : "Send reset link"}
               </button>
@@ -112,14 +117,21 @@ function ForgotPasswordPage() {
               </p>
             </form>
           ) : (
-            <div className="space-y-5">
-              <div>
-                <p className="eyebrow text-text-soft mb-2">
+            /* ─── SUCCESS STATE ─── */
+            <div className="space-y-5 animate-fade-in">
+              <div className="flex justify-center mb-4">
+                <span className="h-14 w-14 rounded-full bg-gold/10 flex items-center justify-center">
+                  <CheckIcon />
+                </span>
+              </div>
+
+              <div className="text-center">
+                <p className="eyebrow text-text-soft mb-2 justify-center">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                  Check your inbox
+                  Reset link sent!
                 </p>
                 <h1 className="font-display text-2xl text-text">
-                  Link <em className="italic text-gold">sent.</em>
+                  Check your <em className="italic text-gold">email.</em>
                 </h1>
               </div>
 
@@ -128,8 +140,9 @@ function ForgotPasswordPage() {
                   Reset link dispatched
                 </p>
                 <p className="font-sans text-sm text-text-soft">
-                  A reset link was sent to{" "}
-                  <span className="font-medium text-text">{email}</span>.
+                  A password reset link was sent to{" "}
+                  <span className="font-medium text-text">{email}</span>. Click the link to set a
+                  new password.
                 </p>
               </div>
 
@@ -139,7 +152,10 @@ function ForgotPasswordPage() {
                   "Check spam if it's not visible.",
                   "The link expires after 1 hour.",
                 ].map((tip) => (
-                  <li key={tip} className="flex items-start gap-2 font-sans text-[13px] text-text-soft">
+                  <li
+                    key={tip}
+                    className="flex items-start gap-2 font-sans text-[13px] text-text-soft"
+                  >
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 border border-current" />
                     {tip}
                   </li>
@@ -183,5 +199,22 @@ function ForgotPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#e7a020"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
   );
 }

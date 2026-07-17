@@ -133,7 +133,7 @@ function AvailabilityDot({ availability }: { availability: string }) {
 
 function ProviderCardInner({ data }: { data: NormalizedCard }) {
   return (
-    <article className="group bg-cream-raised border border-hairline rounded-[6px] hover:border-forest hover:shadow-[0_4px_20px_rgba(15,51,35,0.1)] transition-all duration-200 relative overflow-hidden">
+    <article className="group bg-cream-raised border border-hairline rounded-[6px] hover:border-forest hover:shadow-[0_8px_28px_rgba(15,51,35,0.12)] hover:-translate-y-1 transition-all duration-200 relative overflow-hidden">
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-200" />
 
       <div className="flex flex-col sm:flex-row gap-0">

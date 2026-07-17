@@ -5,7 +5,7 @@ import { RequireAuth } from "@/components/require-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { createProviderFn } from "@/lib/create-provider";
 import { toast } from "sonner";
-import { Plus, Copy, CheckCircle2, X, Mail } from "lucide-react";
+import { Plus, Copy, CheckCircle2, X, Mail, AlertTriangle, CheckCheck, XCircle } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — NexusZim" }] }),
@@ -16,8 +16,11 @@ export const Route = createFileRoute("/admin")({
   ),
 });
 
+type AdminTab = "pending" | "verified" | "clients" | "enquiries";
+
 function AdminPage() {
   const qc = useQueryClient();
+  const [activeTab, setActiveTab] = useState<AdminTab>("pending");
 
   const { data: providers } = useQuery({
     queryKey: ["admin", "providers"],
@@ -31,6 +34,7 @@ function AdminPage() {
       if (error) throw error;
       return data ?? [];
     },
+    refetchInterval: 30_000, // auto-refresh every 30s to catch new signups
   });
 
   const { data: clients } = useQuery({
@@ -64,12 +68,28 @@ function AdminPage() {
     mutationFn: async ({ userId, tier }: { userId: string; tier: number }) => {
       const { error } = await supabase
         .from("provider_profiles")
-        .update({ tier, verified: true })
+        .update({ tier, verified: tier > 1 })
         .eq("user_id", userId);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Provider tier updated");
+      toast.success("Provider updated");
+      qc.invalidateQueries({ queryKey: ["admin", "providers"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  // Reject: demote to tier 1, mark not verified
+  const rejectProvider = useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase
+        .from("provider_profiles")
+        .update({ tier: 1, verified: false })
+        .eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Provider application rejected");
       qc.invalidateQueries({ queryKey: ["admin", "providers"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -83,11 +103,20 @@ function AdminPage() {
     else toast.success(`Password reset email sent to ${email}`);
   }
 
-  const pending = (providers ?? []).filter((p) => (p.tier ?? 1) === 1);
-  const approved = (providers ?? []).filter((p) => (p.tier ?? 1) > 1);
+  // Pending = tier 1 (Listed, not yet upgraded by admin) and not yet verified
+  const pending = (providers ?? []).filter((p) => (p.tier ?? 1) === 1 && !p.verified);
+  const approved = (providers ?? []).filter((p) => (p.tier ?? 1) > 1 || p.verified);
+  const pendingCount = pending.length;
+
+  const TABS: { id: AdminTab; label: string; badge?: number }[] = [
+    { id: "pending", label: "Pending Verification", badge: pendingCount },
+    { id: "verified", label: "Verified Directory" },
+    { id: "clients", label: "Clients" },
+    { id: "enquiries", label: "Enquiry Stream" },
+  ];
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-cream pt-16 min-h-screen animate-page-enter">
       {/* Forest header */}
       <div className="bg-forest border-b border-cream/10">
         <div className="container-page py-10">
@@ -98,6 +127,8 @@ function AdminPage() {
           <h1 className="font-display text-3xl text-cream">
             Platform <em className="italic text-gold">Overview.</em>
           </h1>
+
+          {/* Nav links */}
           <div className="mt-5 flex flex-wrap gap-2">
             <Link
               to="/admin/intel"
@@ -121,85 +152,186 @@ function AdminPage() {
         </div>
       </div>
 
-      <div className="container-page py-10 space-y-8">
+      <div className="container-page py-8 space-y-8">
         {/* Stats */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Tile label="Active Clients" value={String(clients?.length ?? "—")} />
           <Tile label="Total Providers" value={String(providers?.length ?? "—")} />
-          <Tile label="Pending T1" value={String(pending.length)} />
+          <Tile
+            label="Pending Review"
+            value={String(pendingCount)}
+            highlight={pendingCount > 0}
+          />
           <Tile label="Recent Enquiries" value={String(requests?.length ?? "—")} />
         </div>
 
-        {/* Pending Verifications */}
-        <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
-          <h2 className="font-display text-xl text-text mb-6">
-            Pending Verifications ({pending.length})
-          </h2>
-          <div className="space-y-3">
-            {pending.length === 0 && (
-              <p className="font-sans text-sm text-text-soft italic">
-                No providers awaiting tier upgrades.
+        {/* Amber alert banner if pending providers exist */}
+        {pendingCount > 0 && (
+          <div className="flex items-start gap-4 bg-amber-50 border border-amber-300 rounded-[6px] px-5 py-4 animate-fade-in">
+            <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" strokeWidth={1.5} />
+            <div className="flex-1 min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-amber-700 mb-1">
+                Action required
               </p>
-            )}
-            {pending.map((p) => {
-              const email = (p.profiles as { email: string } | null)?.email ?? null;
-              return (
-                <div
-                  key={p.user_id}
-                  className="flex flex-col gap-5 border border-hairline rounded-[3px] bg-cream p-5 md:flex-row md:items-center md:justify-between hover:border-forest transition-colors"
-                >
-                  <div className="min-w-0">
-                    <p className="font-display text-lg text-text">{p.business_name}</p>
-                    <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-text-soft">
-                      {(p.categories as { name: string } | null)?.name ?? "No category"} ·{" "}
-                      {p.city ?? "—"}
-                    </p>
-                    {email && (
-                      <p className="mt-1 font-mono text-[9px] text-text-soft/50">{email}</p>
-                    )}
-                    {p.bio && (
-                      <p className="mt-2 font-sans text-[13px] text-text-soft line-clamp-1">
-                        {p.bio}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {email && (
-                      <button
-                        onClick={() => sendPasswordReset(email)}
-                        className="flex items-center gap-1.5 border border-hairline px-3 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-text-soft hover:border-forest hover:text-forest transition-colors"
-                        title="Send password reset email"
-                      >
-                        <Mail className="h-3 w-3" />
-                        Reset pwd
-                      </button>
-                    )}
-                    {[2, 3, 4].map((t) => (
-                      <button
-                        key={t}
-                        onClick={() => setTier.mutate({ userId: p.user_id, tier: t })}
-                        className={`px-4 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest border transition-colors ${
-                          t === 2
-                            ? "border-blue-300 text-blue-500 hover:bg-blue-50"
-                            : t === 3
-                              ? "border-amber-300 text-amber-600 hover:bg-amber-50"
-                              : "border-gold/50 text-gold hover:bg-gold hover:text-forest-ink"
-                        }`}
-                      >
-                        Tier {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+              <p className="font-sans text-sm text-amber-800">
+                <span className="font-semibold">{pendingCount} provider{pendingCount !== 1 ? "s" : ""}</span>{" "}
+                {pendingCount === 1 ? "has" : "have"} submitted an application and{" "}
+                {pendingCount === 1 ? "is" : "are"} awaiting verification. Review and approve or reject below.
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveTab("pending")}
+              className="shrink-0 bg-amber-500 hover:bg-amber-600 text-white px-4 py-1.5 rounded-[3px] font-mono text-[9px] uppercase tracking-widest transition-colors"
+            >
+              Review
+            </button>
           </div>
-        </section>
+        )}
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Verified Directory */}
-          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
-            <h2 className="font-display text-xl text-text mb-6">Verified Directory</h2>
+        {/* Tab navigation */}
+        <div className="border-b border-hairline flex gap-0 overflow-x-auto no-scrollbar">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-5 py-3 font-mono text-[10px] uppercase tracking-widest border-b-2 transition-all whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "border-forest text-forest"
+                  : "border-transparent text-text-soft hover:text-text"
+              }`}
+            >
+              {tab.label}
+              {tab.badge !== undefined && tab.badge > 0 && (
+                <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-amber-500 text-white font-mono text-[9px] font-bold">
+                  {tab.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* ─── TAB: PENDING VERIFICATIONS ─── */}
+        {activeTab === "pending" && (
+          <section className="space-y-4 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <h2 className="font-display text-xl text-text">
+                Pending Verifications
+                {pendingCount > 0 && (
+                  <span className="ml-3 inline-flex items-center justify-center h-6 w-6 rounded-full bg-amber-500 text-white font-mono text-[10px] font-bold">
+                    {pendingCount}
+                  </span>
+                )}
+              </h2>
+            </div>
+
+            {pending.length === 0 ? (
+              <div className="border border-dashed border-hairline rounded-[6px] p-12 text-center bg-cream-raised">
+                <CheckCheck className="h-8 w-8 text-emerald-400 mx-auto mb-3" strokeWidth={1.5} />
+                <p className="font-display text-lg text-text">All clear</p>
+                <p className="mt-1 font-sans text-sm text-text-soft">
+                  No providers awaiting verification.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {pending.map((p) => {
+                  const email = (p.profiles as { email: string } | null)?.email ?? null;
+                  return (
+                    <div
+                      key={p.user_id}
+                      className="flex flex-col gap-5 border border-amber-200 bg-amber-50/40 rounded-[6px] p-5 md:flex-row md:items-center md:justify-between hover:border-amber-300 transition-colors"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shrink-0" />
+                          <p className="font-display text-lg text-text">{p.business_name}</p>
+                        </div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft">
+                          {(p.categories as { name: string } | null)?.name ?? "No category"} ·{" "}
+                          {p.city ?? "—"}
+                        </p>
+                        {email && (
+                          <p className="mt-1 font-mono text-[9px] text-text-soft/60">{email}</p>
+                        )}
+                        {p.bio && (
+                          <p className="mt-2 font-sans text-[13px] text-text-soft line-clamp-2">
+                            {p.bio}
+                          </p>
+                        )}
+                        <p className="mt-2 font-mono text-[9px] text-text-soft/40 uppercase tracking-widest">
+                          Applied{" "}
+                          {new Date(p.created_at).toLocaleDateString("en-ZW", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {email && (
+                          <button
+                            onClick={() => sendPasswordReset(email)}
+                            className="flex items-center gap-1.5 border border-hairline px-3 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-text-soft hover:border-forest hover:text-forest transition-colors"
+                            title="Send password reset email"
+                          >
+                            <Mail className="h-3 w-3" />
+                            Reset pwd
+                          </button>
+                        )}
+
+                        {/* Quick Approve → Tier 2 */}
+                        <button
+                          onClick={() => setTier.mutate({ userId: p.user_id, tier: 2 })}
+                          disabled={setTier.isPending}
+                          className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest transition-colors disabled:opacity-60"
+                        >
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          Approve
+                        </button>
+
+                        {/* Reject */}
+                        <button
+                          onClick={() => rejectProvider.mutate(p.user_id)}
+                          disabled={rejectProvider.isPending}
+                          className="flex items-center gap-1.5 border border-rose-300 text-rose-500 hover:bg-rose-50 px-4 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest transition-colors disabled:opacity-60"
+                        >
+                          <XCircle className="h-3.5 w-3.5" />
+                          Reject
+                        </button>
+
+                        {/* Tier upgrade options */}
+                        <div className="flex gap-1.5">
+                          {[3, 4].map((t) => (
+                            <button
+                              key={t}
+                              onClick={() => setTier.mutate({ userId: p.user_id, tier: t })}
+                              disabled={setTier.isPending}
+                              className={`px-3 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest border transition-colors disabled:opacity-60 ${
+                                t === 3
+                                  ? "border-amber-300 text-amber-600 hover:bg-amber-50"
+                                  : "border-gold/50 text-gold hover:bg-gold hover:text-forest-ink"
+                              }`}
+                            >
+                              T{t}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* ─── TAB: VERIFIED DIRECTORY ─── */}
+        {activeTab === "verified" && (
+          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 animate-fade-in">
+            <h2 className="font-display text-xl text-text mb-6">
+              Verified Directory ({approved.length})
+            </h2>
             <div className="space-y-2">
               {approved.length === 0 && (
                 <p className="font-sans text-sm text-text-soft italic">None yet.</p>
@@ -213,9 +345,11 @@ function AdminPage() {
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="truncate font-display text-sm text-text">{p.business_name}</p>
+                        <p className="truncate font-display text-sm text-text">
+                          {p.business_name}
+                        </p>
                         <span className="shrink-0 font-mono text-[8px] text-emerald-500 border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider">
-                          ✓ verified
+                          verified
                         </span>
                       </div>
                       <p className="font-mono text-[9px] uppercase tracking-widest text-text-soft">
@@ -224,6 +358,20 @@ function AdminPage() {
                       </p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0 ml-4">
+                      {[2, 3, 4].map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => setTier.mutate({ userId: p.user_id, tier: t })}
+                          disabled={p.tier === t}
+                          className={`px-2.5 py-1 rounded-[3px] font-mono text-[8px] uppercase tracking-widest border transition-colors disabled:opacity-30 ${
+                            p.tier === t
+                              ? "border-forest bg-forest/5 text-forest"
+                              : "border-hairline text-text-soft hover:border-forest hover:text-forest"
+                          }`}
+                        >
+                          T{t}
+                        </button>
+                      ))}
                       {email && (
                         <button
                           onClick={() => sendPasswordReset(email)}
@@ -231,7 +379,6 @@ function AdminPage() {
                           title={`Send password reset to ${email}`}
                         >
                           <Mail className="h-3 w-3" />
-                          Reset
                         </button>
                       )}
                       <button
@@ -246,10 +393,14 @@ function AdminPage() {
               })}
             </div>
           </section>
+        )}
 
-          {/* Platform Clients */}
-          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
-            <h2 className="font-display text-xl text-text mb-6">Platform Clients</h2>
+        {/* ─── TAB: CLIENTS ─── */}
+        {activeTab === "clients" && (
+          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 animate-fade-in">
+            <h2 className="font-display text-xl text-text mb-6">
+              Platform Clients ({clients?.length ?? 0})
+            </h2>
             <div className="space-y-2">
               {(clients ?? []).map((c) => (
                 <div
@@ -273,45 +424,47 @@ function AdminPage() {
               ))}
             </div>
           </section>
-        </div>
+        )}
 
-        {/* Enquiry Stream */}
-        <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
-          <h2 className="font-display text-xl text-text mb-6">Enquiry Stream</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft border-b border-hairline">
-                  <th className="pb-4 pr-6">Request Title</th>
-                  <th className="pb-4 pr-6">Client</th>
-                  <th className="pb-4 pr-6">Budget</th>
-                  <th className="pb-4 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-hairline">
-                {(requests ?? []).map((r) => (
-                  <tr key={r.id} className="group hover:bg-cream transition-colors">
-                    <td className="py-3 pr-6 font-display text-sm text-text group-hover:text-forest transition-colors">
-                      {r.title}
-                    </td>
-                    <td className="py-3 pr-6">
-                      <p className="font-sans text-[13px] text-text-soft">{r.client_name ?? "—"}</p>
-                      <p className="font-mono text-[9px] text-text-soft/60">{r.client_email}</p>
-                    </td>
-                    <td className="py-3 pr-6 font-mono text-xs text-text-soft">
-                      {r.budget ? `$${r.budget}` : "—"}
-                    </td>
-                    <td className="py-3 text-right">
-                      <span className="border border-hairline px-2 py-1 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-text-soft">
-                        {r.status}
-                      </span>
-                    </td>
+        {/* ─── TAB: ENQUIRY STREAM ─── */}
+        {activeTab === "enquiries" && (
+          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 animate-fade-in">
+            <h2 className="font-display text-xl text-text mb-6">Enquiry Stream</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft border-b border-hairline">
+                    <th className="pb-4 pr-6">Request Title</th>
+                    <th className="pb-4 pr-6">Client</th>
+                    <th className="pb-4 pr-6">Budget</th>
+                    <th className="pb-4 text-right">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+                </thead>
+                <tbody className="divide-y divide-hairline">
+                  {(requests ?? []).map((r) => (
+                    <tr key={r.id} className="group hover:bg-cream transition-colors">
+                      <td className="py-3 pr-6 font-display text-sm text-text group-hover:text-forest transition-colors">
+                        {r.title}
+                      </td>
+                      <td className="py-3 pr-6">
+                        <p className="font-sans text-[13px] text-text-soft">{r.client_name ?? "—"}</p>
+                        <p className="font-mono text-[9px] text-text-soft/60">{r.client_email}</p>
+                      </td>
+                      <td className="py-3 pr-6 font-mono text-xs text-text-soft">
+                        {r.budget ? `$${r.budget}` : "—"}
+                      </td>
+                      <td className="py-3 text-right">
+                        <span className="border border-hairline px-2 py-1 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-text-soft">
+                          {r.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
 
         <AddProviderSection />
         <HeroFeatureSection />
@@ -423,7 +576,6 @@ function AddProviderSection() {
         </button>
       </div>
 
-      {/* Success card */}
       {result && (
         <div className="mt-6 border border-emerald-200 bg-emerald-50 rounded-[6px] p-6 space-y-4">
           <div className="flex items-center gap-3">
@@ -450,11 +602,7 @@ function AddProviderSection() {
             onClick={copyCredentials}
             className="flex items-center gap-2 border border-forest/30 px-5 py-2 rounded-[3px] font-mono text-[10px] uppercase tracking-widest text-forest hover:bg-forest hover:text-cream transition-colors"
           >
-            {copied ? (
-              <CheckCircle2 className="h-3.5 w-3.5" />
-            ) : (
-              <Copy className="h-3.5 w-3.5" />
-            )}
+            {copied ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
             {copied ? "Copied!" : "Copy Login Details"}
           </button>
         </div>
@@ -593,10 +741,24 @@ function AdminField({
   );
 }
 
-function Tile({ label, value }: { label: string; value: string }) {
+function Tile({
+  label,
+  value,
+  highlight = false,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] p-6">
-      <p className="font-display text-4xl text-gold">{value}</p>
+    <div
+      className={`bg-cream-raised border rounded-[6px] p-6 transition-colors ${
+        highlight ? "border-amber-300 bg-amber-50/40" : "border-hairline"
+      }`}
+    >
+      <p className={`font-display text-4xl ${highlight ? "text-amber-500" : "text-gold"}`}>
+        {value}
+      </p>
       <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-text-soft">{label}</p>
     </div>
   );
@@ -671,7 +833,8 @@ function HeroFeatureSection() {
       <div className="mb-6">
         <h2 className="font-display text-xl text-text">Hero Featured Provider</h2>
         <p className="font-sans text-[12px] text-text-soft mt-1">
-          The provider shown in the registry card on the homepage hero. Leave unset to show the NexusZim default.
+          The provider shown in the registry card on the homepage hero. Leave unset to show the
+          NexusZim default.
         </p>
       </div>
 

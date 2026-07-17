@@ -110,7 +110,7 @@ function LandingPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 overflow-x-hidden">
+    <div className="bg-cream pt-16 overflow-x-hidden animate-page-enter">
       {/* ─── HERO ─── */}
       <section className="relative py-20 lg:py-28 border-b border-hairline overflow-hidden">
         {heroBg && (
@@ -261,11 +261,12 @@ function LandingPage() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {CATEGORIES.slice(0, 6).map((c) => (
+            {CATEGORIES.slice(0, 6).map((c, i) => (
               <CategoryCard
                 key={c.slug}
                 category={c}
                 count={categoryCountMap[c.slug]}
+                animationDelay={i * 60}
               />
             ))}
           </div>
