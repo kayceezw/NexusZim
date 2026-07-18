@@ -148,6 +148,12 @@ function AdminPage() {
             >
               Concierge
             </Link>
+            <Link
+              to="/admin/scraper"
+              className="border border-gold/40 bg-gold/10 px-5 py-2.5 rounded-[3px] font-mono text-[10px] uppercase tracking-widest text-gold hover:border-gold hover:bg-gold/20 transition-colors"
+            >
+              Scraper Queue
+            </Link>
           </div>
         </div>
       </div>

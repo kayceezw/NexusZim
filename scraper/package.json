@@ -1,0 +1,20 @@
+{
+  "name": "nexuszim-scraper",
+  "version": "1.0.0",
+  "description": "Daily web scraper for Zimbabwe service providers → NexusZim intelligence queue",
+  "type": "module",
+  "scripts": {
+    "scrape": "tsx src/index.ts",
+    "scrape:dry": "DRY_RUN=true tsx src/index.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "cheerio": "^1.0.0",
+    "got-scraping": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.3.0"
+  }
+}

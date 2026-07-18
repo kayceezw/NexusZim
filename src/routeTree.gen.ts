@@ -37,6 +37,7 @@ import { Route as IntelRatesRouteImport } from './routes/intel.rates'
 import { Route as IntelEventsRouteImport } from './routes/intel.events'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as BookProviderIdRouteImport } from './routes/book.$providerId'
+import { Route as AdminScraperRouteImport } from './routes/admin.scraper'
 import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
 import { Route as AdminIntelRouteImport } from './routes/admin.intel'
 import { Route as AdminConciergeRouteImport } from './routes/admin.concierge'
@@ -181,6 +182,11 @@ const BookProviderIdRoute = BookProviderIdRouteImport.update({
   path: '/book/$providerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminScraperRoute = AdminScraperRouteImport.update({
+  id: '/scraper',
+  path: '/scraper',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminRevenueRoute = AdminRevenueRouteImport.update({
   id: '/revenue',
   path: '/revenue',
@@ -216,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/scraper': typeof AdminScraperRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/intel/events': typeof IntelEventsRoute
@@ -248,6 +255,7 @@ export interface FileRoutesByTo {
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/scraper': typeof AdminScraperRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/intel/events': typeof IntelEventsRoute
@@ -282,6 +290,7 @@ export interface FileRoutesById {
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/scraper': typeof AdminScraperRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/intel/events': typeof IntelEventsRoute
@@ -317,6 +326,7 @@ export interface FileRouteTypes {
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
+    | '/admin/scraper'
     | '/book/$providerId'
     | '/categories/$slug'
     | '/intel/events'
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
+    | '/admin/scraper'
     | '/book/$providerId'
     | '/categories/$slug'
     | '/intel/events'
@@ -382,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
+    | '/admin/scraper'
     | '/book/$providerId'
     | '/categories/$slug'
     | '/intel/events'
@@ -622,6 +634,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookProviderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/scraper': {
+      id: '/admin/scraper'
+      path: '/scraper'
+      fullPath: '/admin/scraper'
+      preLoaderRoute: typeof AdminScraperRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/revenue': {
       id: '/admin/revenue'
       path: '/revenue'
@@ -650,12 +669,14 @@ interface AdminRouteChildren {
   AdminConciergeRoute: typeof AdminConciergeRoute
   AdminIntelRoute: typeof AdminIntelRoute
   AdminRevenueRoute: typeof AdminRevenueRoute
+  AdminScraperRoute: typeof AdminScraperRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminConciergeRoute: AdminConciergeRoute,
   AdminIntelRoute: AdminIntelRoute,
   AdminRevenueRoute: AdminRevenueRoute,
+  AdminScraperRoute: AdminScraperRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
