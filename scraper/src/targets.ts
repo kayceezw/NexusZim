@@ -1,5 +1,8 @@
+export type { BrowserTarget } from "./browser.js";
+
 export type ScrapeTarget = {
   name: string;
+  source_name?: string;
   label: string;
   url: string;
   selectors: {
@@ -10,7 +13,7 @@ export type ScrapeTarget = {
     address: string[];
     description: string[];
     email: string[];
-    socialLinks: string[];   // Facebook, Instagram, Twitter, LinkedIn hrefs
+    socialLinks: string[];
   };
 };
 
@@ -147,6 +150,98 @@ export const TARGETS: ScrapeTarget[] = [
     label: "catering",
     url: "https://www.bing.com/search?q=site%3Afacebook.com+catering+%22Zimbabwe%22+%22Harare%22",
     selectors: BING_SELECTORS,
+  },
+];
+
+// ─── Social media — browser-rendered targets (Playwright) ────────────────────
+
+import type { BrowserTarget } from "./browser.js";
+
+const GM_BASE = "https://www.google.com/maps/search";
+const FB_BASE = "https://www.facebook.com/search/pages/?q";
+
+export const BROWSER_TARGETS: BrowserTarget[] = [
+  // Google Maps — reliable, no login, rich name+address data
+  {
+    name: "google-maps",
+    source_name: "google.com/maps",
+    label: "venues",
+    url: `${GM_BASE}/event+venue+function+hall+harare+zimbabwe`,
+    platform: "google-maps",
+  },
+  {
+    name: "google-maps",
+    source_name: "google.com/maps",
+    label: "lodges",
+    url: `${GM_BASE}/lodge+guesthouse+harare+zimbabwe`,
+    platform: "google-maps",
+  },
+  {
+    name: "google-maps",
+    source_name: "google.com/maps",
+    label: "resorts",
+    url: `${GM_BASE}/resort+safari+lodge+zimbabwe`,
+    platform: "google-maps",
+  },
+  {
+    name: "google-maps",
+    source_name: "google.com/maps",
+    label: "travel-agencies",
+    url: `${GM_BASE}/travel+agency+tour+operator+harare+zimbabwe`,
+    platform: "google-maps",
+  },
+  {
+    name: "google-maps",
+    source_name: "google.com/maps",
+    label: "security",
+    url: `${GM_BASE}/security+company+harare+zimbabwe`,
+    platform: "google-maps",
+  },
+  {
+    name: "google-maps",
+    source_name: "google.com/maps",
+    label: "catering",
+    url: `${GM_BASE}/catering+company+harare+zimbabwe`,
+    platform: "google-maps",
+  },
+  {
+    name: "google-maps",
+    source_name: "google.com/maps",
+    label: "transport",
+    url: `${GM_BASE}/transport+logistics+courier+harare+zimbabwe`,
+    platform: "google-maps",
+  },
+
+  // Facebook Business Pages — best-effort, partial results before login wall
+  {
+    name: "facebook.com",
+    label: "venues",
+    url: `${FB_BASE}=event+venue+function+hall+zimbabwe`,
+    platform: "facebook",
+  },
+  {
+    name: "facebook.com",
+    label: "lodges",
+    url: `${FB_BASE}=lodge+guesthouse+zimbabwe`,
+    platform: "facebook",
+  },
+  {
+    name: "facebook.com",
+    label: "events-production",
+    url: `${FB_BASE}=events+production+company+zimbabwe`,
+    platform: "facebook",
+  },
+  {
+    name: "facebook.com",
+    label: "security",
+    url: `${FB_BASE}=security+company+zimbabwe`,
+    platform: "facebook",
+  },
+  {
+    name: "facebook.com",
+    label: "catering",
+    url: `${FB_BASE}=catering+company+harare+zimbabwe`,
+    platform: "facebook",
   },
 ];
 

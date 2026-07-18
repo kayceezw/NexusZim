@@ -10,7 +10,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "cheerio": "^1.0.0",
-    "got-scraping": "^4.0.1"
+    "got-scraping": "^4.0.1",
+    "playwright": "^1.40.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
