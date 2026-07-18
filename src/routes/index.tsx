@@ -124,10 +124,9 @@ function LandingPage() {
               src={heroBg}
               alt=""
               aria-hidden
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover opacity-40 pointer-events-none select-none"
               onError={() => setHeroBg(null)}
             />
-            <div className="absolute inset-0 bg-cream/88" />
           </>
         )}
 
