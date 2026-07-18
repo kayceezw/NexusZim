@@ -14,6 +14,11 @@ import {
   MapPin,
   RefreshCw,
   Filter,
+  Facebook,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Youtube,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/scraper")({
@@ -26,6 +31,15 @@ export const Route = createFileRoute("/admin/scraper")({
 });
 
 type QueueStatus = "pending" | "approved" | "rejected" | "duplicate";
+
+type SocialData = {
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  linkedin?: string;
+  tiktok?: string;
+  youtube?: string;
+};
 
 type QueueItem = {
   id: string;
@@ -40,6 +54,7 @@ type QueueItem = {
   source_name: string;
   status: QueueStatus;
   scraped_at: string;
+  raw_data: { social?: SocialData; is_social_lead?: boolean; label?: string; address?: string } | null;
 };
 
 const STATUS_TABS: { id: QueueStatus | "all"; label: string }[] = [
@@ -301,6 +316,41 @@ function ScraperQueuePage() {
   );
 }
 
+function SocialLinks({ rawData }: { rawData: QueueItem["raw_data"] }) {
+  const social = rawData?.social;
+  if (!social || !Object.keys(social).length) return null;
+
+  const PLATFORMS = [
+    { key: "facebook",  Icon: Facebook,  color: "text-blue-600",  label: "Facebook" },
+    { key: "instagram", Icon: Instagram, color: "text-pink-500",  label: "Instagram" },
+    { key: "twitter",   Icon: Twitter,   color: "text-sky-500",   label: "Twitter/X" },
+    { key: "linkedin",  Icon: Linkedin,  color: "text-blue-700",  label: "LinkedIn" },
+    { key: "youtube",   Icon: Youtube,   color: "text-red-500",   label: "YouTube" },
+  ] as const;
+
+  return (
+    <div className="flex items-center gap-2 flex-wrap">
+      {PLATFORMS.map(({ key, Icon, color, label }) => {
+        const url = social[key as keyof SocialData];
+        if (!url) return null;
+        return (
+          <a
+            key={key}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={label}
+            className={`flex items-center gap-1 ${color} opacity-70 hover:opacity-100 transition-opacity`}
+          >
+            <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
+            <span className="font-mono text-[9px] uppercase tracking-widest">{label}</span>
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
 function QueueCard({
   item,
   onApprove,
@@ -388,6 +438,9 @@ function QueueCard({
             {item.source_name}
           </a>
         </div>
+
+        {/* Social links */}
+        <SocialLinks rawData={item.raw_data} />
 
         <p className="font-mono text-[9px] text-text-soft/40 uppercase tracking-widest">
           Scraped{" "}

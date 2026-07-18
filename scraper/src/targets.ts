@@ -1,19 +1,19 @@
 export type ScrapeTarget = {
   name: string;
-  label: string;        // e.g. "venues", "lodges"
+  label: string;
   url: string;
   selectors: {
-    listItem: string;   // container per business
-    name: string[];     // fallback chain for business name
+    listItem: string;
+    name: string[];
     phone: string[];
     website: string[];
     address: string[];
     description: string[];
     email: string[];
+    socialLinks: string[];   // Facebook, Instagram, Twitter, LinkedIn hrefs
   };
 };
 
-// Zimbabwe category → NexusZim category mapping
 export const CATEGORY_MAP: Record<string, string> = {
   venue: "events-production",
   "function hall": "events-production",
@@ -38,8 +38,18 @@ export const CATEGORY_MAP: Record<string, string> = {
   restaurant: "food-catering",
 };
 
+// Shared social link selectors — picks up FB/IG/TW/LI icons any directory includes
+const SOCIAL_SELECTORS = [
+  "[href*='facebook.com']",
+  "[href*='instagram.com']",
+  "[href*='twitter.com']",
+  "[href*='x.com']",
+  "[href*='linkedin.com']",
+  "[href*='tiktok.com']",
+  "[href*='youtube.com']",
+];
+
 // ─── yellowpages.co.zw ───────────────────────────────────────────────────────
-// Typical ZW directory with category-based listings
 const YP_BASE = "https://www.yellowpages.co.zw";
 const YP_SELECTORS = {
   listItem: ".listing, .business-listing, .result-item, article.listing, .directory-item, li.item",
@@ -49,110 +59,97 @@ const YP_SELECTORS = {
   address: [".address", ".location", ".city", ".suburb"],
   description: [".description", ".tagline", ".bio", ".excerpt", "p.description"],
   email: ["[href^='mailto:']", ".email"],
+  socialLinks: SOCIAL_SELECTORS,
+};
+
+// ─── infopages.co.zw ─────────────────────────────────────────────────────────
+const IP_SELECTORS = {
+  listItem: ".listing, .business, .entry, li.result, .card",
+  name: ["h2", "h3", ".name", ".title", "a.title"],
+  phone: ["[href^='tel:']", ".phone", ".tel"],
+  website: ["a.website", ".website a", "a[href^='http']"],
+  address: [".address", ".location", ".area"],
+  description: [".description", ".summary", "p"],
+  email: ["[href^='mailto:']"],
+  socialLinks: SOCIAL_SELECTORS,
+};
+
+// ─── Bing search — Zimbabwe businesses on Facebook ────────────────────────────
+// Bing is more scraper-friendly than Google; results pages include titles + URLs
+// which we parse to extract Facebook page references
+const BING_SELECTORS = {
+  listItem: "#b_results li.b_algo, .b_algo",
+  name: ["h2 a", "h2", ".b_title a"],
+  phone: [],
+  website: ["h2 a", "cite"],
+  address: [".b_caption p", ".b_snippet"],
+  description: [".b_caption p", ".b_snippet"],
+  email: [],
+  socialLinks: ["[href*='facebook.com']", "[href*='instagram.com']"],
 };
 
 export const TARGETS: ScrapeTarget[] = [
-  {
-    name: "yellowpages.co.zw",
-    label: "venues",
-    url: `${YP_BASE}/search?q=function+venue+hall&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "events-production",
-    url: `${YP_BASE}/search?q=events+production+company&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "lodges",
-    url: `${YP_BASE}/search?q=lodge+guesthouse&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "resorts",
-    url: `${YP_BASE}/search?q=resort+safari&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "travel-agencies",
-    url: `${YP_BASE}/search?q=travel+agency+tour+operator&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "security",
-    url: `${YP_BASE}/search?q=security+company&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "company-registration",
-    url: `${YP_BASE}/search?q=company+registration+legal&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "transport",
-    url: `${YP_BASE}/search?q=transport+logistics+courier&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
-  {
-    name: "yellowpages.co.zw",
-    label: "catering",
-    url: `${YP_BASE}/search?q=catering+food+services&location=Zimbabwe`,
-    selectors: YP_SELECTORS,
-  },
+  // ── Directory: yellowpages.co.zw ──────────────────────────────────────────
+  { name: "yellowpages.co.zw", label: "venues",              url: `${YP_BASE}/search?q=function+venue+hall&location=Zimbabwe`,         selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "events-production",   url: `${YP_BASE}/search?q=events+production+company&location=Zimbabwe`,   selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "lodges",              url: `${YP_BASE}/search?q=lodge+guesthouse&location=Zimbabwe`,            selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "resorts",             url: `${YP_BASE}/search?q=resort+safari&location=Zimbabwe`,              selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "travel-agencies",     url: `${YP_BASE}/search?q=travel+agency+tour+operator&location=Zimbabwe`, selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "security",            url: `${YP_BASE}/search?q=security+company&location=Zimbabwe`,           selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "company-registration",url: `${YP_BASE}/search?q=company+registration+legal&location=Zimbabwe`, selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "transport",           url: `${YP_BASE}/search?q=transport+logistics+courier&location=Zimbabwe`, selectors: YP_SELECTORS },
+  { name: "yellowpages.co.zw", label: "catering",            url: `${YP_BASE}/search?q=catering+food+services&location=Zimbabwe`,     selectors: YP_SELECTORS },
 
-  // ─── infopages.co.zw ─────────────────────────────────────────────────────
+  // ── Directory: infopages.co.zw ────────────────────────────────────────────
+  { name: "infopages.co.zw", label: "venues",    url: "https://www.infopages.co.zw/search?cat=venues",        selectors: IP_SELECTORS },
+  { name: "infopages.co.zw", label: "lodges",    url: "https://www.infopages.co.zw/search?cat=accommodation", selectors: IP_SELECTORS },
+  { name: "infopages.co.zw", label: "security",  url: "https://www.infopages.co.zw/search?cat=security",      selectors: IP_SELECTORS },
+
+  // ── Social: Bing search for Zimbabwe businesses on Facebook ──────────────
   {
-    name: "infopages.co.zw",
+    name: "bing-social",
     label: "venues",
-    url: "https://www.infopages.co.zw/search?cat=venues",
-    selectors: {
-      listItem: ".listing, .business, .entry, li.result, .card",
-      name: ["h2", "h3", ".name", ".title", "a.title"],
-      phone: ["[href^='tel:']", ".phone", ".tel"],
-      website: ["a.website", ".website a", "a[href^='http']"],
-      address: [".address", ".location", ".area"],
-      description: [".description", ".summary", "p"],
-      email: ["[href^='mailto:']"],
-    },
+    url: "https://www.bing.com/search?q=site%3Afacebook.com+venue+%22Zimbabwe%22+%22Harare%22",
+    selectors: BING_SELECTORS,
   },
   {
-    name: "infopages.co.zw",
+    name: "bing-social",
     label: "lodges",
-    url: "https://www.infopages.co.zw/search?cat=accommodation",
-    selectors: {
-      listItem: ".listing, .business, .entry, li.result, .card",
-      name: ["h2", "h3", ".name", ".title", "a.title"],
-      phone: ["[href^='tel:']", ".phone", ".tel"],
-      website: ["a.website", ".website a", "a[href^='http']"],
-      address: [".address", ".location", ".area"],
-      description: [".description", ".summary", "p"],
-      email: ["[href^='mailto:']"],
-    },
+    url: "https://www.bing.com/search?q=site%3Afacebook.com+lodge+%22Zimbabwe%22",
+    selectors: BING_SELECTORS,
   },
   {
-    name: "infopages.co.zw",
+    name: "bing-social",
+    label: "resorts",
+    url: "https://www.bing.com/search?q=site%3Afacebook.com+resort+safari+%22Zimbabwe%22",
+    selectors: BING_SELECTORS,
+  },
+  {
+    name: "bing-social",
+    label: "travel-agencies",
+    url: "https://www.bing.com/search?q=site%3Afacebook.com+travel+agency+%22Zimbabwe%22",
+    selectors: BING_SELECTORS,
+  },
+  {
+    name: "bing-social",
     label: "security",
-    url: "https://www.infopages.co.zw/search?cat=security",
-    selectors: {
-      listItem: ".listing, .business, .entry, li.result, .card",
-      name: ["h2", "h3", ".name", ".title", "a.title"],
-      phone: ["[href^='tel:']", ".phone", ".tel"],
-      website: ["a.website", ".website a", "a[href^='http']"],
-      address: [".address", ".location", ".area"],
-      description: [".description", ".summary", "p"],
-      email: ["[href^='mailto:']"],
-    },
+    url: "https://www.bing.com/search?q=site%3Afacebook.com+security+company+%22Zimbabwe%22",
+    selectors: BING_SELECTORS,
+  },
+  {
+    name: "bing-social",
+    label: "events-production",
+    url: "https://www.bing.com/search?q=site%3Afacebook.com+events+production+%22Zimbabwe%22+%22Harare%22",
+    selectors: BING_SELECTORS,
+  },
+  {
+    name: "bing-social",
+    label: "catering",
+    url: "https://www.bing.com/search?q=site%3Afacebook.com+catering+%22Zimbabwe%22+%22Harare%22",
+    selectors: BING_SELECTORS,
   },
 ];
 
-// Guess NexusZim category from scraped label/description
 export function guessCategory(label: string, description = ""): string {
   const text = `${label} ${description}`.toLowerCase();
   for (const [keyword, cat] of Object.entries(CATEGORY_MAP)) {

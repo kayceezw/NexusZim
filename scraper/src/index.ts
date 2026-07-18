@@ -1,9 +1,10 @@
 /**
  * NexusZim daily web scraper
- * Targets Zimbabwe business directories → writes leads to scraper_queue table
+ * Targets Zimbabwe business directories + social media (via Bing) →
+ * writes leads to scraper_queue table for admin review.
  *
  * Usage:
- *   bun run scrape            # live run, writes to Supabase
+ *   bun run scrape                # live run, writes to Supabase
  *   DRY_RUN=true bun run scrape   # dry run, logs only
  */
 
@@ -15,16 +16,14 @@ import { TARGETS, guessCategory, type ScrapeTarget } from "./targets.js";
 const SUPABASE_URL = process.env.SUPABASE_URL ?? "";
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 const DRY_RUN = process.env.DRY_RUN === "true";
-const DELAY_MS = 2500; // polite delay between requests
+const DELAY_MS = 3000; // polite delay between requests
 
 if (!DRY_RUN && (!SUPABASE_URL || !SUPABASE_KEY)) {
   console.error("ERROR: Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env");
   process.exit(1);
 }
 
-const supabase = !DRY_RUN
-  ? createClient(SUPABASE_URL, SUPABASE_KEY)
-  : null;
+const supabase = !DRY_RUN ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 type Lead = {
   business_name: string;
@@ -36,7 +35,7 @@ type Lead = {
   description: string | null;
   source_url: string;
   source_name: string;
-  raw_data: Record<string, string>;
+  raw_data: Record<string, unknown>;
 };
 
 function pickFirst($item: ReturnType<ReturnType<typeof load>>, selectors: string[]): string | null {
@@ -51,12 +50,21 @@ function pickFirst($item: ReturnType<ReturnType<typeof load>>, selectors: string
   return null;
 }
 
-function extractWebsite($item: ReturnType<ReturnType<typeof load>>, selectors: string[], sourceDomain: string): string | null {
+function extractWebsite(
+  $item: ReturnType<ReturnType<typeof load>>,
+  selectors: string[],
+  sourceDomain: string,
+): string | null {
+  const SOCIAL_DOMAINS = ["facebook.com", "instagram.com", "twitter.com", "x.com", "linkedin.com", "tiktok.com", "youtube.com"];
   for (const sel of selectors) {
     const els = $item.find(sel);
     for (let i = 0; i < els.length; i++) {
       const href = els.eq(i).attr("href") ?? "";
-      if (href.startsWith("http") && !href.includes(sourceDomain)) {
+      if (
+        href.startsWith("http") &&
+        !href.includes(sourceDomain) &&
+        !SOCIAL_DOMAINS.some((d) => href.includes(d))
+      ) {
         return href.trim();
       }
     }
@@ -64,9 +72,43 @@ function extractWebsite($item: ReturnType<ReturnType<typeof load>>, selectors: s
   return null;
 }
 
+function extractSocialLinks(
+  $item: ReturnType<ReturnType<typeof load>>,
+  selectors: string[],
+): Record<string, string> {
+  const links: Record<string, string> = {};
+  const platformMap: Record<string, string> = {
+    "facebook.com": "facebook",
+    "instagram.com": "instagram",
+    "twitter.com": "twitter",
+    "x.com": "twitter",
+    "linkedin.com": "linkedin",
+    "tiktok.com": "tiktok",
+    "youtube.com": "youtube",
+  };
+
+  for (const sel of selectors) {
+    const els = $item.find(sel);
+    for (let i = 0; i < els.length; i++) {
+      const href = (els.eq(i).attr("href") ?? "").trim();
+      if (!href) continue;
+      for (const [domain, platform] of Object.entries(platformMap)) {
+        if (href.includes(domain) && !links[platform]) {
+          links[platform] = href;
+          break;
+        }
+      }
+    }
+  }
+  return links;
+}
+
 function extractCity(address: string | null): string | null {
   if (!address) return null;
-  const ZW_CITIES = ["Harare", "Bulawayo", "Mutare", "Gweru", "Kwekwe", "Kadoma", "Masvingo", "Chinhoyi", "Victoria Falls", "Bindura", "Chegutu"];
+  const ZW_CITIES = [
+    "Harare", "Bulawayo", "Mutare", "Gweru", "Kwekwe", "Kadoma",
+    "Masvingo", "Chinhoyi", "Victoria Falls", "Bindura", "Chegutu",
+  ];
   for (const city of ZW_CITIES) {
     if (address.toLowerCase().includes(city.toLowerCase())) return city;
   }
@@ -75,7 +117,8 @@ function extractCity(address: string | null): string | null {
 
 async function scrapeTarget(target: ScrapeTarget): Promise<Lead[]> {
   const leads: Lead[] = [];
-  console.log(`\n[${target.source_name ?? target.name}] Fetching: ${target.url}`);
+  const isSocial = target.name.startsWith("bing-");
+  console.log(`\n[${target.name}${isSocial ? " 📱" : ""}] ${target.label} → ${target.url}`);
 
   let html: string;
   try {
@@ -83,9 +126,11 @@ async function scrapeTarget(target: ScrapeTarget): Promise<Lead[]> {
       url: target.url,
       headers: {
         "Accept-Language": "en-GB,en;q=0.9",
-        "Accept": "text/html,application/xhtml+xml",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       },
-      timeout: { request: 15_000 },
+      timeout: { request: 20_000 },
     });
     html = res.body as string;
   } catch (err) {
@@ -101,22 +146,26 @@ async function scrapeTarget(target: ScrapeTarget): Promise<Lead[]> {
     const $el = $(el);
 
     const rawName = pickFirst($el, target.selectors.name);
-    if (!rawName || rawName.length < 3) return; // skip blanks
+    if (!rawName || rawName.length < 3) return;
 
     const rawAddress = pickFirst($el, target.selectors.address);
     const rawPhone = pickFirst($el, target.selectors.phone);
     const rawEmail = pickFirst($el, target.selectors.email);
     const rawDesc = pickFirst($el, target.selectors.description);
     const website = extractWebsite($el, target.selectors.website, target.name);
+    const socialLinks = extractSocialLinks($el, target.selectors.socialLinks);
     const city = extractCity(rawAddress);
     const category = guessCategory(target.label, rawDesc ?? "");
+
+    // For Bing social results, use the Facebook page URL as the website if no other website found
+    const finalWebsite = website ?? (socialLinks.facebook ?? null);
 
     leads.push({
       business_name: rawName,
       category_guess: category,
       city,
       phone: rawPhone,
-      website,
+      website: finalWebsite,
       email: rawEmail,
       description: rawDesc,
       source_url: target.url,
@@ -124,11 +173,13 @@ async function scrapeTarget(target: ScrapeTarget): Promise<Lead[]> {
       raw_data: {
         label: target.label,
         address: rawAddress ?? "",
+        social: socialLinks,
+        is_social_lead: isSocial,
       },
     });
   });
 
-  console.log(`  Extracted ${leads.length} leads`);
+  console.log(`  Extracted ${leads.length} leads${Object.keys(leads.flatMap ? {} : {}).length > 0 ? " (with social links)" : ""}`);
   return leads;
 }
 
@@ -138,7 +189,9 @@ async function upsertLeads(leads: Lead[]): Promise<{ inserted: number; skipped: 
 
   for (const lead of leads) {
     if (DRY_RUN) {
-      console.log(`  [DRY] ${lead.business_name} | ${lead.city ?? "?"} | ${lead.category_guess}`);
+      const social = lead.raw_data.social as Record<string, string>;
+      const socialStr = Object.keys(social).length ? ` [${Object.keys(social).join(", ")}]` : "";
+      console.log(`  [DRY] ${lead.business_name} | ${lead.city ?? "?"} | ${lead.category_guess}${socialStr}`);
       inserted++;
       continue;
     }
@@ -149,7 +202,7 @@ async function upsertLeads(leads: Lead[]): Promise<{ inserted: number; skipped: 
 
     if (error) {
       if (error.code === "23505") {
-        skipped++; // duplicate
+        skipped++;
       } else {
         console.warn(`  WARN: ${lead.business_name} — ${error.message}`);
         skipped++;
@@ -167,10 +220,14 @@ async function sleep(ms: number) {
 }
 
 async function main() {
+  const directoryTargets = TARGETS.filter((t) => !t.name.startsWith("bing-"));
+  const socialTargets = TARGETS.filter((t) => t.name.startsWith("bing-"));
+
   console.log(`\n========================================`);
   console.log(`NexusZim Scraper — ${new Date().toISOString()}`);
   console.log(`Mode: ${DRY_RUN ? "DRY RUN (no writes)" : "LIVE"}`);
-  console.log(`Targets: ${TARGETS.length}`);
+  console.log(`Directory targets: ${directoryTargets.length}`);
+  console.log(`Social targets:    ${socialTargets.length}`);
   console.log(`========================================`);
 
   let totalInserted = 0;
@@ -187,9 +244,7 @@ async function main() {
       console.log(`  → Saved ${inserted} new, skipped ${skipped} duplicates`);
     }
 
-    if (i < TARGETS.length - 1) {
-      await sleep(DELAY_MS);
-    }
+    if (i < TARGETS.length - 1) await sleep(DELAY_MS);
   }
 
   console.log(`\n========================================`);
