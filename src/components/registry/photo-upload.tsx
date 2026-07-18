@@ -211,3 +211,50 @@ export function HeroImageUpload({ currentUrl, onUpload }: HeroImageUploadProps) 
     </button>
   );
 }
+
+/* Category background upload — admin only, stores to site-assets bucket */
+interface CategoryBgUploadProps {
+  currentUrl: string | null;
+  onUpload: (url: string) => void;
+}
+
+export function CategoryBgUpload({ currentUrl, onUpload }: CategoryBgUploadProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+
+    const { error } = await supabase.storage
+      .from("site-assets")
+      .upload("category-bg.jpg", file, { upsert: true, contentType: file.type });
+
+    if (!error) {
+      const { data } = supabase.storage.from("site-assets").getPublicUrl("category-bg.jpg");
+      onUpload(`${data.publicUrl}?t=${Date.now()}`);
+    }
+    setUploading(false);
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => inputRef.current?.click()}
+      disabled={uploading}
+      title={currentUrl ? "Change category background image" : "Upload category background image"}
+      className="flex items-center gap-1.5 bg-forest-ink/70 hover:bg-forest-ink text-cream/70 hover:text-cream px-3 py-1.5 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.08em] transition-colors backdrop-blur-sm"
+    >
+      <Upload className="h-3 w-3" />
+      {uploading ? "Uploading..." : currentUrl ? "Change category image" : "Upload category image"}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={handleFile}
+      />
+    </button>
+  );
+}

@@ -7,7 +7,7 @@ import { Hallmark } from "@/components/registry/hallmark";
 import { Ledger, type LedgerEntry } from "@/components/registry/ledger";
 import { CategoryCard } from "@/components/category-card";
 import { LiveProviderCard } from "@/components/provider-card";
-import { HeroImageUpload } from "@/components/registry/photo-upload";
+import { HeroImageUpload, CategoryBgUpload } from "@/components/registry/photo-upload";
 import { ProviderCardSkeleton, StatSkeleton } from "@/components/skeletons";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,6 +42,7 @@ const SPECIMEN_LEDGER: LedgerEntry[] = [
 function LandingPage() {
   const [q, setQ] = useState("");
   const [heroBg, setHeroBg] = useState<string | null>(null);
+  const [categoryBg, setCategoryBg] = useState<string | null>(null);
   const [heroProviderId, setHeroProviderId] = useState<string | null>(null);
   const heroImgRef = useRef<HTMLImageElement>(null);
   const navigate = useNavigate();
@@ -51,6 +52,9 @@ function LandingPage() {
   useEffect(() => {
     const { data: bgData } = supabase.storage.from("site-assets").getPublicUrl("hero-bg.jpg");
     setHeroBg(bgData.publicUrl);
+
+    const { data: catBgData } = supabase.storage.from("site-assets").getPublicUrl("category-bg.jpg");
+    setCategoryBg(catBgData.publicUrl);
 
     const { data: cfgData } = supabase.storage.from("site-assets").getPublicUrl("config.json");
     fetch(`${cfgData.publicUrl}?t=${Date.now()}`)
@@ -237,8 +241,22 @@ function LandingPage() {
       </section>
 
       {/* ─── CATEGORY INDEX ─── */}
-      <section className="py-20 border-b border-hairline">
-        <div className="container-page">
+      <section className="relative py-20 border-b border-hairline overflow-hidden">
+        {categoryBg && (
+          <img
+            src={categoryBg}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover opacity-40 pointer-events-none select-none"
+            onError={() => setCategoryBg(null)}
+          />
+        )}
+        {isAdmin && (
+          <div className="absolute bottom-4 left-4 z-20">
+            <CategoryBgUpload currentUrl={categoryBg} onUpload={(url) => setCategoryBg(url)} />
+          </div>
+        )}
+        <div className="container-page relative z-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
             <div className="space-y-2">
               <p className="eyebrow text-text-soft">
