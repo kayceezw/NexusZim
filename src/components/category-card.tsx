@@ -1,40 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import type { Category, CategorySlug } from "@/lib/mock-data";
-import { PROVIDERS } from "@/lib/mock-data";
-import {
-  Crown,
-  PartyPopper,
-  Stamp,
-  Building2,
-  Car,
-  Scissors,
-  Dumbbell,
-  Shirt,
-  Briefcase,
-  Home,
-  Stethoscope,
-  GraduationCap,
-  UtensilsCrossed,
-  Wrench,
-} from "lucide-react";
-import type { LucideProps } from "lucide-react";
-
-const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
-  Crown,
-  PartyPopper,
-  Stamp,
-  Building2,
-  Car,
-  Scissors,
-  Dumbbell,
-  Shirt,
-  Briefcase,
-  Home,
-  Stethoscope,
-  GraduationCap,
-  UtensilsCrossed,
-  Wrench,
-};
 
 /**
  * Per-slug accent palette — each category gets a distinct colour.
@@ -169,9 +134,8 @@ export function CategoryCard({
   count?: number;
   animationDelay?: number;
 }) {
-  const count = countProp ?? PROVIDERS.filter((p) => p.category === category.slug).length;
+  const count = countProp ?? 0;
   const accent = SLUG_ACCENT[category.slug as CategorySlug] ?? FALLBACK_ACCENT;
-  const Icon = ICON_MAP[category.icon];
   const visibleSubs = category.subCategories.slice(0, 3);
 
   return (
@@ -193,23 +157,11 @@ export function CategoryCard({
 
       {/* Hover lift — applied via a wrapper trick using group-hover on the Link */}
       <div className="flex flex-col gap-4 h-full transition-transform duration-200 group-hover:-translate-y-1">
-        {/* Icon + count */}
-        <div className="flex items-start justify-between">
-          <div
-            className={`p-2.5 rounded-[6px] border ${accent.iconBg} ${
-              accent.borderColor ? "border-current/10" : "border-hairline"
-            } transition-transform duration-200 group-hover:scale-110`}
-            style={{ borderColor: `${accent.borderColor}25` }}
-          >
-            {Icon && <Icon className={`h-5 w-5 ${accent.iconText}`} strokeWidth={1.5} />}
-          </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft/50 mt-1">
-            {count} on register
-          </span>
-        </div>
-
         {/* Name + tagline */}
         <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft/50 block mb-1.5">
+            {count} on register
+          </span>
           <h3
             className="font-display text-xl text-text leading-tight transition-colors duration-200"
             style={{ ["--tw-text-opacity" as string]: "1" }}
