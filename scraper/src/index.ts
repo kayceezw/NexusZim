@@ -10,7 +10,9 @@
 import { load } from "cheerio";
 import { gotScraping } from "got-scraping";
 import { createClient } from "@supabase/supabase-js";
-import { TARGETS, guessCategory, type ScrapeTarget } from "./targets.js";
+import { TARGETS, BROWSER_TARGETS, guessCategory, type ScrapeTarget } from "./targets.js";
+import { scrapeBrowserTarget } from "./browser.js";
+import type { Lead } from "./types.js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL ?? "";
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -26,18 +28,6 @@ const supabase = !DRY_RUN
   ? createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 
-type Lead = {
-  business_name: string;
-  category_guess: string;
-  city: string | null;
-  phone: string | null;
-  website: string | null;
-  email: string | null;
-  description: string | null;
-  source_url: string;
-  source_name: string;
-  raw_data: Record<string, string>;
-};
 
 function pickFirst($item: ReturnType<ReturnType<typeof load>>, selectors: string[]): string | null {
   for (const sel of selectors) {
@@ -170,7 +160,7 @@ async function main() {
   console.log(`\n========================================`);
   console.log(`NexusZim Scraper — ${new Date().toISOString()}`);
   console.log(`Mode: ${DRY_RUN ? "DRY RUN (no writes)" : "LIVE"}`);
-  console.log(`Targets: ${TARGETS.length}`);
+  console.log(`Targets: ${TARGETS.length} directory + ${BROWSER_TARGETS.length} social/maps`);
   console.log(`========================================`);
 
   let totalInserted = 0;
@@ -188,6 +178,25 @@ async function main() {
     }
 
     if (i < TARGETS.length - 1) {
+      await sleep(DELAY_MS);
+    }
+  }
+
+  // ── Social / maps targets (Playwright) ──────────────────────────────────
+  console.log(`\n── Social & Maps ──────────────────────────────────────────────`);
+
+  for (let i = 0; i < BROWSER_TARGETS.length; i++) {
+    const target = BROWSER_TARGETS[i];
+    const leads = await scrapeBrowserTarget(target);
+
+    if (leads.length > 0) {
+      const { inserted, skipped } = await upsertLeads(leads);
+      totalInserted += inserted;
+      totalSkipped += skipped;
+      console.log(`  → Saved ${inserted} new, skipped ${skipped} duplicates`);
+    }
+
+    if (i < BROWSER_TARGETS.length - 1) {
       await sleep(DELAY_MS);
     }
   }
