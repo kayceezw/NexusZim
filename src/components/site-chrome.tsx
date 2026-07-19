@@ -1,5 +1,15 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, X, ChevronDown, LayoutDashboard, Shield, Building2, User } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  LayoutDashboard,
+  Shield,
+  Building2,
+  User,
+  Ticket,
+} from "lucide-react";
+import { useTickets } from "@/hooks/use-tickets";
 import { useAuth, dashboardPathForRoles, type AppRole } from "@/hooks/use-auth";
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +18,8 @@ import { NexusZimLogo } from "./registry/logo";
 
 const NAV = [
   { to: "/", label: "Home", exact: true },
+  { to: "/events", label: "Events", exact: false },
+  { to: "/venues", label: "Venues", exact: false },
   { to: "/search", label: "Directory", exact: false },
   { to: "/intel", label: "Intel Hub", exact: false },
   { to: "/request", label: "Post a Brief", exact: false },
@@ -20,6 +32,7 @@ export function SiteHeader() {
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const ticketOrderCount = useTickets().orders.length;
 
   // Pending provider count — only fetched for admins
   const { data: pendingCount = 0 } = useQuery({
@@ -61,13 +74,16 @@ export function SiteHeader() {
         <div className="container-page flex h-16 items-center justify-between gap-6">
           <NexusZimLogo variant="color" size="sm" />
 
-          <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
                 className="font-sans text-[13px] font-medium text-text-soft transition-colors hover:text-forest h-16 flex items-center border-b-2 border-transparent hover:border-forest/40"
-                activeProps={{ className: "font-sans text-[13px] font-medium text-forest h-16 flex items-center border-b-2 border-forest" }}
+                activeProps={{
+                  className:
+                    "font-sans text-[13px] font-medium text-forest h-16 flex items-center border-b-2 border-forest",
+                }}
                 activeOptions={{ exact: n.exact }}
               >
                 {n.label}
@@ -78,7 +94,10 @@ export function SiteHeader() {
                 <Link
                   to="/admin"
                   className="relative font-sans text-[13px] font-medium text-gold transition-colors hover:text-gold-deep h-16 flex items-center border-b-2 border-transparent"
-                  activeProps={{ className: "relative font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center" }}
+                  activeProps={{
+                    className:
+                      "relative font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center",
+                  }}
                   activeOptions={{ exact: true }}
                 >
                   Admin
@@ -91,7 +110,10 @@ export function SiteHeader() {
                 <Link
                   to="/admin/concierge"
                   className="font-sans text-[13px] font-medium text-gold transition-colors hover:text-gold-deep h-16 flex items-center border-b-2 border-transparent"
-                  activeProps={{ className: "font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center" }}
+                  activeProps={{
+                    className:
+                      "font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center",
+                  }}
                 >
                   Concierge
                 </Link>
@@ -100,6 +122,19 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <Link
+              to="/tickets"
+              className="relative flex h-9 w-9 items-center justify-center rounded-[3px] border border-hairline text-text-soft transition-colors hover:border-forest hover:text-forest"
+              aria-label="My tickets"
+              title="My tickets"
+            >
+              <Ticket className="h-4 w-4" strokeWidth={1.75} />
+              {ticketOrderCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gold px-0.5 font-mono text-[8px] font-bold text-forest-ink">
+                  {ticketOrderCount > 9 ? "9+" : ticketOrderCount}
+                </span>
+              )}
+            </Link>
             {user ? (
               <div className="hidden lg:flex items-center gap-3">
                 <UserMenu onSignOut={handleSignOut} />
@@ -142,7 +177,10 @@ export function SiteHeader() {
                 to={n.to}
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-text-soft hover:text-forest transition-colors"
-                activeProps={{ className: "flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-forest" }}
+                activeProps={{
+                  className:
+                    "flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-forest",
+                }}
                 activeOptions={{ exact: n.exact }}
               >
                 {n.label}
@@ -181,7 +219,10 @@ export function SiteHeader() {
             <div className="mt-6 flex flex-col gap-3">
               {user ? (
                 <>
-                  <MobileDashboardLinks onClose={() => setMobileOpen(false)} onSignOut={handleSignOut} />
+                  <MobileDashboardLinks
+                    onClose={() => setMobileOpen(false)}
+                    onSignOut={handleSignOut}
+                  />
                 </>
               ) : (
                 <>
@@ -231,7 +272,12 @@ function dashboardsForRoles(roles: AppRole[], onboardingCompleted: boolean) {
   if (roles.includes("service_provider")) {
     dashboards.push({ label: "Provider Dashboard", to: "/provider/dashboard", icon: Building2 });
   }
-  if (roles.includes("client") || (!roles.includes("service_provider") && !roles.includes("admin") && !roles.includes("super_admin"))) {
+  if (
+    roles.includes("client") ||
+    (!roles.includes("service_provider") &&
+      !roles.includes("admin") &&
+      !roles.includes("super_admin"))
+  ) {
     dashboards.push({ label: "Client Dashboard", to: "/dashboard", icon: LayoutDashboard });
   }
   return dashboards;
@@ -253,10 +299,13 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
   const email = user?.email ?? "";
   const initials = email.slice(0, 2).toUpperCase();
   const dashboards = dashboardsForRoles(roles, onboardingCompleted);
-  const primaryRole = roles.includes("super_admin") ? "super_admin"
-    : roles.includes("admin") ? "admin"
-    : roles.includes("service_provider") ? "service_provider"
-    : "client";
+  const primaryRole = roles.includes("super_admin")
+    ? "super_admin"
+    : roles.includes("admin")
+      ? "admin"
+      : roles.includes("service_provider")
+        ? "service_provider"
+        : "client";
 
   return (
     <div className="relative" ref={ref}>
@@ -277,7 +326,9 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
             {email}
           </p>
         </div>
-        <ChevronDown className={`h-3.5 w-3.5 text-text-soft/40 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`h-3.5 w-3.5 text-text-soft/40 transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </button>
 
       {open && (
@@ -292,7 +343,10 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
                 <p className="font-sans text-[13px] text-text font-medium truncate">{email}</p>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {roles.map((r) => (
-                    <span key={r} className="font-mono text-[8px] uppercase tracking-widest text-forest border border-forest/20 bg-forest/5 px-1.5 py-0.5 rounded-[2px]">
+                    <span
+                      key={r}
+                      className="font-mono text-[8px] uppercase tracking-widest text-forest border border-forest/20 bg-forest/5 px-1.5 py-0.5 rounded-[2px]"
+                    >
                       {ROLE_LABELS[r]}
                     </span>
                   ))}
@@ -315,8 +369,13 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 hover:bg-forest hover:text-cream transition-colors group"
                 >
-                  <Icon className="h-3.5 w-3.5 text-text-soft/50 group-hover:text-cream/70 shrink-0 transition-colors" strokeWidth={1.5} />
-                  <span className="font-sans text-[13px] text-text group-hover:text-cream transition-colors">{d.label}</span>
+                  <Icon
+                    className="h-3.5 w-3.5 text-text-soft/50 group-hover:text-cream/70 shrink-0 transition-colors"
+                    strokeWidth={1.5}
+                  />
+                  <span className="font-sans text-[13px] text-text group-hover:text-cream transition-colors">
+                    {d.label}
+                  </span>
                 </Link>
               );
             })}
@@ -325,11 +384,19 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
           {/* Sign out */}
           <div className="border-t border-hairline py-1">
             <button
-              onClick={() => { setOpen(false); onSignOut(); }}
+              onClick={() => {
+                setOpen(false);
+                onSignOut();
+              }}
               className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-rose-50 transition-colors group"
             >
-              <X className="h-3.5 w-3.5 text-text-soft/50 group-hover:text-rose-500 shrink-0 transition-colors" strokeWidth={1.5} />
-              <span className="font-sans text-[13px] text-text-soft group-hover:text-rose-600 transition-colors">Sign out</span>
+              <X
+                className="h-3.5 w-3.5 text-text-soft/50 group-hover:text-rose-500 shrink-0 transition-colors"
+                strokeWidth={1.5}
+              />
+              <span className="font-sans text-[13px] text-text-soft group-hover:text-rose-600 transition-colors">
+                Sign out
+              </span>
             </button>
           </div>
         </div>
@@ -338,7 +405,13 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
   );
 }
 
-function MobileDashboardLinks({ onClose, onSignOut }: { onClose: () => void; onSignOut: () => void }) {
+function MobileDashboardLinks({
+  onClose,
+  onSignOut,
+}: {
+  onClose: () => void;
+  onSignOut: () => void;
+}) {
   const { user, roles, onboardingCompleted } = useAuth();
   const email = user?.email ?? "";
   const dashboards = dashboardsForRoles(roles, onboardingCompleted);
@@ -346,11 +419,16 @@ function MobileDashboardLinks({ onClose, onSignOut }: { onClose: () => void; onS
   return (
     <>
       <div className="border border-hairline rounded-[6px] px-4 py-3 mb-1">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft/50">Signed in as</p>
+        <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft/50">
+          Signed in as
+        </p>
         <p className="font-sans text-[13px] text-text mt-0.5 truncate">{email}</p>
         <div className="flex flex-wrap gap-1 mt-1.5">
           {roles.map((r) => (
-            <span key={r} className="font-mono text-[8px] uppercase tracking-widest text-forest border border-forest/20 bg-forest/5 px-1.5 py-0.5 rounded-[2px]">
+            <span
+              key={r}
+              className="font-mono text-[8px] uppercase tracking-widest text-forest border border-forest/20 bg-forest/5 px-1.5 py-0.5 rounded-[2px]"
+            >
               {ROLE_LABELS[r]}
             </span>
           ))}
@@ -408,14 +486,12 @@ export function SiteFooter() {
             >
               Post a Brief
             </Link>
-            <a
-              href="https://tikheti.app"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/events"
               className="border border-gold/30 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-gold hover:border-gold hover:bg-gold/10 transition-colors"
             >
-              Tickets via Tikheti
-            </a>
+              Get Tickets
+            </Link>
           </div>
         </div>
       </div>
@@ -425,7 +501,8 @@ export function SiteFooter() {
         <div>
           <NexusZimLogo variant="reversed" size="sm" asLink={false} />
           <p className="mt-5 max-w-xs font-sans text-sm leading-relaxed text-cream/50">
-            Zimbabwe's service registry. Connecting clients with verified providers across events, transport, business, and more.
+            Zimbabwe's one-stop events platform — tickets, venues, and verified service providers on
+            a single register.
           </p>
           <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-cream/30">
             A ZimDataPulse company
@@ -433,13 +510,13 @@ export function SiteFooter() {
         </div>
 
         <FooterCol
-          title="Intel Hub"
+          title="NexusZim Live"
           links={[
-            { to: "/intel/events", label: "Events Radar" },
-            { to: "/intel/venues", label: "Venue Board" },
-            { to: "/intel/rates", label: "Market Index" },
-            { to: "/intel", label: "Subscribe to Alerts" },
-            { href: "https://tikheti.app", label: "Tikheti Ticketing" },
+            { to: "/events", label: "What's On" },
+            { to: "/tickets", label: "My Tickets" },
+            { to: "/venues", label: "Venue Marketplace" },
+            { to: "/organizer", label: "Organizer Suite" },
+            { to: "/intel", label: "Intel Hub" },
           ]}
         />
         <FooterCol
@@ -465,7 +542,8 @@ export function SiteFooter() {
       <div className="border-t border-cream/10">
         <div className="container-page flex flex-col items-center justify-between gap-3 py-6 sm:flex-row">
           <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-cream/25">
-            &copy; {new Date().getFullYear()} NexusZim. Harare &middot; Bulawayo &middot; Victoria Falls &middot; Mutare
+            &copy; {new Date().getFullYear()} NexusZim. Harare &middot; Bulawayo &middot; Victoria
+            Falls &middot; Mutare
           </p>
           <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-cream/25">
             You pay the provider directly. NexusZim never holds your money.
@@ -510,7 +588,7 @@ function FooterCol({
                 {l.label}
               </Link>
             </li>
-          )
+          ),
         )}
       </ul>
     </div>

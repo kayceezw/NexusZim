@@ -9,12 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RequestRouteImport } from './routes/request'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as OrganizerRouteImport } from './routes/organizer'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IntelRouteImport } from './routes/intel'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -24,9 +26,12 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VenuesIndexRouteImport } from './routes/venues.index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding.index'
 import { Route as IntelIndexRouteImport } from './routes/intel.index'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
+import { Route as VenuesVenueIdRouteImport } from './routes/venues.$venueId'
 import { Route as ProvidersProviderIdRouteImport } from './routes/providers.$providerId'
 import { Route as ProviderDashboardRouteImport } from './routes/provider.dashboard'
 import { Route as PoliciesCancellationRouteImport } from './routes/policies.cancellation'
@@ -35,6 +40,8 @@ import { Route as OnboardingClientRouteImport } from './routes/onboarding/client
 import { Route as IntelVenuesRouteImport } from './routes/intel.venues'
 import { Route as IntelRatesRouteImport } from './routes/intel.rates'
 import { Route as IntelEventsRouteImport } from './routes/intel.events'
+import { Route as EventsCheckoutRouteImport } from './routes/events.checkout'
+import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as BookProviderIdRouteImport } from './routes/book.$providerId'
 import { Route as AdminScraperRouteImport } from './routes/admin.scraper'
@@ -42,6 +49,11 @@ import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
 import { Route as AdminIntelRouteImport } from './routes/admin.intel'
 import { Route as AdminConciergeRouteImport } from './routes/admin.concierge'
 
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -70,6 +82,11 @@ const RequestRoute = RequestRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizerRoute = OrganizerRouteImport.update({
+  id: '/organizer',
+  path: '/organizer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -117,6 +134,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VenuesIndexRoute = VenuesIndexRouteImport.update({
+  id: '/venues/',
+  path: '/venues/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
   id: '/onboarding/',
   path: '/onboarding/',
@@ -127,9 +149,19 @@ const IntelIndexRoute = IntelIndexRouteImport.update({
   path: '/',
   getParentRoute: () => IntelRoute,
 } as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/events/',
+  path: '/events/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
   id: '/categories/',
   path: '/categories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesVenueIdRoute = VenuesVenueIdRouteImport.update({
+  id: '/venues/$venueId',
+  path: '/venues/$venueId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProvidersProviderIdRoute = ProvidersProviderIdRouteImport.update({
@@ -172,6 +204,16 @@ const IntelEventsRoute = IntelEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => IntelRoute,
 } as any)
+const EventsCheckoutRoute = EventsCheckoutRouteImport.update({
+  id: '/events/checkout',
+  path: '/events/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsEventIdRoute = EventsEventIdRouteImport.update({
+  id: '/events/$eventId',
+  path: '/events/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
   id: '/categories/$slug',
   path: '/categories/$slug',
@@ -213,18 +255,22 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/intel': typeof IntelRouteWithChildren
   '/login': typeof LoginRoute
+  '/organizer': typeof OrganizerRoute
   '/privacy': typeof PrivacyRoute
   '/request': typeof RequestRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/scraper': typeof AdminScraperRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/events/checkout': typeof EventsCheckoutRoute
   '/intel/events': typeof IntelEventsRoute
   '/intel/rates': typeof IntelRatesRoute
   '/intel/venues': typeof IntelVenuesRoute
@@ -233,9 +279,12 @@ export interface FileRoutesByFullPath {
   '/policies/cancellation': typeof PoliciesCancellationRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/providers/$providerId': typeof ProvidersProviderIdRoute
+  '/venues/$venueId': typeof VenuesVenueIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/events/': typeof EventsIndexRoute
   '/intel/': typeof IntelIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/venues/': typeof VenuesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -246,18 +295,22 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/organizer': typeof OrganizerRoute
   '/privacy': typeof PrivacyRoute
   '/request': typeof RequestRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/scraper': typeof AdminScraperRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/events/checkout': typeof EventsCheckoutRoute
   '/intel/events': typeof IntelEventsRoute
   '/intel/rates': typeof IntelRatesRoute
   '/intel/venues': typeof IntelVenuesRoute
@@ -266,9 +319,12 @@ export interface FileRoutesByTo {
   '/policies/cancellation': typeof PoliciesCancellationRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/providers/$providerId': typeof ProvidersProviderIdRoute
+  '/venues/$venueId': typeof VenuesVenueIdRoute
   '/categories': typeof CategoriesIndexRoute
+  '/events': typeof EventsIndexRoute
   '/intel': typeof IntelIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
+  '/venues': typeof VenuesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -281,18 +337,22 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/intel': typeof IntelRouteWithChildren
   '/login': typeof LoginRoute
+  '/organizer': typeof OrganizerRoute
   '/privacy': typeof PrivacyRoute
   '/request': typeof RequestRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/scraper': typeof AdminScraperRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/events/checkout': typeof EventsCheckoutRoute
   '/intel/events': typeof IntelEventsRoute
   '/intel/rates': typeof IntelRatesRoute
   '/intel/venues': typeof IntelVenuesRoute
@@ -301,9 +361,12 @@ export interface FileRoutesById {
   '/policies/cancellation': typeof PoliciesCancellationRoute
   '/provider/dashboard': typeof ProviderDashboardRoute
   '/providers/$providerId': typeof ProvidersProviderIdRoute
+  '/venues/$venueId': typeof VenuesVenueIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/events/': typeof EventsIndexRoute
   '/intel/': typeof IntelIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/venues/': typeof VenuesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -317,18 +380,22 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/intel'
     | '/login'
+    | '/organizer'
     | '/privacy'
     | '/request'
     | '/reset-password'
     | '/search'
     | '/signup'
     | '/terms'
+    | '/tickets'
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
     | '/admin/scraper'
     | '/book/$providerId'
     | '/categories/$slug'
+    | '/events/$eventId'
+    | '/events/checkout'
     | '/intel/events'
     | '/intel/rates'
     | '/intel/venues'
@@ -337,9 +404,12 @@ export interface FileRouteTypes {
     | '/policies/cancellation'
     | '/provider/dashboard'
     | '/providers/$providerId'
+    | '/venues/$venueId'
     | '/categories/'
+    | '/events/'
     | '/intel/'
     | '/onboarding/'
+    | '/venues/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -350,18 +420,22 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/forgot-password'
     | '/login'
+    | '/organizer'
     | '/privacy'
     | '/request'
     | '/reset-password'
     | '/search'
     | '/signup'
     | '/terms'
+    | '/tickets'
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
     | '/admin/scraper'
     | '/book/$providerId'
     | '/categories/$slug'
+    | '/events/$eventId'
+    | '/events/checkout'
     | '/intel/events'
     | '/intel/rates'
     | '/intel/venues'
@@ -370,9 +444,12 @@ export interface FileRouteTypes {
     | '/policies/cancellation'
     | '/provider/dashboard'
     | '/providers/$providerId'
+    | '/venues/$venueId'
     | '/categories'
+    | '/events'
     | '/intel'
     | '/onboarding'
+    | '/venues'
   id:
     | '__root__'
     | '/'
@@ -384,18 +461,22 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/intel'
     | '/login'
+    | '/organizer'
     | '/privacy'
     | '/request'
     | '/reset-password'
     | '/search'
     | '/signup'
     | '/terms'
+    | '/tickets'
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
     | '/admin/scraper'
     | '/book/$providerId'
     | '/categories/$slug'
+    | '/events/$eventId'
+    | '/events/checkout'
     | '/intel/events'
     | '/intel/rates'
     | '/intel/venues'
@@ -404,9 +485,12 @@ export interface FileRouteTypes {
     | '/policies/cancellation'
     | '/provider/dashboard'
     | '/providers/$providerId'
+    | '/venues/$venueId'
     | '/categories/'
+    | '/events/'
     | '/intel/'
     | '/onboarding/'
+    | '/venues/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -419,25 +503,39 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   IntelRoute: typeof IntelRouteWithChildren
   LoginRoute: typeof LoginRoute
+  OrganizerRoute: typeof OrganizerRoute
   PrivacyRoute: typeof PrivacyRoute
   RequestRoute: typeof RequestRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
+  TicketsRoute: typeof TicketsRoute
   BookProviderIdRoute: typeof BookProviderIdRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
+  EventsEventIdRoute: typeof EventsEventIdRoute
+  EventsCheckoutRoute: typeof EventsCheckoutRoute
   OnboardingClientRoute: typeof OnboardingClientRoute
   OnboardingProviderRoute: typeof OnboardingProviderRoute
   PoliciesCancellationRoute: typeof PoliciesCancellationRoute
   ProviderDashboardRoute: typeof ProviderDashboardRoute
   ProvidersProviderIdRoute: typeof ProvidersProviderIdRoute
+  VenuesVenueIdRoute: typeof VenuesVenueIdRoute
   CategoriesIndexRoute: typeof CategoriesIndexRoute
+  EventsIndexRoute: typeof EventsIndexRoute
   OnboardingIndexRoute: typeof OnboardingIndexRoute
+  VenuesIndexRoute: typeof VenuesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -478,6 +576,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organizer': {
+      id: '/organizer'
+      path: '/organizer'
+      fullPath: '/organizer'
+      preLoaderRoute: typeof OrganizerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -543,6 +648,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/venues/': {
+      id: '/venues/'
+      path: '/venues'
+      fullPath: '/venues/'
+      preLoaderRoute: typeof VenuesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/': {
       id: '/onboarding/'
       path: '/onboarding'
@@ -557,11 +669,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IntelIndexRouteImport
       parentRoute: typeof IntelRoute
     }
+    '/events/': {
+      id: '/events/'
+      path: '/events'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categories/': {
       id: '/categories/'
       path: '/categories'
       fullPath: '/categories/'
       preLoaderRoute: typeof CategoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/$venueId': {
+      id: '/venues/$venueId'
+      path: '/venues/$venueId'
+      fullPath: '/venues/$venueId'
+      preLoaderRoute: typeof VenuesVenueIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/providers/$providerId': {
@@ -619,6 +745,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/intel/events'
       preLoaderRoute: typeof IntelEventsRouteImport
       parentRoute: typeof IntelRoute
+    }
+    '/events/checkout': {
+      id: '/events/checkout'
+      path: '/events/checkout'
+      fullPath: '/events/checkout'
+      preLoaderRoute: typeof EventsCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/categories/$slug': {
       id: '/categories/$slug'
@@ -707,21 +847,28 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   IntelRoute: IntelRouteWithChildren,
   LoginRoute: LoginRoute,
+  OrganizerRoute: OrganizerRoute,
   PrivacyRoute: PrivacyRoute,
   RequestRoute: RequestRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
+  TicketsRoute: TicketsRoute,
   BookProviderIdRoute: BookProviderIdRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
+  EventsEventIdRoute: EventsEventIdRoute,
+  EventsCheckoutRoute: EventsCheckoutRoute,
   OnboardingClientRoute: OnboardingClientRoute,
   OnboardingProviderRoute: OnboardingProviderRoute,
   PoliciesCancellationRoute: PoliciesCancellationRoute,
   ProviderDashboardRoute: ProviderDashboardRoute,
   ProvidersProviderIdRoute: ProvidersProviderIdRoute,
+  VenuesVenueIdRoute: VenuesVenueIdRoute,
   CategoriesIndexRoute: CategoriesIndexRoute,
+  EventsIndexRoute: EventsIndexRoute,
   OnboardingIndexRoute: OnboardingIndexRoute,
+  VenuesIndexRoute: VenuesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
