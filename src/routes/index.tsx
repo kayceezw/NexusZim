@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { CATEGORIES } from "@/lib/mock-data";
+import { LIVE_EVENTS } from "@/lib/live-data";
+import { EventCard } from "@/components/live/event-card";
 import { Hallmark } from "@/components/registry/hallmark";
 import { Ledger, type LedgerEntry } from "@/components/registry/ledger";
 import { CategoryCard } from "@/components/category-card";
@@ -10,11 +12,7 @@ import { HeroImageUpload, CategoryBgUpload } from "@/components/registry/photo-u
 import { StatSkeleton } from "@/components/skeletons";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  fetchPlatformStats,
-  fetchCategories,
-  type ProviderListing,
-} from "@/lib/queries";
+import { fetchPlatformStats, fetchCategories, type ProviderListing } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,6 +27,11 @@ export const Route = createFileRoute("/")({
   }),
   component: LandingPage,
 });
+
+const UPCOMING_LIVE = [...LIVE_EVENTS]
+  .filter((e) => e.status === "on-sale" || e.status === "selling-fast")
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  .slice(0, 3);
 
 const SPECIMEN_LEDGER: LedgerEntry[] = [
   { key: "CR14 registration", value: "Confirmed", date: "Apr 2024", verified: true },
@@ -51,13 +54,17 @@ function LandingPage() {
     const { data: bgData } = supabase.storage.from("site-assets").getPublicUrl("hero-bg.jpg");
     setHeroBg(bgData.publicUrl);
 
-    const { data: catBgData } = supabase.storage.from("site-assets").getPublicUrl("category-bg.jpg");
+    const { data: catBgData } = supabase.storage
+      .from("site-assets")
+      .getPublicUrl("category-bg.jpg");
     setCategoryBg(catBgData.publicUrl);
 
     const { data: cfgData } = supabase.storage.from("site-assets").getPublicUrl("config.json");
     fetch(`${cfgData.publicUrl}?t=${Date.now()}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((cfg) => { if (cfg?.featuredProviderId) setHeroProviderId(cfg.featuredProviderId); })
+      .then((cfg) => {
+        if (cfg?.featuredProviderId) setHeroProviderId(cfg.featuredProviderId);
+      })
       .catch(() => {});
   }, []);
 
@@ -91,14 +98,15 @@ function LandingPage() {
     (dbCategories ?? []).map((c) => [c.slug, c.provider_count]),
   );
 
-  const STATS = statsLoading || !stats
-    ? null
-    : [
-        { value: String(stats.totalProviders), label: "Providers on register" },
-        { value: String(stats.totalCategories), label: "Service categories" },
-        { value: String(stats.trustCertified), label: "Trust Certified" },
-        { value: String(stats.citiesCount), label: "Cities covered" },
-      ];
+  const STATS =
+    statsLoading || !stats
+      ? null
+      : [
+          { value: String(stats.totalProviders), label: "Providers on register" },
+          { value: String(stats.totalCategories), label: "Service categories" },
+          { value: String(stats.trustCertified), label: "Trust Certified" },
+          { value: String(stats.citiesCount), label: "Cities covered" },
+        ];
 
   function handleSearch(e?: React.FormEvent) {
     e?.preventDefault();
@@ -133,7 +141,7 @@ function LandingPage() {
             <div className="space-y-8 lg:pt-6">
               <p className="eyebrow text-text-soft animate-fade-up">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                Zimbabwe Service Registry
+                Tickets · Venues · Verified Providers
               </p>
 
               <h1
@@ -144,19 +152,38 @@ function LandingPage() {
                   letterSpacing: "-0.025em",
                 }}
               >
-                Find providers.
+                Book the tickets.
                 <br />
-                <em className="italic text-gold-deep">Verify the record.</em>
+                <em className="italic text-gold-deep">Book the venue.</em>
                 <br />
-                Brief with confidence.
+                Book the crew.
               </h1>
 
               <p className="font-sans text-base text-text-soft leading-relaxed max-w-[440px] animate-fade-up delay-200">
-                NexusZim maintains a public register of vetted service providers across Zimbabwe.
-                Every listing shows what was checked, by whom, and when.
+                NexusZim is Zimbabwe's one-stop events platform: QR-ticketed events, a verified
+                venue marketplace, and a public register of vetted service providers — every listing
+                shows what was checked, by whom, and when.
               </p>
 
-              <form onSubmit={handleSearch} className="flex max-w-[480px] animate-fade-up delay-300">
+              <div className="flex flex-wrap gap-3 animate-fade-up delay-250">
+                <Link
+                  to="/events"
+                  className="btn-cta bg-gold px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink"
+                >
+                  What's on →
+                </Link>
+                <Link
+                  to="/venues"
+                  className="border border-forest px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                >
+                  Find a venue
+                </Link>
+              </div>
+
+              <form
+                onSubmit={handleSearch}
+                className="flex max-w-[480px] animate-fade-up delay-300"
+              >
                 <div className="relative flex-1">
                   <Search
                     className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-soft/50"
@@ -180,7 +207,6 @@ function LandingPage() {
                   Search
                 </button>
               </form>
-
             </div>
 
             {/* Right: featured registry card */}
@@ -215,6 +241,34 @@ function LandingPage() {
                     </p>
                   </div>
                 ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── NEXUSZIM LIVE SHOWCASE ─── */}
+      <section className="py-20 border-b border-hairline">
+        <div className="container-page">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
+            <div className="space-y-2">
+              <p className="eyebrow text-text-soft">
+                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+                NexusZim Live
+              </p>
+              <h2 className="font-display text-3xl lg:text-4xl text-text">
+                On sale <em className="italic text-forest">now.</em>
+              </h2>
+            </div>
+            <Link
+              to="/events"
+              className="font-mono text-[10px] uppercase tracking-[0.12em] text-forest hover:underline underline-offset-4"
+            >
+              All events →
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {UPCOMING_LIVE.map((event, i) => (
+              <EventCard key={event.id} event={event} index={i} />
+            ))}
           </div>
         </div>
       </section>
@@ -372,9 +426,7 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
           className="font-sans text-[12px] font-semibold text-forest hover:text-gold-deep transition-colors flex items-center gap-1 group"
         >
           Browse all records
-          <span className="transition-transform group-hover:translate-x-[3px] duration-150">
-            →
-          </span>
+          <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
         </Link>
       </div>
     </div>
