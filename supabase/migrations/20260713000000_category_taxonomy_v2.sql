@@ -11,10 +11,11 @@
 --   5. Does NOT delete old category rows — existing listings keep their FK intact.
 --   6. Adds a `legacy` boolean flag to old rows so the UI can filter them out.
 
--- Step 1: Add parent_id + legacy flag to categories
+-- Step 1: Add parent_id + legacy flag + active flag to categories
 ALTER TABLE public.categories
   ADD COLUMN IF NOT EXISTS parent_id UUID REFERENCES public.categories(id) ON DELETE CASCADE,
-  ADD COLUMN IF NOT EXISTS legacy BOOLEAN NOT NULL DEFAULT false;
+  ADD COLUMN IF NOT EXISTS legacy BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT true;
 
 -- Mark the original 6 flat categories as legacy so the UI can hide them
 -- (run after confirming no active provider onboarding depends on them)
