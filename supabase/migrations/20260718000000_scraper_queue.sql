@@ -1,5 +1,5 @@
 -- Scraper lead queue — holds raw results before admin review
-CREATE TABLE public.scraper_queue (
+CREATE TABLE IF NOT EXISTS public.scraper_queue (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   business_name TEXT NOT NULL,
   category_guess TEXT,
@@ -20,18 +20,23 @@ CREATE TABLE public.scraper_queue (
 
 ALTER TABLE public.scraper_queue ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admins manage scraper_queue" ON public.scraper_queue
-  FOR ALL TO authenticated
-  USING (
-    public.has_role(auth.uid(), 'admin')
-    OR public.has_role(auth.uid(), 'super_admin')
-  )
-  WITH CHECK (
-    public.has_role(auth.uid(), 'admin')
-    OR public.has_role(auth.uid(), 'super_admin')
-  );
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE tablename = 'scraper_queue' AND policyname = 'Admins manage scraper_queue'
+  ) THEN
+    CREATE POLICY "Admins manage scraper_queue" ON public.scraper_queue
+      FOR ALL TO authenticated
+      USING (
+        public.has_role(auth.uid(), 'admin')
+        OR public.has_role(auth.uid(), 'super_admin')
+      )
+      WITH CHECK (
+        public.has_role(auth.uid(), 'admin')
+        OR public.has_role(auth.uid(), 'super_admin')
+      );
+  END IF;
+END $$;
 
-CREATE INDEX idx_scraper_queue_status ON public.scraper_queue(status);
-CREATE INDEX idx_scraper_queue_scraped_at ON public.scraper_queue(scraped_at DESC);
--- Prevent exact duplicates (same name + source URL)
-CREATE UNIQUE INDEX idx_scraper_queue_dedup ON public.scraper_queue(business_name, source_url);
+CREATE INDEX IF NOT EXISTS idx_scraper_queue_status ON public.scraper_queue(status);
+CREATE INDEX IF NOT EXISTS idx_scraper_queue_scraped_at ON public.scraper_queue(scraped_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_scraper_queue_dedup ON public.scraper_queue(business_name, source_url);
