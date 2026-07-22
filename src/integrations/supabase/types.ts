@@ -169,6 +169,7 @@ export type Database = {
           preferred_contact: string | null;
           updated_at: string;
           user_id: string;
+          whatsapp: string | null;
         };
         Insert: {
           city?: string | null;
@@ -177,6 +178,7 @@ export type Database = {
           preferred_contact?: string | null;
           updated_at?: string;
           user_id: string;
+          whatsapp?: string | null;
         };
         Update: {
           city?: string | null;
@@ -185,6 +187,7 @@ export type Database = {
           preferred_contact?: string | null;
           updated_at?: string;
           user_id?: string;
+          whatsapp?: string | null;
         };
         Relationships: [];
       };

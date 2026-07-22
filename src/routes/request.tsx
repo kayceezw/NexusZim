@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,14 +37,14 @@ type FormState = {
   city: string;
   neededBy: string;
   budget: string;
-  clientName: string;
+  clientWhatsapp: string;
   clientEmail: string;
-  clientPhone: string;
 };
 
 function RequestPage() {
   const search = Route.useSearch();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -63,37 +63,66 @@ function RequestPage() {
     city: "Harare",
     neededBy: "",
     budget: "",
-    clientName: "",
+    clientWhatsapp: "",
     clientEmail: "",
-    clientPhone: "",
   });
 
   function set<K extends keyof FormState>(key: K, val: FormState[K]) {
     setForm((f) => ({ ...f, [key]: val }));
   }
 
+  // Pre-populate contact fields from the user's profile
+  useEffect(() => {
+    if (!user) return;
+    async function prefill() {
+      const [{ data: profile }, { data: clientProfile }] = await Promise.all([
+        supabase.from("profiles").select("email").eq("id", user!.id).maybeSingle(),
+        supabase.from("client_profiles").select("whatsapp, phone").eq("user_id", user!.id).maybeSingle(),
+      ]);
+      setForm((f) => ({
+        ...f,
+        clientEmail: profile?.email ?? user!.email ?? "",
+        clientWhatsapp: clientProfile?.whatsapp ?? clientProfile?.phone ?? "",
+      }));
+    }
+    prefill();
+  }, [user]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!user) {
+      navigate({ to: "/login" });
+      return;
+    }
+    if (!form.clientWhatsapp.trim()) {
+      setError("Please provide your WhatsApp number so providers can contact you.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
 
     const categoryId = categories.find((c) => c.slug === form.categorySlug)?.id ?? null;
 
-    const clientId = user?.id ?? "00000000-0000-0000-0000-000000000000";
+    // Snapshot contact details from the user's profile
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .maybeSingle();
 
     const { data, error: e1 } = await supabase
       .from("requests")
       .insert({
-        client_id: clientId,
+        client_id: user.id,
         title: form.title.trim(),
         description: form.details.trim() || null,
         category_id: categoryId,
         city: form.city,
         needed_by: form.neededBy || null,
         budget: form.budget ? Number(form.budget) : null,
-        client_name: form.clientName.trim() || null,
+        client_name: profile?.full_name ?? null,
         client_email: form.clientEmail.trim() || null,
-        client_phone: form.clientPhone.trim() || null,
+        client_whatsapp: form.clientWhatsapp.trim() || null,
         status: "open",
       })
       .select("id")
@@ -175,10 +204,44 @@ function RequestPage() {
     );
   }
 
+  if (!loading && !user) {
+    return (
+      <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+        <div className="container-page max-w-lg py-20 text-center">
+          <div className="bg-cream-raised border border-hairline rounded-[6px] p-12">
+            <p className="eyebrow text-text-soft mb-3">
+              <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+              Post a brief
+            </p>
+            <h1 className="font-display text-3xl text-text mb-3">Sign in to continue.</h1>
+            <p className="font-sans text-[13px] text-text-soft leading-relaxed mb-8">
+              Create a free account or log in to post your service brief. Providers will contact you
+              directly via the details on your profile.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/login"
+                className="bg-gold py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/signup"
+                className="border border-forest py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+              >
+                Create a free account
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-cream pt-16 min-h-screen">
       {/* Forest header */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page max-w-2xl py-10">
           <p className="eyebrow text-cream/40 mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -284,50 +347,42 @@ function RequestPage() {
             </Field>
           </div>
 
-          {/* Contact info */}
-          {!user && (
-            <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 space-y-5">
-              <p className="eyebrow text-text-soft">
+          {/* Contact details */}
+          <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 space-y-5">
+            <div>
+              <p className="eyebrow text-text-soft mb-1">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                 Your contact details
               </p>
               <p className="font-sans text-[12px] text-text-soft">
-                Providers will use these to contact you. You don't need an account.
+                Providers will use these to send you quotes. Pre-filled from your profile — edit if
+                needed.
               </p>
+            </div>
 
-              <Field label="Your name" required>
+            <div className="grid sm:grid-cols-2 gap-5">
+              <Field label="WhatsApp number" required>
                 <input
                   required
-                  value={form.clientName}
-                  onChange={(e) => set("clientName", e.target.value)}
-                  placeholder="Full name"
+                  type="tel"
+                  value={form.clientWhatsapp}
+                  onChange={(e) => set("clientWhatsapp", e.target.value)}
+                  placeholder="+263 77 123 4567"
                   className="field-input"
                 />
               </Field>
 
-              <div className="grid sm:grid-cols-2 gap-5">
-                <Field label="Email" hint="For brief confirmation">
-                  <input
-                    type="email"
-                    value={form.clientEmail}
-                    onChange={(e) => set("clientEmail", e.target.value)}
-                    placeholder="you@email.com"
-                    className="field-input"
-                  />
-                </Field>
-                <Field label="WhatsApp / phone" required>
-                  <input
-                    required
-                    type="tel"
-                    value={form.clientPhone}
-                    onChange={(e) => set("clientPhone", e.target.value)}
-                    placeholder="+263 77 123 4567"
-                    className="field-input"
-                  />
-                </Field>
-              </div>
+              <Field label="Email" hint="For quote notifications">
+                <input
+                  type="email"
+                  value={form.clientEmail}
+                  onChange={(e) => set("clientEmail", e.target.value)}
+                  placeholder="you@email.com"
+                  className="field-input"
+                />
+              </Field>
             </div>
-          )}
+          </div>
 
           {/* Trust note */}
           <div className="border border-hairline rounded-[6px] px-5 py-4">

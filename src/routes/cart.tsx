@@ -36,7 +36,7 @@ function CartPage() {
 
     const [{ data: profile }, { data: clientProfile }] = await Promise.all([
       supabase.from("profiles").select("full_name, email").eq("id", user.id).maybeSingle(),
-      supabase.from("client_profiles").select("phone").eq("user_id", user.id).maybeSingle(),
+      supabase.from("client_profiles").select("whatsapp, phone").eq("user_id", user.id).maybeSingle(),
     ]);
 
     const rows = items.map((item: CartItem) => ({
@@ -53,7 +53,7 @@ function CartPage() {
       client_name: profile?.full_name ?? null,
       client_email: profile?.email ?? user.email ?? null,
       client_phone: clientProfile?.phone ?? null,
-      client_whatsapp: clientProfile?.phone ?? null,
+      client_whatsapp: clientProfile?.whatsapp ?? clientProfile?.phone ?? null,
     }));
 
     const { error: e } = await supabase.from("requests").insert(rows);
@@ -98,7 +98,7 @@ function CartPage() {
   return (
     <div className="bg-cream pt-16 min-h-screen">
       {/* Forest header */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10">
           <p className="eyebrow text-cream/40 mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />

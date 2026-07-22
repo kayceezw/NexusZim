@@ -18,6 +18,7 @@ const CITIES = ["Harare", "Bulawayo", "Mutare", "Gweru", "Masvingo", "Victoria F
 function ClientOnboarding() {
   const navigate = useNavigate();
   const { user, refreshProfile } = useAuth();
+  const [whatsapp, setWhatsapp] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("Harare");
   const [preferred, setPreferred] = useState<"email" | "phone" | "whatsapp">("whatsapp");
@@ -32,7 +33,8 @@ function ClientOnboarding() {
 
     const { error: e1 } = await supabase.from("client_profiles").upsert({
       user_id: user.id,
-      phone,
+      whatsapp: whatsapp.trim() || null,
+      phone: phone.trim() || null,
       city,
       preferred_contact: preferred,
     });
@@ -82,12 +84,20 @@ function ClientOnboarding() {
 
         <div className="mt-10 space-y-8">
           <Input
-            label="Secure Line / Phone (WhatsApp Preferred)"
+            label="WhatsApp Number"
             type="tel"
             required
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            placeholder="+263 77 123 4567"
+          />
+
+          <Input
+            label="Alternative Phone (optional)"
+            type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="+263 7..."
+            placeholder="+263 24 ..."
           />
 
           <div className="space-y-3">
