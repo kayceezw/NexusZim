@@ -59,11 +59,19 @@ function EventsDiscovery() {
     [],
   );
 
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const horizon =
       dateWindow === "all" ? null : Date.now() + Number(dateWindow) * 24 * 60 * 60 * 1000;
     return LIVE_EVENTS.filter((e) => {
+      // Drop events whose date has already passed
+      if (new Date(e.date) < today) return false;
       if (category && e.category !== category) return false;
       if (city && eventCity(e) !== city) return false;
       if (horizon && new Date(e.date).getTime() > horizon) return false;
@@ -76,14 +84,14 @@ function EventsDiscovery() {
       }
       return true;
     }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [q, category, city, dateWindow]);
+  }, [q, category, city, dateWindow, today]);
 
   const spotlight = useMemo(
     () =>
       [...LIVE_EVENTS]
-        .filter((e) => e.featured && e.status !== "sold-out")
+        .filter((e) => e.featured && e.status !== "sold-out" && new Date(e.date) >= today)
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0],
-    [],
+    [today],
   );
   const hasActiveFilters = Boolean(q || category || city || dateWindow !== "all");
 
@@ -258,7 +266,7 @@ function EventsDiscovery() {
                 onClick={() => setDateWindow(w.key)}
                 className={`rounded-[3px] border px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.1em] transition-colors ${
                   dateWindow === w.key
-                    ? "border-forest bg-forest text-cream"
+                    ? "border-forest-ink bg-forest-ink text-cream"
                     : "border-hairline text-text-soft hover:border-forest/50 hover:text-forest"
                 }`}
               >
@@ -300,9 +308,21 @@ function EventsDiscovery() {
           </div>
         ) : (
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((event, i) => (
-              <EventCard key={event.id} event={event} index={i} />
-            ))}
+            {filtered.map((event, i) => {
+              const daysAway = Math.ceil(
+                (new Date(event.date).getTime() - Date.now()) / 86_400_000,
+              );
+              return (
+                <div key={event.id} className="relative">
+                  {daysAway >= 0 && daysAway <= 7 && (
+                    <span className="absolute top-2 right-2 z-10 bg-gold text-forest-ink font-mono text-[9px] uppercase tracking-widest px-2 py-1 rounded-[3px] shadow-sm">
+                      {daysAway === 0 ? "Today!" : `${daysAway}d away`}
+                    </span>
+                  )}
+                  <EventCard event={event} index={i} />
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
