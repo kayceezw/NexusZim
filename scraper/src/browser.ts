@@ -32,8 +32,11 @@ function extractCity(text: string): string | null {
 async function withPage<T>(fn: (page: Awaited<ReturnType<Awaited<ReturnType<typeof chromium.launch>>["newPage"]>>) => Promise<T>): Promise<T> {
   const proxyServer = process.env.HTTPS_PROXY;
 
+  // Use the pre-installed headless shell (version may differ from Playwright's bundled expectation)
+  const executablePath = "/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell";
   const browser = await chromium.launch({
     headless: true,
+    executablePath,
     args: ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
     ...(proxyServer ? { proxy: { server: proxyServer } } : {}),
   });
