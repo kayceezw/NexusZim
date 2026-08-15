@@ -292,6 +292,48 @@ export type ClientBooking = {
   reviewed: boolean;
 };
 
+export type ProviderBooking = {
+  id: string;
+  amount: number;
+  status: string;
+  scheduled_for: string | null;
+  notes: string | null;
+  created_at: string;
+  reviewed: boolean;
+  review_rating: number | null;
+  review_comment: string | null;
+};
+
+/** Bookings where the current user is the provider, with any review received. */
+export async function fetchProviderBookings(providerId: string): Promise<ProviderBooking[]> {
+  const { data: bookings } = await supabase
+    .from("bookings")
+    .select("id, amount, status, scheduled_for, notes, created_at")
+    .eq("provider_id", providerId)
+    .order("created_at", { ascending: false });
+  const rows = bookings ?? [];
+  if (!rows.length) return [];
+
+  const { data: revs } = await supabase
+    .from("reviews")
+    .select("booking_id, rating, comment")
+    .in(
+      "booking_id",
+      rows.map((b) => b.id),
+    );
+  const rmap = new Map((revs ?? []).map((r) => [r.booking_id, r]));
+
+  return rows.map((b) => {
+    const rev = rmap.get(b.id);
+    return {
+      ...b,
+      reviewed: !!rev,
+      review_rating: rev?.rating ?? null,
+      review_comment: rev?.comment ?? null,
+    };
+  });
+}
+
 export async function fetchClientBookings(clientId: string): Promise<ClientBooking[]> {
   const { data: bookings } = await supabase
     .from("bookings")

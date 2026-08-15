@@ -129,6 +129,9 @@ function DashboardPage() {
         amount: quote.amount,
         payment_type: "full",
         status: "confirmed",
+        // Job label so the provider sees what the booking is for (client's own data;
+        // providers can't read the awarded request via RLS).
+        notes: request.service_name ?? request.title,
       });
       if (error) throw error;
       await supabase.from("quotes").update({ status: "accepted" }).eq("id", quote.id);
