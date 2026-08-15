@@ -17,6 +17,21 @@ function SignupPage() {
   const [loading, setLoading] = useState(false);
   // confirmationPending = email confirm is required (Supabase returned no session)
   const [confirmationPending, setConfirmationPending] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
+
+  async function resendConfirmation() {
+    setResending(true);
+    setError(null);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    });
+    setResending(false);
+    if (error) setError(error.message);
+    else setResent(true);
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -27,7 +42,7 @@ function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/onboarding`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
         data: { full_name: fullName, role },
       },
     });
@@ -104,6 +119,22 @@ function SignupPage() {
             >
               Go to Login
             </Link>
+
+            {resent ? (
+              <p className="font-sans text-[13px] text-emerald-600">
+                ✓ New confirmation link sent to {email}.
+              </p>
+            ) : (
+              <button
+                type="button"
+                onClick={resendConfirmation}
+                disabled={resending}
+                className="w-full text-center font-sans text-[13px] font-semibold text-forest hover:text-gold-deep transition-colors disabled:opacity-60"
+              >
+                {resending ? "Sending…" : "Didn't get it? Resend confirmation email"}
+              </button>
+            )}
+            {error && <p className="font-sans text-[13px] text-rose-600">{error}</p>}
 
             <button
               type="button"

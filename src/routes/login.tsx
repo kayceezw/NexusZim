@@ -14,10 +14,30 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [unconfirmed, setUnconfirmed] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
+
+  async function resendConfirmation() {
+    setResending(true);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    });
+    setResending(false);
+    if (error) setError(error.message);
+    else {
+      setResent(true);
+      setUnconfirmed(false);
+    }
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setUnconfirmed(false);
+    setResent(false);
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
@@ -30,6 +50,7 @@ function LoginPage() {
         setError(
           "Your email address has not been confirmed yet. Please check your inbox for a confirmation link before logging in.",
         );
+        setUnconfirmed(true);
       } else if (error.message.toLowerCase().includes("invalid login credentials")) {
         setError("Incorrect email or password. Please try again.");
       } else {
@@ -70,6 +91,22 @@ function LoginPage() {
             >
               {error}
             </div>
+          )}
+
+          {unconfirmed && (
+            <button
+              type="button"
+              onClick={resendConfirmation}
+              disabled={resending || !email}
+              className="w-full text-center font-sans text-[13px] font-semibold text-forest hover:text-gold-deep transition-colors disabled:opacity-60"
+            >
+              {resending ? "Sending…" : "Resend confirmation email"}
+            </button>
+          )}
+          {resent && (
+            <p className="text-center font-sans text-[13px] text-emerald-600">
+              ✓ Confirmation link sent to {email}. Check your inbox.
+            </p>
           )}
 
           <div className="space-y-1.5">

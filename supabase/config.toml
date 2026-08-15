@@ -9,6 +9,7 @@ site_url = "https://www.nexuszim.co.zw"
 # otherwise Supabase falls back to site_url (which is what dumped you on localhost).
 additional_redirect_urls = [
   "https://www.nexuszim.co.zw/**",
-  "https://nexuszim.kayceezw.workers.dev/**",
+  "https://nexuszim.co.zw/**",
+  "https://nexuszim.nexuszim.workers.dev/**",
   "http://localhost:8080/**",
 ]

@@ -35,6 +35,7 @@ import { Route as OnboardingClientRouteImport } from './routes/onboarding/client
 import { Route as IntelRatesRouteImport } from './routes/intel.rates'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as BookProviderIdRouteImport } from './routes/book.$providerId'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AdminScraperRouteImport } from './routes/admin.scraper'
 import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
 import { Route as AdminIntelRouteImport } from './routes/admin.intel'
@@ -170,6 +171,11 @@ const BookProviderIdRoute = BookProviderIdRouteImport.update({
   path: '/book/$providerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminScraperRoute = AdminScraperRouteImport.update({
   id: '/scraper',
   path: '/scraper',
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/scraper': typeof AdminScraperRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/intel/rates': typeof IntelRatesRoute
@@ -242,6 +249,7 @@ export interface FileRoutesByTo {
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/scraper': typeof AdminScraperRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/intel/rates': typeof IntelRatesRoute
@@ -275,6 +283,7 @@ export interface FileRoutesById {
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/scraper': typeof AdminScraperRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/book/$providerId': typeof BookProviderIdRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/intel/rates': typeof IntelRatesRoute
@@ -309,6 +318,7 @@ export interface FileRouteTypes {
     | '/admin/intel'
     | '/admin/revenue'
     | '/admin/scraper'
+    | '/auth/callback'
     | '/book/$providerId'
     | '/categories/$slug'
     | '/intel/rates'
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/admin/intel'
     | '/admin/revenue'
     | '/admin/scraper'
+    | '/auth/callback'
     | '/book/$providerId'
     | '/categories/$slug'
     | '/intel/rates'
@@ -372,6 +383,7 @@ export interface FileRouteTypes {
     | '/admin/intel'
     | '/admin/revenue'
     | '/admin/scraper'
+    | '/auth/callback'
     | '/book/$providerId'
     | '/categories/$slug'
     | '/intel/rates'
@@ -401,6 +413,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   BookProviderIdRoute: typeof BookProviderIdRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
   OnboardingClientRoute: typeof OnboardingClientRoute
@@ -596,6 +609,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookProviderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/scraper': {
       id: '/admin/scraper'
       path: '/scraper'
@@ -671,6 +691,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   BookProviderIdRoute: BookProviderIdRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,
   OnboardingClientRoute: OnboardingClientRoute,
