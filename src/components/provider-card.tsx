@@ -1,14 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import type { Provider } from "@/lib/mock-data";
-import { PROVIDERS } from "@/lib/mock-data";
 import { Hallmark } from "./registry/hallmark";
 import { MapPin, Clock, Phone } from "lucide-react";
-import type { ProviderListing } from "@/lib/queries";
+import type { ProviderListing, ProviderRating } from "@/lib/queries";
 import { providerAvatarColor, providerInitials, providerRegistryId } from "@/lib/queries";
-
-type CardData =
-  | { kind: "mock"; provider: Provider }
-  | { kind: "live"; provider: ProviderListing };
 
 type NormalizedCard = {
   id: string;
@@ -31,53 +25,27 @@ type NormalizedCard = {
   regId: string;
 };
 
-function normalize(input: CardData): NormalizedCard {
-  if (input.kind === "mock") {
-    const p = input.provider;
-    const idx = PROVIDERS.findIndex((x) => x.id === p.id);
-    return {
-      id: p.id,
-      businessName: p.business,
-      categoryName: null,
-      city: p.city,
-      tier: p.tier,
-      verified: p.tier >= 2,
-      initials: p.initials,
-      avatarColor: p.avatarColor,
-      firstPhoto: p.portfolioUrls?.[0] ?? null,
-      whatsapp: null,
-      phone: null,
-      rating: p.rating,
-      reviews: p.reviews,
-      priceFrom: p.priceFrom,
-      services: p.services,
-      availability: p.availability,
-      responseTime: p.responseTime,
-      regId: `NX-2024-${String(idx + 147).padStart(5, "0")}`,
-    };
-  } else {
-    const p = input.provider;
-    return {
-      id: p.user_id,
-      businessName: p.business_name,
-      categoryName: p.categories?.name ?? null,
-      city: p.city,
-      tier: p.tier,
-      verified: p.verified,
-      initials: providerInitials(p.business_name),
-      avatarColor: providerAvatarColor(p.user_id),
-      firstPhoto: p.photos?.[0] ?? null,
-      whatsapp: p.whatsapp,
-      phone: p.phone,
-      rating: null,
-      reviews: null,
-      priceFrom: null,
-      services: [],
-      availability: null,
-      responseTime: null,
-      regId: providerRegistryId(p.user_id),
-    };
-  }
+function normalize(p: ProviderListing): NormalizedCard {
+  return {
+    id: p.user_id,
+    businessName: p.business_name,
+    categoryName: p.categories?.name ?? null,
+    city: p.city,
+    tier: p.tier,
+    verified: p.verified,
+    initials: providerInitials(p.business_name),
+    avatarColor: providerAvatarColor(p.user_id),
+    firstPhoto: p.photos?.[0] ?? null,
+    whatsapp: p.whatsapp,
+    phone: p.phone,
+    rating: null,
+    reviews: null,
+    priceFrom: null,
+    services: [],
+    availability: null,
+    responseTime: null,
+    regId: providerRegistryId(p.user_id),
+  };
 }
 
 function Stars({ rating, reviews }: { rating: number; reviews: number }) {
@@ -269,10 +237,17 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
   );
 }
 
-export function ProviderCard({ provider }: { provider: Provider }) {
-  return <ProviderCardInner data={normalize({ kind: "mock", provider })} />;
-}
-
-export function LiveProviderCard({ provider }: { provider: ProviderListing }) {
-  return <ProviderCardInner data={normalize({ kind: "live", provider })} />;
+export function LiveProviderCard({
+  provider,
+  rating,
+}: {
+  provider: ProviderListing;
+  rating?: ProviderRating;
+}) {
+  const data = normalize(provider);
+  if (rating && rating.count > 0) {
+    data.rating = rating.average;
+    data.reviews = rating.count;
+  }
+  return <ProviderCardInner data={data} />;
 }

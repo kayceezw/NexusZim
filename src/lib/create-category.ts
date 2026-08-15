@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/integrations/supabase/require-admin";
 
 type CreateCategoryInput = {
   name: string;
@@ -13,6 +14,7 @@ function slugify(name: string): string {
 }
 
 export const createCategoryFn = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((data: CreateCategoryInput) => data)
   .handler(async (ctx) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

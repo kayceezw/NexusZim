@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
-import { Info, Calendar, MapPin, BarChart3, ArrowRight } from "lucide-react";
+import { Info, BarChart3, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/intel")({
   component: IntelLayout,
@@ -9,7 +9,7 @@ function IntelLayout() {
   return (
     <div className="min-h-screen bg-cream pt-16">
       {/* Dark forest header */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10">
           <p className="eyebrow text-cream/40 mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -19,18 +19,16 @@ function IntelLayout() {
             className="font-display text-cream"
             style={{ fontSize: "clamp(36px, 5vw, 64px)", lineHeight: "1.06", letterSpacing: "-0.02em" }}
           >
-            Event <em className="italic text-gold">Intel Hub</em>
+            Market <em className="italic text-gold">Intelligence</em>
           </h1>
           <p className="mt-4 max-w-2xl font-sans text-sm text-cream/60 leading-relaxed">
-            The authoritative data layer for Zimbabwe's event industry. Real-time events radar,
-            venue availability, and market rate indices.
+            The authoritative data layer for Zimbabwe's service economy — fair-price indices and
+            market rate intelligence across key categories.
           </p>
 
           {/* Navigation Tabs */}
           <div className="mt-8 flex flex-wrap gap-1">
             <IntelTab to="/intel" label="Overview" icon={<Info className="h-3.5 w-3.5" />} />
-            <IntelTab to="/intel/events" label="Events Radar" icon={<Calendar className="h-3.5 w-3.5" />} />
-            <IntelTab to="/intel/venues" label="Venue Board" icon={<MapPin className="h-3.5 w-3.5" />} />
             <IntelTab to="/intel/rates" label="Market Rates" icon={<BarChart3 className="h-3.5 w-3.5" />} />
           </div>
         </div>
@@ -60,18 +58,6 @@ function IntelTab({ to, label, icon }: { to: string; label: string; icon: React.
 export function IntelOverview() {
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      <IntelCard
-        title="Events Radar"
-        description="Upcoming events across Zimbabwe. Filter by city, genre, and scale."
-        to="/intel/events"
-        eyebrow="Live tracking"
-      />
-      <IntelCard
-        title="Venue Board"
-        description="Availability windows for major venues across Harare, Bulawayo, Vic Falls & Mutare."
-        to="/intel/venues"
-        eyebrow="Venue availability"
-      />
       <IntelCard
         title="Market Rates"
         description="Monthly updated fair-price index for key service categories."

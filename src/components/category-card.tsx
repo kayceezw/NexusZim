@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { Category, CategorySlug } from "@/lib/mock-data";
+import type { CategoryWithCount } from "@/lib/queries";
 
 /**
  * Per-slug accent palette — each category gets a distinct colour.
@@ -7,7 +7,7 @@ import type { Category, CategorySlug } from "@/lib/mock-data";
  * border-left colour uses inline style; icon bg + text use utility classes.
  */
 const SLUG_ACCENT: Record<
-  CategorySlug,
+  string,
   {
     borderColor: string; // CSS color for the left-border accent stripe
     iconBg: string;      // Tailwind bg utility
@@ -130,13 +130,12 @@ export function CategoryCard({
   count: countProp,
   animationDelay = 0,
 }: {
-  category: Category;
+  category: CategoryWithCount;
   count?: number;
   animationDelay?: number;
 }) {
-  const count = countProp ?? 0;
-  const accent = SLUG_ACCENT[category.slug as CategorySlug] ?? FALLBACK_ACCENT;
-  const visibleSubs = category.subCategories.slice(0, 3);
+  const count = countProp ?? category.provider_count ?? 0;
+  const accent = SLUG_ACCENT[category.slug] ?? FALLBACK_ACCENT;
 
   return (
     <Link
@@ -170,25 +169,10 @@ export function CategoryCard({
               {category.name}
             </span>
           </h3>
-          <p className="mt-1.5 font-sans text-[13px] text-text-soft leading-relaxed line-clamp-2">
-            {category.tagline}
-          </p>
-        </div>
-
-        {/* Sub-category tags */}
-        <div className="flex flex-wrap gap-1.5">
-          {visibleSubs.map((sub) => (
-            <span
-              key={sub}
-              className={`font-mono text-[9px] uppercase tracking-[0.06em] text-text-soft/70 ${accent.badgeBg} border ${accent.badgeBorder} px-2 py-0.5 rounded-[3px]`}
-            >
-              {sub}
-            </span>
-          ))}
-          {category.subCategories.length > 3 && (
-            <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-text-soft/40 px-1 py-0.5">
-              +{category.subCategories.length - 3} more
-            </span>
+          {category.description && (
+            <p className="mt-1.5 font-sans text-[13px] text-text-soft leading-relaxed line-clamp-2">
+              {category.description}
+            </p>
           )}
         </div>
 

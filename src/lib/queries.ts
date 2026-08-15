@@ -234,3 +234,88 @@ export async function fetchCitiesWithCounts(): Promise<{ city: string; count: nu
     .map(([city, count]) => ({ city, count }))
     .sort((a, b) => b.count - a.count);
 }
+
+// ============================================================================
+// Reputation — the trust flywheel. Reviews are earned: a review can only exist
+// for a `completed` booking (enforced by RLS), so these aggregates cannot be
+// gamed by fake accounts. Public read.
+// ============================================================================
+
+export type ProviderRating = { average: number; count: number };
+
+/** Aggregate rating for many providers at once (for cards / search lists). */
+export async function fetchRatingsForProviders(
+  providerIds: string[],
+): Promise<Record<string, ProviderRating>> {
+  const ids = Array.from(new Set(providerIds)).filter(Boolean);
+  if (!ids.length) return {};
+  const { data } = await supabase
+    .from("reviews")
+    .select("provider_id, rating")
+    .in("provider_id", ids);
+  const acc: Record<string, { sum: number; count: number }> = {};
+  (data ?? []).forEach((r) => {
+    const a = (acc[r.provider_id] ??= { sum: 0, count: 0 });
+    a.sum += r.rating;
+    a.count += 1;
+  });
+  const out: Record<string, ProviderRating> = {};
+  for (const [id, { sum, count }] of Object.entries(acc)) {
+    out[id] = { average: count ? sum / count : 0, count };
+  }
+  return out;
+}
+
+/** Aggregate rating for a single provider (for the profile header). */
+export async function fetchProviderRating(providerId: string): Promise<ProviderRating> {
+  const map = await fetchRatingsForProviders([providerId]);
+  return map[providerId] ?? { average: 0, count: 0 };
+}
+
+// ============================================================================
+// Client bookings — the job records that power the direct-pay loop. A booking
+// is NOT a payment (NexusZim never holds money); it's the record that a job was
+// agreed, so completion can unlock a review.
+// ============================================================================
+
+export type ClientBooking = {
+  id: string;
+  provider_id: string;
+  amount: number;
+  status: string;
+  scheduled_for: string | null;
+  notes: string | null;
+  created_at: string;
+  business_name: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  reviewed: boolean;
+};
+
+export async function fetchClientBookings(clientId: string): Promise<ClientBooking[]> {
+  const { data: bookings } = await supabase
+    .from("bookings")
+    .select("id, provider_id, amount, status, scheduled_for, notes, created_at")
+    .eq("client_id", clientId)
+    .order("created_at", { ascending: false });
+  const rows = bookings ?? [];
+  if (!rows.length) return [];
+
+  const providerIds = Array.from(new Set(rows.map((b) => b.provider_id)));
+  const { data: profs } = await supabase
+    .from("provider_profiles")
+    .select("user_id, business_name, phone, whatsapp")
+    .in("user_id", providerIds);
+  const pmap = new Map((profs ?? []).map((p) => [p.user_id, p]));
+
+  const { data: revs } = await supabase.from("reviews").select("booking_id").eq("client_id", clientId);
+  const reviewed = new Set((revs ?? []).map((r) => r.booking_id));
+
+  return rows.map((b) => ({
+    ...b,
+    business_name: pmap.get(b.provider_id)?.business_name ?? null,
+    phone: pmap.get(b.provider_id)?.phone ?? null,
+    whatsapp: pmap.get(b.provider_id)?.whatsapp ?? null,
+    reviewed: reviewed.has(b.id),
+  }));
+}

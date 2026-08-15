@@ -56,7 +56,7 @@ function AboutPage() {
   return (
     <div className="bg-cream pt-16 min-h-screen">
       {/* Hero */}
-      <section className="bg-forest border-b border-cream/10 py-20 lg:py-28">
+      <section className="bg-forest-ink border-b border-cream/10 py-20 lg:py-28">
         <div className="container-page">
           <p className="eyebrow text-cream/40 mb-5">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -243,7 +243,7 @@ function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-forest py-20">
+      <section className="bg-forest-ink py-20">
         <div className="container-page text-center">
           <h2 className="font-display text-3xl lg:text-4xl text-cream mb-4">
             Ready to use the register?

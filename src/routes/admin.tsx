@@ -28,11 +28,27 @@ function AdminPage() {
       const { data, error } = await supabase
         .from("provider_profiles")
         .select(
-          "user_id, business_name, city, phone, whatsapp, bio, website, verified, tier, created_at, category_id, categories(name), profiles(email)",
+          "user_id, business_name, city, phone, whatsapp, bio, website, verified, tier, created_at, category_id, categories(name)",
         )
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data ?? [];
+      const rows = data ?? [];
+
+      // provider_profiles has no FK to public.profiles, so the email must be
+      // fetched separately and joined in memory by user_id.
+      const ids = rows.map((r) => r.user_id);
+      const emailById: Record<string, string> = {};
+      if (ids.length) {
+        const { data: emailRows } = await supabase
+          .from("profiles")
+          .select("id, email")
+          .in("id", ids);
+        (emailRows ?? []).forEach((e) => {
+          if (e.email) emailById[e.id] = e.email;
+        });
+      }
+
+      return rows.map((r) => ({ ...r, email: emailById[r.user_id] ?? null }));
     },
     refetchInterval: 30_000, // auto-refresh every 30s to catch new signups
   });
@@ -47,6 +63,17 @@ function AdminPage() {
       if (error) throw error;
       return data ?? [];
     },
+  });
+
+  // Platform traffic — how many people are visiting (admin-only aggregate).
+  const { data: traffic } = useQuery({
+    queryKey: ["admin", "visit-stats"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("visit_stats");
+      if (error) throw error;
+      return data?.[0] ?? null;
+    },
+    refetchInterval: 60_000,
   });
 
   const { data: requests } = useQuery({
@@ -118,7 +145,7 @@ function AdminPage() {
   return (
     <div className="bg-cream pt-16 min-h-screen animate-page-enter">
       {/* Forest header */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10">
           <p className="eyebrow text-cream/40 mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -169,6 +196,24 @@ function AdminPage() {
             highlight={pendingCount > 0}
           />
           <Tile label="Recent Enquiries" value={String(requests?.length ?? "—")} />
+        </div>
+
+        {/* Platform traffic — visitor analytics */}
+        <div>
+          <p className="eyebrow text-text-soft mb-3">
+            <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
+            Platform traffic
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Tile
+              label="Unique Visitors"
+              value={traffic ? String(traffic.unique_visitors) : "—"}
+              highlight
+            />
+            <Tile label="Visitors Today" value={traffic ? String(traffic.visitors_today) : "—"} />
+            <Tile label="Total Page Views" value={traffic ? String(traffic.total_views) : "—"} />
+            <Tile label="Views · Last 7 Days" value={traffic ? String(traffic.views_7d) : "—"} />
+          </div>
         </div>
 
         {/* Amber alert banner if pending providers exist */}
@@ -241,7 +286,7 @@ function AdminPage() {
             ) : (
               <div className="space-y-3">
                 {pending.map((p) => {
-                  const email = (p.profiles as { email: string } | null)?.email ?? null;
+                  const email = p.email ?? null;
                   return (
                     <div
                       key={p.user_id}
@@ -343,7 +388,7 @@ function AdminPage() {
                 <p className="font-sans text-sm text-text-soft italic">None yet.</p>
               )}
               {approved.map((p) => {
-                const email = (p.profiles as { email: string } | null)?.email ?? null;
+                const email = p.email ?? null;
                 return (
                   <div
                     key={p.user_id}

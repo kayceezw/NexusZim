@@ -1,15 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import {
-  Menu,
-  X,
-  ChevronDown,
-  LayoutDashboard,
-  Shield,
-  Building2,
-  User,
-  Ticket,
-} from "lucide-react";
-import { useTickets } from "@/hooks/use-tickets";
+import { Menu, X, ChevronDown, LayoutDashboard, Shield, Building2, User } from "lucide-react";
 import { useAuth, dashboardPathForRoles, type AppRole } from "@/hooks/use-auth";
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,11 +8,9 @@ import { NexusZimLogo } from "./registry/logo";
 
 const NAV = [
   { to: "/", label: "Home", exact: true },
-  { to: "/events", label: "Events", exact: false },
-  { to: "/venues", label: "Venues", exact: false },
-  { to: "/search", label: "Directory", exact: false },
-  { to: "/intel", label: "Intel Hub", exact: false },
-  { to: "/request", label: "Post a Brief", exact: false },
+  { to: "/search", label: "Service Providers", exact: false },
+  { to: "/intel", label: "Intelligence", exact: false },
+  { to: "/request", label: "Request a Quote", exact: false },
 ] as const;
 
 export function SiteHeader() {
@@ -32,7 +20,6 @@ export function SiteHeader() {
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const ticketOrderCount = useTickets().orders.length;
 
   // Pending provider count — only fetched for admins
   const { data: pendingCount = 0 } = useQuery({
@@ -115,26 +102,13 @@ export function SiteHeader() {
                       "font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center",
                   }}
                 >
-                  Concierge
+                  Premium
                 </Link>
               </>
             )}
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link
-              to="/tickets"
-              className="relative flex h-9 w-9 items-center justify-center rounded-[3px] border border-hairline text-text-soft transition-colors hover:border-forest hover:text-forest"
-              aria-label="My tickets"
-              title="My tickets"
-            >
-              <Ticket className="h-4 w-4" strokeWidth={1.75} />
-              {ticketOrderCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gold px-0.5 font-mono text-[8px] font-bold text-forest-ink">
-                  {ticketOrderCount > 9 ? "9+" : ticketOrderCount}
-                </span>
-              )}
-            </Link>
             {user ? (
               <div className="hidden lg:flex items-center gap-3">
                 <UserMenu onSignOut={handleSignOut} />
@@ -210,7 +184,7 @@ export function SiteHeader() {
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-gold hover:text-gold-deep transition-colors"
                 >
-                  Concierge Mode
+                  Premium
                   <span className="text-hairline">→</span>
                 </Link>
               </>
@@ -459,6 +433,13 @@ function MobileDashboardLinks({
 }
 
 export function SiteFooter() {
+  const [zdpLogo, setZdpLogo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const { data } = supabase.storage.from("site-assets").getPublicUrl("zdp-logo.png");
+    setZdpLogo(data.publicUrl);
+  }, []);
+
   return (
     <footer className="bg-forest-ink text-cream">
       {/* CTA strip */}
@@ -475,22 +456,22 @@ export function SiteFooter() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
-              to="/search"
+              to="/request"
               className="bg-gold px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
             >
-              Browse Directory
+              Request a Quote
             </Link>
             <Link
-              to="/request"
+              to="/onboarding/provider"
               className="border border-cream/20 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-cream/5 transition-colors"
             >
-              Post a Brief
+              Apply as a Provider
             </Link>
             <Link
-              to="/events"
-              className="border border-gold/30 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-gold hover:border-gold hover:bg-gold/10 transition-colors"
+              to="/about"
+              className="border border-cream/20 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-cream/5 transition-colors"
             >
-              Get Tickets
+              About NexusZim
             </Link>
           </div>
         </div>
@@ -501,31 +482,40 @@ export function SiteFooter() {
         <div>
           <NexusZimLogo variant="reversed" size="sm" asLink={false} />
           <p className="mt-5 max-w-xs font-sans text-sm leading-relaxed text-cream/50">
-            Zimbabwe's one-stop events platform — tickets, venues, and verified service providers on
-            a single register.
+            Zimbabwe's marketplace for trusted services — find, compare, and brief verified
+            providers on a single register.
           </p>
-          <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-cream/30">
-            A ZimDataPulse company
-          </p>
+          <div className="mt-6 flex items-center gap-3">
+            {zdpLogo ? (
+              <img
+                src={zdpLogo}
+                alt="ZimDataPulse"
+                className="h-7 w-auto object-contain"
+                style={{ filter: "invert(1)", mixBlendMode: "screen", opacity: 0.75 }}
+                onError={() => setZdpLogo(null)}
+              />
+            ) : (
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-cream/30">
+                A ZimDataPulse company
+              </span>
+            )}
+          </div>
         </div>
 
         <FooterCol
-          title="NexusZim Live"
+          title="Registry"
           links={[
-            { to: "/events", label: "What's On" },
-            { to: "/tickets", label: "My Tickets" },
-            { to: "/venues", label: "Venue Marketplace" },
-            { to: "/organizer", label: "Organizer Suite" },
-            { to: "/intel", label: "Intel Hub" },
+            { to: "/search", label: "Service Providers" },
+            { to: "/categories", label: "All Categories" },
+            { to: "/request", label: "Request a Quote" },
+            { to: "/onboarding/provider", label: "Apply as Provider" },
           ]}
         />
         <FooterCol
-          title="Registry"
+          title="Intelligence"
           links={[
-            { to: "/search", label: "Browse Directory" },
-            { to: "/categories", label: "All Categories" },
-            { to: "/request", label: "Post a Brief" },
-            { to: "/onboarding/provider", label: "Apply as Provider" },
+            { to: "/intel", label: "Intelligence Hub" },
+            { to: "/intel/rates", label: "Market Rates" },
           ]}
         />
         <FooterCol

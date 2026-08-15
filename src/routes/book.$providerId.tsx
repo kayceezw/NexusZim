@@ -1,20 +1,24 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { findProvider } from "@/lib/mock-data";
+import {
+  fetchProvider,
+  providerInitials,
+  providerAvatarColor,
+} from "@/lib/queries";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ArrowLeft, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { Hallmark } from "@/components/registry/hallmark";
 
 export const Route = createFileRoute("/book/$providerId")({
-  loader: ({ params }) => {
-    const provider = findProvider(params.providerId);
+  loader: async ({ params }) => {
+    const provider = await fetchProvider(params.providerId);
     if (!provider) throw notFound();
     return { provider };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
-      ? [{ title: `Enquire — ${loaderData.provider.business} — NexusZim` }]
+      ? [{ title: `Enquire — ${loaderData.provider.business_name} — NexusZim` }]
       : [],
   }),
   component: EnquiryPage,
@@ -31,6 +35,10 @@ export const Route = createFileRoute("/book/$providerId")({
 function EnquiryPage() {
   const { provider } = Route.useLoaderData();
   const { user } = useAuth();
+
+  const initials = providerInitials(provider.business_name);
+  const avatarColor = providerAvatarColor(provider.user_id);
+  const categoryName = provider.categories?.name ?? null;
 
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -51,9 +59,9 @@ function EnquiryPage() {
     if (user) {
       const { error: e } = await supabase.from("requests").insert({
         client_id: user.id,
-        category_id: provider.category,
-        service_name: provider.business,
-        title: `Enquiry to ${provider.business}`,
+        category_id: provider.category_id,
+        service_name: provider.business_name,
+        title: `Enquiry to ${provider.business_name}`,
         description: notes,
         city: location || provider.city,
         budget: budget ? Number(budget) : null,
@@ -91,14 +99,12 @@ function EnquiryPage() {
             className="font-display text-text"
             style={{ fontSize: "clamp(28px, 4vw, 44px)", lineHeight: "1.08", letterSpacing: "-0.02em" }}
           >
-            {provider.business} has your details.
+            {provider.business_name} has your details.
           </h1>
           <p className="mt-5 font-sans text-base text-text-soft leading-relaxed">
             They typically respond within{" "}
-            <strong className="text-text font-medium">
-              {provider.responseTime.replace("Replies in ~", "")}
-            </strong>
-            . They'll reach out directly to discuss your requirements and agree on a fee.
+            <strong className="text-text font-medium">a day</strong>. They'll reach out directly to
+            discuss your requirements and agree on a fee.
           </p>
           <div className="mt-6 mx-auto max-w-sm border border-forest/20 bg-forest/5 rounded-[6px] p-5">
             <p className="font-sans text-[13px] text-forest leading-relaxed">
@@ -130,7 +136,7 @@ function EnquiryPage() {
       <div className="container-page pt-8 pb-2">
         <Link
           to="/providers/$providerId"
-          params={{ providerId: provider.id }}
+          params={{ providerId: provider.user_id }}
           className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft hover:text-forest transition-colors"
         >
           <ArrowLeft className="h-3 w-3" />
@@ -151,7 +157,7 @@ function EnquiryPage() {
               style={{ fontSize: "clamp(28px, 4vw, 44px)", lineHeight: "1.08", letterSpacing: "-0.02em" }}
             >
               Send enquiry to{" "}
-              <em className="italic text-forest">{provider.business}</em>
+              <em className="italic text-forest">{provider.business_name}</em>
             </h1>
             <p className="font-sans text-[14px] text-text-soft mb-8 max-w-lg">
               Share your requirements. The provider will contact you directly to discuss scope and
@@ -181,7 +187,7 @@ function EnquiryPage() {
                       type="text"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder={provider.city}
+                      placeholder={provider.city ?? ""}
                       className="field-input"
                     />
                   </Field>
@@ -282,7 +288,7 @@ function EnquiryPage() {
                 disabled={submitting}
                 className="w-full bg-gold py-4 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
               >
-                {submitting ? "Sending…" : `Send enquiry to ${provider.business}`}
+                {submitting ? "Sending…" : `Send enquiry to ${provider.business_name}`}
               </button>
 
               <p className="text-center font-sans text-[12px] text-text-soft">
@@ -295,34 +301,32 @@ function EnquiryPage() {
           <aside className="lg:sticky lg:top-24 lg:self-start space-y-4">
             <div className="bg-cream-raised border border-hairline rounded-[6px] overflow-hidden">
               <div
-                className={`flex items-center justify-center py-10 border-b border-hairline ${provider.avatarColor}`}
+                className={`flex items-center justify-center py-10 border-b border-hairline ${avatarColor}`}
               >
-                <span className="font-sans text-3xl font-bold tracking-tight">
-                  {provider.initials}
-                </span>
+                <span className="font-sans text-3xl font-bold tracking-tight">{initials}</span>
               </div>
               <div className="p-5 space-y-4">
                 <div>
-                  <h3 className="font-display text-xl text-text">{provider.business}</h3>
-                  <p className="mt-0.5 font-sans text-[13px] text-text-soft">{provider.name}</p>
+                  <h3 className="font-display text-xl text-text">{provider.business_name}</h3>
+                  {categoryName && (
+                    <p className="mt-0.5 font-sans text-[13px] text-text-soft">{categoryName}</p>
+                  )}
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                   <Hallmark tier={provider.tier} />
-                  <span className="flex items-center gap-1 font-mono text-[11px] text-text-soft">
-                    <MapPin className="h-3 w-3 shrink-0" strokeWidth={1.5} />
-                    {provider.city}
-                  </span>
+                  {provider.city && (
+                    <span className="flex items-center gap-1 font-mono text-[11px] text-text-soft">
+                      <MapPin className="h-3 w-3 shrink-0" strokeWidth={1.5} />
+                      {provider.city}
+                    </span>
+                  )}
                 </div>
 
                 <div className="pt-3 border-t border-hairline space-y-2">
-                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-text-soft">
-                    <Clock className="h-3 w-3 shrink-0" strokeWidth={1.5} />
-                    {provider.responseTime}
-                  </div>
                   <p className="font-mono text-[11px] text-text-soft">
-                    Starts from{" "}
-                    <strong className="text-text">${provider.priceFrom}</strong>
+                    Typically responds within{" "}
+                    <strong className="text-text">a day</strong>
                     <span className="text-text-soft/60"> — final rate agreed directly</span>
                   </p>
                 </div>
@@ -332,8 +336,7 @@ function EnquiryPage() {
             <div className="border border-forest/20 bg-forest/5 rounded-[6px] p-4">
               <p className="font-sans text-[12px] text-forest leading-relaxed">
                 <strong>You pay the provider directly.</strong> NexusZim never holds money or charges
-                a commission. The starting rate shown is indicative — the final amount is whatever you
-                and the provider agree.
+                a commission. The final amount is whatever you and the provider agree.
               </p>
             </div>
           </aside>

@@ -135,45 +135,24 @@ function ScraperQueuePage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  // Approve: update status AND create a bare provider profile for follow-up
+  // Approve: mark the lead approved so it moves out of the review queue.
+  //
+  // NOTE: a scraped lead cannot be written directly into `provider_profiles` —
+  // that table requires a `user_id` (FK to auth.users), and a scraped business
+  // has no account yet. Converting an approved lead into a live provider must go
+  // through the admin "Create Provider" flow (createProviderFn), which mints the
+  // auth user, assigns the role, and creates the profile atomically. Approval
+  // here simply green-lights the lead for that follow-up.
   const approve = useMutation({
     mutationFn: async (item: QueueItem) => {
-      // 1. Mark as approved
       const { error: qErr } = await supabase
         .from("scraper_queue")
         .update({ status: "approved", reviewed_at: new Date().toISOString() })
         .eq("id", item.id);
       if (qErr) throw qErr;
-
-      // 2. Look up category id
-      const { data: catRow } = await supabase
-        .from("categories")
-        .select("id")
-        .eq("slug", item.category_guess ?? "business-professional")
-        .maybeSingle();
-
-      // 3. Insert into provider_profiles as unverified tier-1 lead
-      if (catRow?.id) {
-        const { error: pErr } = await supabase.from("provider_profiles").upsert(
-          {
-            business_name: item.business_name,
-            city: item.city,
-            phone: item.phone,
-            website: item.website,
-            bio: item.description,
-            category_id: catRow.id,
-            tier: 1,
-            verified: false,
-          },
-          { onConflict: "user_id", ignoreDuplicates: true },
-        );
-        if (pErr && pErr.code !== "23505") {
-          console.warn("Provider insert warning:", pErr.message);
-        }
-      }
     },
     onSuccess: (_, item) => {
-      toast.success(`${item.business_name} approved and added to registry`);
+      toast.success(`${item.business_name} approved — ready to onboard`);
       qc.invalidateQueries({ queryKey: ["scraper-queue"] });
       qc.invalidateQueries({ queryKey: ["scraper-stats"] });
     },
@@ -185,7 +164,7 @@ function ScraperQueuePage() {
   return (
     <div className="bg-cream pt-16 min-h-screen animate-page-enter">
       {/* Header */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10">
           <div className="flex items-start justify-between gap-4">
             <div>

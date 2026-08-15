@@ -185,7 +185,7 @@ function ProviderOnboarding() {
   return (
     <div className="bg-cream pt-16 pb-20 min-h-screen">
       {/* Dark header strip */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page max-w-2xl py-8">
           <p className="eyebrow text-cream/40 mb-2">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />

@@ -30,13 +30,7 @@ function AlertsSection() {
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const ALERT_TYPES = [
-    "New Elite Providers",
-    "Rate Changes",
-    "Venue Availability",
-    "Upcoming Events",
-    "Scarcity Alerts",
-  ];
+  const ALERT_TYPES = ["New Elite Providers", "Rate Changes", "Scarcity Alerts"];
 
   function toggleCategory(c: string) {
     setCategories((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
@@ -75,8 +69,8 @@ function AlertsSection() {
             Never miss a market shift.
           </h3>
           <p className="font-sans text-[13px] text-text-soft max-w-xl leading-relaxed">
-            Subscribe for weekly intelligence: new verified providers, rate changes, venue openings,
-            and priority events in your city.
+            Subscribe for weekly intelligence: new verified providers, rate changes, and market
+            shifts in your city.
           </p>
 
           {subscribed ? (

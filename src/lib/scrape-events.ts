@@ -8,6 +8,7 @@
  * No Node.js built-ins (no http, no fs, no Buffer).
  */
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/integrations/supabase/require-admin";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -598,6 +599,7 @@ type ScrapeInput = {
 };
 
 export const scrapeZimbabweEvents = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((data: ScrapeInput) => data)
   .handler(async (ctx): Promise<ScrapeResult> => {
     const errors: string[] = [];

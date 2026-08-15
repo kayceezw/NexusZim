@@ -2,9 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { CATEGORIES } from "@/lib/mock-data";
-import { LIVE_EVENTS } from "@/lib/live-data";
-import { EventCard } from "@/components/live/event-card";
 import { Hallmark } from "@/components/registry/hallmark";
 import { Ledger, type LedgerEntry } from "@/components/registry/ledger";
 import { CategoryCard } from "@/components/category-card";
@@ -27,11 +24,6 @@ export const Route = createFileRoute("/")({
   }),
   component: LandingPage,
 });
-
-const UPCOMING_LIVE = [...LIVE_EVENTS]
-  .filter((e) => e.status === "on-sale" || e.status === "selling-fast")
-  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-  .slice(0, 3);
 
 const SPECIMEN_LEDGER: LedgerEntry[] = [
   { key: "CR14 registration", value: "Confirmed", date: "Apr 2024", verified: true },
@@ -88,15 +80,11 @@ function LandingPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: dbCategories } = useQuery({
+  const { data: dbCategories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
     staleTime: 10 * 60 * 1000,
   });
-
-  const categoryCountMap = Object.fromEntries(
-    (dbCategories ?? []).map((c) => [c.slug, c.provider_count]),
-  );
 
   const STATS =
     statsLoading || !stats
@@ -141,7 +129,7 @@ function LandingPage() {
             <div className="space-y-8 lg:pt-6">
               <p className="eyebrow text-text-soft animate-fade-up">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                Tickets · Venues · Verified Providers
+                Zimbabwe's Verified Service Marketplace
               </p>
 
               <h1
@@ -152,31 +140,30 @@ function LandingPage() {
                   letterSpacing: "-0.025em",
                 }}
               >
-                Book the tickets.
+                Find the right provider.
                 <br />
-                <em className="italic text-gold-deep">Book the venue.</em>
+                <em className="italic text-gold-deep">Vetted, verified,</em>
                 <br />
-                Book the crew.
+                ready to deliver.
               </h1>
 
               <p className="font-sans text-base text-text-soft leading-relaxed max-w-[440px] animate-fade-up delay-200">
-                NexusZim is Zimbabwe's one-stop events platform: QR-ticketed events, a verified
-                venue marketplace, and a public register of vetted service providers — every listing
-                shows what was checked, by whom, and when.
+                NexusZim is Zimbabwe's verified service directory — find, compare, and brief vetted
+                providers across transport, business services, personal care, and more.
               </p>
 
               <div className="flex flex-wrap gap-3 animate-fade-up delay-250">
                 <Link
-                  to="/events"
+                  to="/search"
                   className="btn-cta bg-gold px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink"
                 >
-                  What's on →
+                  Browse Service Providers →
                 </Link>
                 <Link
-                  to="/venues"
+                  to="/request"
                   className="border border-forest px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
                 >
-                  Find a venue
+                  Request a Quote
                 </Link>
               </div>
 
@@ -216,7 +203,7 @@ function LandingPage() {
       </section>
 
       {/* ─── PROOF STRIP ─── */}
-      <section className="bg-forest border-b border-forest/20">
+      <section className="bg-forest-ink border-b border-forest-ink/20">
         <div className="container-page">
           <div className="grid grid-cols-2 lg:grid-cols-4">
             {statsLoading || !STATS
@@ -241,34 +228,6 @@ function LandingPage() {
                     </p>
                   </div>
                 ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── NEXUSZIM LIVE SHOWCASE ─── */}
-      <section className="py-20 border-b border-hairline">
-        <div className="container-page">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
-            <div className="space-y-2">
-              <p className="eyebrow text-text-soft">
-                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                NexusZim Live
-              </p>
-              <h2 className="font-display text-3xl lg:text-4xl text-text">
-                On sale <em className="italic text-forest">now.</em>
-              </h2>
-            </div>
-            <Link
-              to="/events"
-              className="font-mono text-[10px] uppercase tracking-[0.12em] text-forest hover:underline underline-offset-4"
-            >
-              All events →
-            </Link>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {UPCOMING_LIVE.map((event, i) => (
-              <EventCard key={event.id} event={event} index={i} />
-            ))}
           </div>
         </div>
       </section>
@@ -312,11 +271,11 @@ function LandingPage() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {CATEGORIES.slice(0, 6).map((c, i) => (
+            {dbCategories.slice(0, 6).map((c, i) => (
               <CategoryCard
-                key={c.slug}
+                key={c.id}
                 category={c}
-                count={categoryCountMap[c.slug] ?? 0}
+                count={c.provider_count}
                 animationDelay={i * 60}
               />
             ))}
@@ -324,43 +283,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ─── PROVIDER CTA ─── */}
-      <section className="bg-forest py-20">
-        <div className="container-page">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-            <div className="space-y-3">
-              <p className="eyebrow text-cream/40">
-                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                For service providers
-              </p>
-              <h2 className="font-display text-3xl lg:text-4xl text-cream">
-                Apply to join the register
-              </h2>
-              <p className="font-sans text-sm text-cream/60 max-w-md leading-relaxed">
-                Submit your business documents and complete the NexusZim verification process.
-                Listed status is free. Verified and Trust Certified require document review.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-              <Link
-                to="/onboarding/provider"
-                className="bg-gold px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors flex items-center gap-2 group justify-center"
-              >
-                Apply as a provider
-                <span className="transition-transform group-hover:translate-x-[3px] duration-150">
-                  →
-                </span>
-              </Link>
-              <Link
-                to="/about"
-                className="border border-cream/20 px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-cream/5 transition-colors text-center"
-              >
-                About NexusZim
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
@@ -378,30 +300,30 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
     : ["Verified Providers", "Business Records", "Trust Certificates"];
 
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 shadow-[0_2px_12px_rgba(15,51,35,0.08)]">
-      <div className="flex items-start justify-between gap-3 pb-4 border-b border-hairline">
+    <div className="bg-forest-ink border border-cream/10 rounded-[6px] p-6 shadow-[0_4px_24px_rgba(15,51,35,0.3)]">
+      <div className="flex items-start justify-between gap-3 pb-4 border-b border-cream/10">
         <div>
-          <p className="eyebrow text-text-soft/60">
+          <p className="eyebrow text-cream/40">
             <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
             Registry record
           </p>
-          <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-soft mt-1">
+          <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/50 mt-1">
             {registryId}
           </p>
         </div>
         <Hallmark tier={tier} />
       </div>
 
-      <div className="py-4 border-b border-hairline">
-        <p className="font-display text-2xl text-text leading-tight">{name}</p>
-        <p className="font-sans text-[13px] text-text-soft mt-1">
+      <div className="py-4 border-b border-cream/10">
+        <p className="font-display text-2xl text-cream leading-tight">{name}</p>
+        <p className="font-sans text-[13px] text-cream/60 mt-1">
           {provider ? `${city}` : "Zimbabwe's Verified Service Registry · Harare"}
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {tags.map((s) => (
             <span
               key={s}
-              className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-soft px-2 py-0.5 border border-hairline rounded-[3px]"
+              className="font-mono text-[10px] uppercase tracking-[0.06em] text-cream/60 px-2 py-0.5 border border-cream/20 rounded-[3px]"
             >
               {s}
             </span>
@@ -409,8 +331,8 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
         </div>
       </div>
 
-      <div className="py-4 border-b border-hairline">
-        <p className="eyebrow text-text-soft/60 mb-3">
+      <div className="py-4 border-b border-cream/10">
+        <p className="eyebrow text-cream/40 mb-3">
           <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
           Verification record
         </p>
@@ -418,12 +340,12 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
       </div>
 
       <div className="pt-4 flex items-center justify-between">
-        <span className="font-mono text-[11px] text-text-soft/60 uppercase tracking-[0.08em]">
+        <span className="font-mono text-[11px] text-cream/40 uppercase tracking-[0.08em]">
           {provider ? `Tier ${tier} · Verified` : "NexusZim Platform · Est. 2024"}
         </span>
         <Link
           to="/search"
-          className="font-sans text-[12px] font-semibold text-forest hover:text-gold-deep transition-colors flex items-center gap-1 group"
+          className="font-sans text-[12px] font-semibold text-gold hover:text-gold-deep transition-colors flex items-center gap-1 group"
         >
           Browse all records
           <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
