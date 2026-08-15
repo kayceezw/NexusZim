@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdmin } from "@/integrations/supabase/require-admin";
 
 type CreateProviderInput = {
   email: string;
@@ -18,6 +19,7 @@ function generateTempPassword(): string {
 }
 
 export const createProviderFn = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((data: CreateProviderInput) => data)
   .handler(async (ctx) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

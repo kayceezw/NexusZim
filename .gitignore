@@ -20,6 +20,12 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Archives & AI-tool artifacts (should never be committed)
+*.zip
+Jules/
+Stitch/
+*.local-backup
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

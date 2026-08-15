@@ -4,8 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { fetchCategories } from "@/lib/queries";
-import { CITIES } from "@/lib/mock-data";
+import { fetchCategories, fetchCitiesWithCounts } from "@/lib/queries";
 
 interface Search {
   category?: string;
@@ -56,11 +55,17 @@ function RequestPage() {
     staleTime: 10 * 60 * 1000,
   });
 
+  const { data: cities = [] } = useQuery({
+    queryKey: ["cities-with-counts"],
+    queryFn: fetchCitiesWithCounts,
+    staleTime: 5 * 60 * 1000,
+  });
+
   const [form, setForm] = useState<FormState>({
     categorySlug: search.category ?? (categories[0]?.slug ?? ""),
     title: "",
     details: "",
-    city: "Harare",
+    city: "",
     neededBy: "",
     budget: "",
     clientWhatsapp: "",
@@ -311,18 +316,19 @@ function RequestPage() {
 
             <div className="grid sm:grid-cols-2 gap-5">
               <Field label="City" required>
-                <select
+                <input
                   required
+                  list="request-cities"
                   value={form.city}
                   onChange={(e) => set("city", e.target.value)}
+                  placeholder="e.g. Harare"
                   className="field-input"
-                >
-                  {CITIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
+                />
+                <datalist id="request-cities">
+                  {cities.map((c) => (
+                    <option key={c.city} value={c.city} />
                   ))}
-                </select>
+                </datalist>
               </Field>
 
               <Field label="Date needed" hint="Approx. is fine">

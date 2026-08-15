@@ -1,7 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { CATEGORIES, type Category } from "@/lib/mock-data";
 import { fetchProvidersByCategory } from "@/lib/queries";
 import { LiveProviderCard } from "@/components/provider-card";
 import { ProviderCardSkeleton } from "@/components/skeletons";
@@ -18,16 +17,29 @@ type DbService = {
 type DbCategory = { id: string; name: string; slug: string };
 
 export const Route = createFileRoute("/categories/$slug")({
-  loader: ({ params }): { category: Category } => {
-    const category = CATEGORIES.find((c) => c.slug === params.slug);
+  loader: async ({ params }) => {
+    const { data: category } = await supabase
+      .from("categories")
+      .select("id, name, slug, description")
+      .eq("slug", params.slug)
+      .maybeSingle();
     if (!category) throw notFound();
-    return { category };
+
+    // Sub-categories are child rows (parent_id) in the taxonomy-v2 model.
+    const { data: subs } = await supabase
+      .from("categories")
+      .select("name")
+      .eq("parent_id", category.id)
+      .eq("active", true)
+      .order("name");
+
+    return { category, subCategories: (subs ?? []).map((s) => s.name) };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
           { title: `${loaderData.category.name} — NexusZim` },
-          { name: "description", content: loaderData.category.description },
+          { name: "description", content: loaderData.category.description ?? "" },
         ]
       : [],
   }),
@@ -43,8 +55,14 @@ export const Route = createFileRoute("/categories/$slug")({
 });
 
 function CategoryDetailPage() {
-  const { category } = Route.useLoaderData();
+  const { category, subCategories } = Route.useLoaderData();
   const [selectedSub, setSelectedSub] = useState<string>("all");
+
+  const dbCategory: DbCategory = {
+    id: category.id,
+    name: category.name,
+    slug: category.slug,
+  };
 
   const { data: providers = [], isLoading: loadingProviders } = useQuery({
     queryKey: ["providers-by-category", category.slug],
@@ -52,33 +70,24 @@ function CategoryDetailPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: dbData, isLoading: loadingServices } = useQuery({
-    queryKey: ["category-services", category.slug],
+  const { data: services = [], isLoading: loadingServices } = useQuery({
+    queryKey: ["category-services", category.id],
     queryFn: async () => {
-      const { data: cat } = await supabase
-        .from("categories")
-        .select("id, name, slug")
-        .eq("slug", category.slug)
-        .maybeSingle();
-      if (!cat) return { dbCategory: null as DbCategory | null, services: [] as DbService[] };
       const { data: svc } = await supabase
         .from("services")
         .select("id, name, base_price, description")
-        .eq("category_id", cat.id)
+        .eq("category_id", category.id)
         .eq("active", true)
         .order("name");
-      return { dbCategory: cat as DbCategory, services: (svc ?? []) as DbService[] };
+      return (svc ?? []) as DbService[];
     },
     staleTime: 5 * 60 * 1000,
   });
 
-  const dbCategory = dbData?.dbCategory ?? null;
-  const services = dbData?.services ?? [];
-
   return (
     <div className="bg-cream pt-16 min-h-screen">
       {/* Forest hero header */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-12 md:py-16">
           <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-cream/30 mb-6">
             <Link to="/categories" className="hover:text-cream/60 transition-colors">
@@ -89,7 +98,7 @@ function CategoryDetailPage() {
           </div>
           <p className="eyebrow text-cream/40 mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-            {category.tagline}
+            Verified Directory
           </p>
           <h1
             className="font-display text-cream"
@@ -98,7 +107,8 @@ function CategoryDetailPage() {
             {category.name}.
           </h1>
           <p className="mt-4 max-w-xl font-sans text-sm text-cream/60 leading-relaxed">
-            {category.description}
+            {category.description ??
+              `Browse verified ${category.name} providers across Zimbabwe.`}
           </p>
         </div>
       </div>
@@ -117,7 +127,7 @@ function CategoryDetailPage() {
             >
               All ({providers.length})
             </button>
-            {category.subCategories.map((sub) => {
+            {subCategories.map((sub) => {
               const active = selectedSub === sub;
               return (
                 <button

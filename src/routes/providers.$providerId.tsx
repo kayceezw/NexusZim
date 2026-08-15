@@ -401,12 +401,16 @@ function ProviderProfilePage() {
 
             {/* Reviews */}
             <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
-              <h2 className="font-display text-2xl text-text mb-6">
+              <h2 className="font-display text-2xl text-text mb-2">
                 Client references
                 <span className="font-sans text-base text-text-soft font-normal ml-3">
                   ({reviews.length})
                 </span>
               </h2>
+              <p className="mb-6 font-mono text-[10px] uppercase tracking-widest text-forest/70 flex items-center gap-1.5">
+                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-forest shrink-0" />
+                Verified — only clients who hired via NexusZim can review
+              </p>
 
               {reviews.length === 0 ? (
                 <div className="text-center py-8 border border-dashed border-hairline rounded-[6px]">

@@ -1,16 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { RequireAuth } from "@/components/require-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  fetchProviderBookings,
+  fetchProviderRating,
+  type ProviderBooking,
+} from "@/lib/queries";
+import { RatingDisplay } from "@/components/registry/star-rating";
 import {
   ChevronDown,
   ChevronUp,
   Send,
   CheckCircle2,
-  TrendingUp,
-  Eye,
-  Zap,
+  FileText,
+  Briefcase,
   Star,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -86,6 +92,30 @@ function ProviderDashboard() {
   const [quoteAmounts, setQuoteAmounts] = useState<Record<string, string>>({});
   const [quoteMessages, setQuoteMessages] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState<string | null>(null);
+
+  const qc = useQueryClient();
+  const { data: myBookings = [] } = useQuery({
+    queryKey: ["provider-bookings", user?.id],
+    queryFn: () => fetchProviderBookings(user!.id),
+    enabled: !!user,
+  });
+  const { data: myRating } = useQuery({
+    queryKey: ["provider-rating", user?.id],
+    queryFn: () => fetchProviderRating(user!.id),
+    enabled: !!user,
+  });
+  const advanceBooking = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "in_progress" | "completed" }) => {
+      const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_data, v) => {
+      toast.success(v.status === "completed" ? "Job marked complete." : "Job started.");
+      qc.invalidateQueries({ queryKey: ["provider-bookings", user?.id] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const completedJobs = myBookings.filter((b) => b.status === "completed").length;
 
   useEffect(() => {
     if (!user) return;
@@ -171,7 +201,7 @@ function ProviderDashboard() {
   return (
     <div className="bg-cream pt-16 min-h-screen">
       {/* Forest header */}
-      <div className="bg-forest border-b border-cream/10">
+      <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10 md:py-14">
           <p className="eyebrow text-cream/40 mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -213,31 +243,35 @@ function ProviderDashboard() {
       </div>
 
       <div className="container-page py-10 md:py-14 space-y-8">
-        {/* Visibility Stats */}
+        {/* Real performance stats */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <VisibilityStat
-            icon={<Eye className="h-4 w-4 text-gold" />}
-            label="Profile Views"
-            value="284"
-            trend="+12% this week"
-          />
-          <VisibilityStat
-            icon={<TrendingUp className="h-4 w-4 text-gold" />}
-            label="Enquiry Rate"
-            value="18.4%"
-            trend="From 284 views"
-          />
-          <VisibilityStat
-            icon={<Zap className="h-4 w-4 text-gold" />}
-            label="Avg. Response"
-            value="2.3h"
-            trend="Top 10% of providers"
-          />
-          <VisibilityStat
             icon={<Star className="h-4 w-4 text-gold" />}
-            label="Conversion"
-            value="6.7%"
-            trend="4 confirmed this month"
+            label="Rating"
+            value={myRating && myRating.count > 0 ? myRating.average.toFixed(1) : "—"}
+            trend={
+              myRating && myRating.count > 0
+                ? `${myRating.count} review${myRating.count !== 1 ? "s" : ""}`
+                : "No reviews yet"
+            }
+          />
+          <VisibilityStat
+            icon={<CheckCircle2 className="h-4 w-4 text-gold" />}
+            label="Completed Jobs"
+            value={String(completedJobs)}
+            trend="All time"
+          />
+          <VisibilityStat
+            icon={<FileText className="h-4 w-4 text-gold" />}
+            label="Active Quotes"
+            value={String(myQuotes.length)}
+            trend="Awaiting client"
+          />
+          <VisibilityStat
+            icon={<Briefcase className="h-4 w-4 text-gold" />}
+            label="Open Briefs"
+            value={String(requests.length)}
+            trend="In your category"
           />
         </div>
 
@@ -298,12 +332,34 @@ function ProviderDashboard() {
           </div>
         )}
 
-        {/* Stats row */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          <StatBlock label="Live Ops" value={String(requests.length)} />
-          <StatBlock label="Active Quotes" value={String(myQuotes.length)} />
-          <StatBlock label="Status" value={provider?.verified ? "Live" : "Hold"} />
-        </div>
+        {/* Your Jobs — the delivery + reputation side of the loop */}
+        {myBookings.length > 0 && (
+          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-10">
+            <div className="flex items-center justify-between border-b border-hairline pb-5 mb-8">
+              <div>
+                <p className="eyebrow text-text-soft mb-1">
+                  <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
+                  Confirmed work
+                </p>
+                <h2 className="font-display text-xl text-text">Your Jobs</h2>
+              </div>
+              <span className="font-mono text-[10px] text-text-soft uppercase tracking-widest">
+                {completedJobs} completed
+              </span>
+            </div>
+            <div className="space-y-3">
+              {myBookings.map((b) => (
+                <ProviderJobRow
+                  key={b.id}
+                  booking={b}
+                  onStart={() => advanceBooking.mutate({ id: b.id, status: "in_progress" })}
+                  onComplete={() => advanceBooking.mutate({ id: b.id, status: "completed" })}
+                  busy={advanceBooking.isPending}
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Available Briefs */}
         <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-10">
@@ -482,11 +538,84 @@ function ProviderDashboard() {
   );
 }
 
-function StatBlock({ label, value }: { label: string; value: string }) {
+const PROVIDER_JOB_BADGE: Record<string, string> = {
+  pending: "border-amber-300 text-amber-600 bg-amber-50",
+  confirmed: "border-forest/30 text-forest bg-forest/5",
+  in_progress: "border-blue-300 text-blue-600 bg-blue-50",
+  completed: "border-emerald-300 text-emerald-600 bg-emerald-50",
+  cancelled: "border-rose-300 text-rose-600 bg-rose-50",
+  refunded: "border-text-soft/30 text-text-soft bg-hairline/30",
+};
+
+function ProviderJobRow({
+  booking,
+  onStart,
+  onComplete,
+  busy,
+}: {
+  booking: ProviderBooking;
+  onStart: () => void;
+  onComplete: () => void;
+  busy: boolean;
+}) {
+  const canStart = booking.status === "confirmed" || booking.status === "pending";
+  const canComplete = booking.status === "in_progress";
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] p-6">
-      <p className="font-display text-4xl text-gold">{value}</p>
-      <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-text-soft">{label}</p>
+    <div className="border border-hairline rounded-[3px] p-5 md:p-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-3">
+            <h3 className="font-display text-lg text-text">{booking.notes || "Job"}</h3>
+            <span
+              className={`border px-2.5 py-0.5 rounded-[3px] font-mono text-[9px] uppercase tracking-widest ${
+                PROVIDER_JOB_BADGE[booking.status] ?? PROVIDER_JOB_BADGE.pending
+              }`}
+            >
+              {booking.status.replace("_", " ")}
+            </span>
+          </div>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-text-soft">
+            Agreed: <span className="text-gold">${Number(booking.amount).toFixed(0)}</span>
+            <span className="text-text-soft/50"> · paid to you directly</span>
+          </p>
+          {booking.status === "completed" && booking.reviewed && (
+            <div className="mt-3 border-l-2 border-gold/40 pl-3">
+              <RatingDisplay average={booking.review_rating ?? 0} count={1} />
+              {booking.review_comment && (
+                <p className="mt-1.5 font-sans text-[13px] italic text-text-soft leading-relaxed">
+                  "{booking.review_comment}"
+                </p>
+              )}
+            </div>
+          )}
+          {booking.status === "completed" && !booking.reviewed && (
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-text-soft/60">
+              Awaiting client review
+            </p>
+          )}
+        </div>
+        <div className="flex shrink-0 gap-2">
+          {canStart && (
+            <button
+              onClick={onStart}
+              disabled={busy}
+              className="inline-flex items-center justify-center gap-2 border border-forest px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest hover:bg-forest hover:text-cream transition-colors disabled:opacity-60"
+            >
+              Start job
+            </button>
+          )}
+          {canComplete && (
+            <button
+              onClick={onComplete}
+              disabled={busy}
+              className="inline-flex items-center justify-center gap-2 bg-gold px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Mark complete
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

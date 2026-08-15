@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { CATEGORIES, CITIES } from "@/lib/mock-data";
 import { LiveProviderCard } from "@/components/provider-card";
 import { ProviderCardSkeleton } from "@/components/skeletons";
 import { Search, X, Loader2 } from "lucide-react";
@@ -9,6 +8,7 @@ import {
   fetchProviders,
   fetchCitiesWithCounts,
   fetchCategories,
+  fetchRatingsForProviders,
 } from "@/lib/queries";
 
 interface SearchParams {
@@ -109,6 +109,15 @@ function SearchPage() {
     placeholderData: (prev) => prev,
   });
 
+  // Reputation for the visible providers — earned review aggregates, shown on cards.
+  const resultIds = (results ?? []).map((p) => p.user_id);
+  const { data: ratings } = useQuery({
+    queryKey: ["provider-ratings", resultIds],
+    queryFn: () => fetchRatingsForProviders(resultIds),
+    enabled: resultIds.length > 0,
+    staleTime: 60 * 1000,
+  });
+
   const { data: citiesData } = useQuery({
     queryKey: ["cities-with-counts"],
     queryFn: fetchCitiesWithCounts,
@@ -121,16 +130,8 @@ function SearchPage() {
     staleTime: 10 * 60 * 1000,
   });
 
-  const activeCities = citiesData ?? CITIES.map((c) => ({ city: c, count: 0 }));
-  const activeCategories =
-    dbCategories ??
-    CATEGORIES.map((c) => ({
-      id: c.slug,
-      name: c.name,
-      slug: c.slug,
-      description: c.description,
-      provider_count: 0,
-    }));
+  const activeCities = citiesData ?? [];
+  const activeCategories = dbCategories ?? [];
 
   const hasMore = (results?.length ?? 0) === PAGE_SIZE;
   // Show spinner when debouncing OR when a new fetch is in flight
@@ -139,7 +140,7 @@ function SearchPage() {
   return (
     <div className="bg-cream pt-16 min-h-screen animate-page-enter">
       {/* ─── STICKY SEARCH BAR ─── */}
-      <div className="sticky top-16 z-30 bg-forest border-b border-cream/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
+      <div className="sticky top-16 z-30 bg-forest-ink border-b border-cream/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
         <div className="container-page py-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1 max-w-xl">
@@ -277,10 +278,10 @@ function SearchPage() {
                     </span>
                   </div>
                 </label>
-                {activeCities
-                  .filter((c) => c.count > 0 || c.count === 0)
-                  .slice(0, 10)
-                  .map((c) => (
+                {activeCities.length === 0 ? (
+                  <p className="font-sans text-[12px] text-text-soft/50 italic">No cities yet</p>
+                ) : (
+                  activeCities.slice(0, 10).map((c) => (
                     <label
                       key={c.city}
                       className="flex items-center justify-between cursor-pointer group"
@@ -301,7 +302,8 @@ function SearchPage() {
                         <span className="font-mono text-[10px] text-text-soft/50">{c.count}</span>
                       )}
                     </label>
-                  ))}
+                  ))
+                )}
               </div>
 
               {/* Category */}
@@ -426,7 +428,7 @@ function SearchPage() {
                     className="animate-slide-up"
                     style={{ animationDelay: `${i * 40}ms` }}
                   >
-                    <LiveProviderCard provider={p} />
+                    <LiveProviderCard provider={p} rating={ratings?.[p.user_id]} />
                   </div>
                 ))
               ) : null}

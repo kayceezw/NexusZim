@@ -22,12 +22,21 @@ const TIER_CONFIG: Record<TierLevel, { label: string; className: string }> = {
 };
 
 interface HallmarkProps {
-  tier: TierLevel;
+  // Accepts the raw `tier` integer straight from the DB; normalized to a valid
+  // TierLevel internally so callsites don't need to cast.
+  tier: number;
   className?: string;
 }
 
+function normalizeTier(tier: number): TierLevel {
+  if (tier >= 4) return 4;
+  if (tier === 3) return 3;
+  if (tier === 2) return 2;
+  return 1;
+}
+
 export function Hallmark({ tier, className }: HallmarkProps) {
-  const config = TIER_CONFIG[tier];
+  const config = TIER_CONFIG[normalizeTier(tier)];
 
   return (
     <span
