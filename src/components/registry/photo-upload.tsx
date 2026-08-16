@@ -76,17 +76,17 @@ export function PhotoUpload({
   return (
     <div className={cn("space-y-3", className)}>
       <div className="flex items-center justify-between">
-        <p className="eyebrow text-text-soft">
+        <p className="eyebrow text-muted-foreground">
           <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
           {label}
         </p>
-        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft/50">
+        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/50">
           {photos.length} / {maxPhotos}
         </span>
       </div>
 
       {error && (
-        <p className="font-sans text-[12px] text-rose-600 border border-rose-200 bg-rose-50 px-3 py-2 rounded-[3px]">
+        <p className="font-sans text-[12px] text-rose-600 dark:text-rose-400 border border-rose-500/30 bg-rose-500/10 px-3 py-2 rounded-[3px]">
           {error}
         </p>
       )}
@@ -117,17 +117,17 @@ export function PhotoUpload({
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
             className={cn(
-              "aspect-square rounded-[6px] border-2 border-dashed border-hairline flex flex-col items-center justify-center gap-1.5 transition-colors",
-              "hover:border-forest hover:bg-forest/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest",
+              "aspect-square rounded-[6px] border-2 border-dashed border-border flex flex-col items-center justify-center gap-1.5 transition-colors",
+              "hover:border-primary hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
               uploading && "opacity-50 cursor-wait",
             )}
           >
             {uploading ? (
-              <div className="h-4 w-4 rounded-full border-2 border-forest border-t-transparent animate-spin" />
+              <div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
             ) : (
               <>
-                <ImagePlus className="h-4 w-4 text-text-soft" strokeWidth={1.5} />
-                <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-text-soft/60">
+                <ImagePlus className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
+                <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/60">
                   Add photo
                 </span>
               </>
@@ -139,15 +139,15 @@ export function PhotoUpload({
         {Array.from({ length: Math.max(0, remaining - 1) }).map((_, i) => (
           <div
             key={i}
-            className="aspect-square rounded-[6px] border border-dashed border-hairline/50 flex items-center justify-center"
+            className="aspect-square rounded-[6px] border border-dashed border-border/50 flex items-center justify-center"
             aria-hidden
           >
-            <span className="inline-block h-2.5 w-2.5 rotate-45 border border-hairline" />
+            <span className="inline-block h-2.5 w-2.5 rotate-45 border border-border" />
           </div>
         ))}
       </div>
 
-      <p className="font-sans text-[11px] text-text-soft/60 leading-relaxed">
+      <p className="font-sans text-[11px] text-muted-foreground/60 leading-relaxed">
         Upload up to {maxPhotos} photos. These appear on your public profile as proof of your
         premises and work. Max 5 MB each.
       </p>

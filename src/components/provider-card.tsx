@@ -57,8 +57,8 @@ function Stars({ rating, reviews }: { rating: number; reviews: number }) {
           <svg key={i} width="11" height="11" viewBox="0 0 24 24">
             <polygon
               points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-              fill={i <= filled ? "#e7a020" : "none"}
-              stroke={i <= filled ? "#e7a020" : "#dedacb"}
+              fill={i <= filled ? "#d4a63c" : "none"}
+              stroke={i <= filled ? "#d4a63c" : "#e0dccb"}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -66,8 +66,8 @@ function Stars({ rating, reviews }: { rating: number; reviews: number }) {
           </svg>
         ))}
       </div>
-      <span className="font-mono text-[11px] font-medium text-text">{rating.toFixed(1)}</span>
-      <span className="font-mono text-[10px] text-text-soft/50">({reviews})</span>
+      <span className="font-mono text-[11px] font-medium text-foreground">{rating.toFixed(1)}</span>
+      <span className="font-mono text-[10px] text-muted-foreground/50">({reviews})</span>
     </div>
   );
 }
@@ -92,7 +92,7 @@ function AvailabilityDot({ availability }: { availability: string }) {
   return (
     <div className="flex items-center gap-1.5">
       <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${color}`} />
-      <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-soft">
+      <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
         {label}
       </span>
     </div>
@@ -101,7 +101,7 @@ function AvailabilityDot({ availability }: { availability: string }) {
 
 function ProviderCardInner({ data }: { data: NormalizedCard }) {
   return (
-    <article className="group bg-cream-raised border border-hairline rounded-[6px] hover:border-forest hover:shadow-[0_8px_28px_rgba(15,51,35,0.12)] hover:-translate-y-1 transition-all duration-200 relative overflow-hidden">
+    <article className="group bg-card border border-border rounded-[6px] hover:border-primary hover:shadow-[0_8px_28px_rgba(15,51,35,0.12)] hover:-translate-y-1 transition-all duration-200 relative overflow-hidden">
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-200" />
 
       <div className="flex flex-col sm:flex-row gap-0">
@@ -110,7 +110,7 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
           to="/providers/$providerId"
           params={{ providerId: data.id }}
           aria-label={`View ${data.businessName} profile`}
-          className="flex-shrink-0 sm:w-[80px] h-20 sm:h-auto flex items-center justify-center border-b sm:border-b-0 sm:border-r border-hairline transition-opacity group-hover:opacity-90 overflow-hidden"
+          className="flex-shrink-0 sm:w-[80px] h-20 sm:h-auto flex items-center justify-center border-b sm:border-b-0 sm:border-r border-border transition-opacity group-hover:opacity-90 overflow-hidden"
           style={{ minHeight: 120 }}
         >
           {data.firstPhoto ? (
@@ -134,11 +134,11 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
             <Link
               to="/providers/$providerId"
               params={{ providerId: data.id }}
-              className="font-display text-[18px] leading-tight text-text group-hover:text-forest transition-colors"
+              className="font-display text-[18px] leading-tight text-foreground group-hover:text-primary transition-colors"
             >
               {data.businessName}
             </Link>
-            <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-text-soft/40 shrink-0 mt-0.5">
+            <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-muted-foreground/40 shrink-0 mt-0.5">
               {data.regId}
             </span>
           </div>
@@ -146,18 +146,18 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
           <div className="mt-1.5 flex flex-wrap items-center gap-2.5">
             <Hallmark tier={data.tier} />
             {data.categoryName && (
-              <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-soft/60 px-1.5 py-0.5 border border-hairline rounded-[2px]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground/60 px-1.5 py-0.5 border border-border rounded-[2px]">
                 {data.categoryName}
               </span>
             )}
             {data.city && (
-              <span className="flex items-center gap-1 font-mono text-[11px] text-text-soft">
+              <span className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
                 <MapPin className="h-3 w-3 shrink-0" strokeWidth={1.5} />
                 {data.city}
               </span>
             )}
             {data.priceFrom != null && (
-              <span className="font-mono text-[11px] text-forest font-medium">
+              <span className="font-mono text-[11px] text-primary font-medium">
                 From ${data.priceFrom}
               </span>
             )}
@@ -174,7 +174,7 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
               {data.services.slice(0, 3).map((s) => (
                 <span
                   key={s}
-                  className="font-mono text-[9px] uppercase tracking-[0.04em] text-text-soft/70 px-1.5 py-0.5 border border-hairline rounded-[2px]"
+                  className="font-mono text-[9px] uppercase tracking-[0.04em] text-muted-foreground/70 px-1.5 py-0.5 border border-border rounded-[2px]"
                 >
                   {s.length > 22 ? s.slice(0, 20) + "…" : s}
                 </span>
@@ -186,7 +186,7 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
             <div className="flex items-center gap-3">
               {data.availability && <AvailabilityDot availability={data.availability} />}
               {data.responseTime && (
-                <div className="flex items-center gap-1 font-mono text-[10px] text-text-soft/50">
+                <div className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground/50">
                   <Clock className="h-2.5 w-2.5 shrink-0" strokeWidth={1.5} />
                   {data.responseTime}
                 </div>
@@ -211,7 +211,7 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
                   href={`tel:${data.phone}`}
                   aria-label={`Call ${data.businessName}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="flex items-center justify-center h-7 w-7 rounded-full bg-forest/8 text-forest hover:bg-forest hover:text-cream transition-colors"
+                  className="flex items-center justify-center h-7 w-7 rounded-full bg-forest/8 text-primary hover:bg-forest hover:text-cream transition-colors"
                 >
                   <Phone className="h-3.5 w-3.5" strokeWidth={1.5} />
                 </a>
@@ -219,7 +219,7 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
               <Link
                 to="/providers/$providerId"
                 params={{ providerId: data.id }}
-                className="font-sans text-[12px] font-semibold text-forest hover:text-gold-deep transition-colors group/link flex items-center gap-1"
+                className="font-sans text-[12px] font-semibold text-primary hover:text-gold-deep transition-colors group/link flex items-center gap-1"
               >
                 Open record
                 <span

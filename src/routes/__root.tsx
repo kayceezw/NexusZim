@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { AuthProvider } from "@/hooks/use-auth";
 import { CartProvider } from "@/hooks/use-cart";
+import { ThemeProvider, themeNoFlashScript } from "@/hooks/use-theme";
 import { trackVisit } from "@/lib/track-visit";
 
 // Logs one visit per navigation (privacy-friendly, anonymous). Renders nothing.
@@ -30,13 +31,13 @@ function VisitTracker() {
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-cream px-4 text-center">
-      <p className="eyebrow text-text-soft mb-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
+      <p className="eyebrow text-muted-foreground mb-8">
         <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
         404 Error
       </p>
       <h1
-        className="font-display text-text"
+        className="font-display text-foreground"
         style={{
           fontSize: "clamp(72px, 12vw, 120px)",
           lineHeight: "1.02",
@@ -45,7 +46,7 @@ function NotFoundComponent() {
       >
         Not found.
       </h1>
-      <p className="mt-8 font-sans text-base text-text-soft max-w-sm leading-relaxed">
+      <p className="mt-8 font-sans text-base text-muted-foreground max-w-sm leading-relaxed">
         This route is not on the register. You may have followed an expired link or mistyped the
         URL.
       </p>
@@ -58,12 +59,12 @@ function NotFoundComponent() {
         </Link>
         <Link
           to="/search"
-          className="border border-forest px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+          className="border border-primary px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
         >
           Browse Directory
         </Link>
       </div>
-      <p className="mt-16 font-mono text-[10px] uppercase tracking-[0.12em] text-text-soft/30">
+      <p className="mt-16 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground/30">
         NexusZim Registry
       </p>
     </div>
@@ -75,15 +76,15 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-cream px-4 text-center">
-      <p className="eyebrow text-text-soft mb-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
+      <p className="eyebrow text-muted-foreground mb-8">
         <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
         System Error
       </p>
-      <h1 className="font-display text-5xl text-text" style={{ letterSpacing: "-0.02em" }}>
+      <h1 className="font-display text-5xl text-foreground" style={{ letterSpacing: "-0.02em" }}>
         Something went wrong.
       </h1>
-      <p className="mt-6 font-sans text-base text-text-soft max-w-sm leading-relaxed">
+      <p className="mt-6 font-sans text-base text-muted-foreground max-w-sm leading-relaxed">
         An unexpected error occurred. Try refreshing, or go back to the main directory.
       </p>
       <div className="mt-10 flex flex-col sm:flex-row justify-center gap-3">
@@ -98,7 +99,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </button>
         <a
           href="/"
-          className="border border-forest px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+          className="border border-primary px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
         >
           Go Home
         </a>
@@ -175,6 +176,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        {/* No-flash theme: runs before any visible content paints, applying .dark. */}
+        <script dangerouslySetInnerHTML={{ __html: themeNoFlashScript }} />
         {children}
         <Scripts />
       </body>
@@ -187,8 +190,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <CartProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <CartProvider>
           <VisitTracker />
           <a
             href="#main-content"
@@ -203,8 +207,9 @@ function RootComponent() {
             </main>
             <SiteFooter />
           </div>
-        </CartProvider>
-      </AuthProvider>
+          </CartProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

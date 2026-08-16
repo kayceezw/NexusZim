@@ -48,36 +48,36 @@ function ForgotPasswordPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen grid place-items-center animate-page-enter">
+    <div className="bg-background pt-16 min-h-screen grid place-items-center animate-page-enter">
       <div className="w-full max-w-md my-10 px-5 sm:px-0">
         {/* Brand mark */}
         <div className="text-center mb-8 animate-fade-up">
           <div className="inline-flex items-center gap-2 mb-4">
             <span className="inline-block h-2 w-2 rotate-45 bg-gold" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft">
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
               NexusZim
             </span>
           </div>
         </div>
 
-        <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9 animate-form-enter">
+        <div className="bg-card border border-border rounded-[6px] p-7 md:p-9 animate-form-enter">
           {!sent ? (
             <form onSubmit={onSubmit} className="space-y-5">
               <div>
-                <p className="eyebrow text-text-soft mb-2">
+                <p className="eyebrow text-muted-foreground mb-2">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                   Password reset
                 </p>
-                <h1 className="font-display text-2xl text-text">
+                <h1 className="font-display text-2xl text-foreground">
                   Forgot your <em className="italic text-gold">password?</em>
                 </h1>
-                <p className="mt-2 font-sans text-sm text-text-soft">
+                <p className="mt-2 font-sans text-sm text-muted-foreground">
                   Enter your email and we'll send you a reset link right away.
                 </p>
               </div>
 
               {error && (
-                <div className="border border-amber-300 bg-amber-50 rounded-[3px] px-4 py-3 font-sans text-sm text-amber-800">
+                <div className="border border-amber-500/40 bg-amber-500/10 rounded-[3px] px-4 py-3 font-sans text-sm text-amber-600">
                   {error}
                 </div>
               )}
@@ -85,7 +85,7 @@ function ForgotPasswordPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="fp-email"
-                  className="block font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium"
+                  className="block font-mono text-[11px] uppercase tracking-[0.1em] text-foreground font-medium"
                 >
                   Email address <span className="text-gold">*</span>
                 </label>
@@ -97,7 +97,7 @@ function ForgotPasswordPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@email.com"
                   autoFocus
-                  className="w-full h-11 px-4 bg-cream border border-hairline rounded-[3px] font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest focus:ring-2 focus:ring-forest/10 transition-all"
+                  className="w-full h-11 px-4 bg-background border border-border rounded-[3px] font-sans text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                 />
               </div>
 
@@ -109,9 +109,9 @@ function ForgotPasswordPage() {
                 {loading ? "Sending link..." : "Send reset link"}
               </button>
 
-              <p className="text-center font-sans text-[13px] text-text-soft">
+              <p className="text-center font-sans text-[13px] text-muted-foreground">
                 Remembered it?{" "}
-                <Link to="/login" className="text-forest hover:underline font-medium">
+                <Link to="/login" className="text-primary hover:underline font-medium">
                   Back to login
                 </Link>
               </p>
@@ -126,11 +126,11 @@ function ForgotPasswordPage() {
               </div>
 
               <div className="text-center">
-                <p className="eyebrow text-text-soft mb-2 justify-center">
+                <p className="eyebrow text-muted-foreground mb-2 justify-center">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                   Reset link sent!
                 </p>
-                <h1 className="font-display text-2xl text-text">
+                <h1 className="font-display text-2xl text-foreground">
                   Check your <em className="italic text-gold">email.</em>
                 </h1>
               </div>
@@ -139,9 +139,9 @@ function ForgotPasswordPage() {
                 <p className="font-mono text-[10px] uppercase tracking-widest text-gold">
                   Reset link dispatched
                 </p>
-                <p className="font-sans text-sm text-text-soft">
+                <p className="font-sans text-sm text-muted-foreground">
                   A password reset link was sent to{" "}
-                  <span className="font-medium text-text">{email}</span>. Click the link to set a
+                  <span className="font-medium text-foreground">{email}</span>. Click the link to set a
                   new password.
                 </p>
               </div>
@@ -154,7 +154,7 @@ function ForgotPasswordPage() {
                 ].map((tip) => (
                   <li
                     key={tip}
-                    className="flex items-start gap-2 font-sans text-[13px] text-text-soft"
+                    className="flex items-start gap-2 font-sans text-[13px] text-muted-foreground"
                   >
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 border border-current" />
                     {tip}
@@ -167,7 +167,7 @@ function ForgotPasswordPage() {
                   type="button"
                   onClick={onResend}
                   disabled={resendCountdown > 0 || loading}
-                  className="w-full border border-forest/30 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full border border-primary/30 py-3 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {resendCountdown > 0
                     ? `Resend in ${resendCountdown}s`
@@ -177,7 +177,7 @@ function ForgotPasswordPage() {
                 </button>
                 <Link
                   to="/login"
-                  className="block w-full border border-hairline py-3 text-center rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+                  className="block w-full border border-border py-3 text-center rounded-[3px] font-sans text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                 >
                   Back to login
                 </Link>
@@ -190,7 +190,7 @@ function ForgotPasswordPage() {
                   setEmail("");
                   setResendCountdown(0);
                 }}
-                className="w-full text-center font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-text-soft transition-colors"
+                className="w-full text-center font-mono text-[9px] uppercase tracking-widest text-muted-foreground/40 hover:text-muted-foreground transition-colors"
               >
                 Try a different email
               </button>
@@ -209,7 +209,7 @@ function CheckIcon() {
       height="28"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#e7a020"
+      stroke="#d4a63c"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

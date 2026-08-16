@@ -1,8 +1,8 @@
 export function ProviderCardSkeleton() {
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] overflow-hidden">
+    <div className="bg-card border border-border rounded-[6px] overflow-hidden">
       <div className="flex gap-0">
-        <div className="flex-shrink-0 w-[80px] min-h-[120px] skeleton border-r border-hairline" />
+        <div className="flex-shrink-0 w-[80px] min-h-[120px] skeleton border-r border-border" />
         <div className="flex-1 px-4 py-3.5 space-y-2.5">
           <div className="flex items-start justify-between gap-3">
             <div className="h-5 w-48 skeleton rounded-[3px]" />
@@ -31,7 +31,7 @@ export function ProviderCardSkeleton() {
 
 export function CategoryCardSkeleton() {
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 space-y-4">
+    <div className="bg-card border border-border rounded-[6px] p-6 space-y-4">
       <div className="flex items-start justify-between">
         <div className="h-9 w-9 skeleton rounded-[6px]" />
         <div className="h-3 w-16 skeleton rounded-[3px]" />
@@ -46,7 +46,7 @@ export function CategoryCardSkeleton() {
         <div className="h-4 w-16 skeleton rounded-[3px]" />
         <div className="h-4 w-24 skeleton rounded-[3px]" />
       </div>
-      <div className="pt-3 border-t border-hairline h-5 w-24 skeleton rounded-[3px]" />
+      <div className="pt-3 border-t border-border h-5 w-24 skeleton rounded-[3px]" />
     </div>
   );
 }
@@ -62,7 +62,7 @@ export function StatSkeleton() {
 
 export function IntelCardSkeleton() {
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] p-5 space-y-3">
+    <div className="bg-card border border-border rounded-[6px] p-5 space-y-3">
       <div className="h-3 w-20 skeleton rounded-[3px]" />
       <div className="h-5 w-48 skeleton rounded-[3px]" />
       <div className="space-y-1.5">

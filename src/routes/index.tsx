@@ -102,9 +102,9 @@ function LandingPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 overflow-x-hidden animate-page-enter">
+    <div className="bg-background pt-16 overflow-x-hidden animate-page-enter">
       {/* ─── HERO ─── */}
-      <section className="relative py-20 lg:py-28 border-b border-hairline overflow-hidden">
+      <section className="relative py-20 lg:py-28 border-b border-border overflow-hidden">
         {heroBg && (
           <>
             <img
@@ -118,6 +118,24 @@ function LandingPage() {
           </>
         )}
 
+        {/* Ambient premium wash — warm cream base with a soft gold + forest glow */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(60% 55% at 78% 8%, rgba(212,166,60,0.14), transparent 62%), radial-gradient(52% 48% at 5% 100%, rgba(15,51,35,0.08), transparent 60%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-px pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(212,166,60,0.5), transparent)",
+          }}
+        />
+
         {isAdmin && (
           <div className="absolute bottom-4 left-4 z-20">
             <HeroImageUpload currentUrl={heroBg} onUpload={(url) => setHeroBg(url)} />
@@ -127,13 +145,13 @@ function LandingPage() {
         <div className="container-page relative z-10">
           <div className="grid gap-14 lg:grid-cols-2 lg:items-start">
             <div className="space-y-8 lg:pt-6">
-              <p className="eyebrow text-text-soft animate-fade-up">
+              <p className="eyebrow text-muted-foreground animate-fade-up">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                 Zimbabwe's Verified Service Marketplace
               </p>
 
               <h1
-                className="text-text animate-fade-up delay-100"
+                className="text-foreground animate-fade-up delay-100"
                 style={{
                   fontSize: "clamp(44px, 6vw, 76px)",
                   lineHeight: "1.04",
@@ -142,12 +160,12 @@ function LandingPage() {
               >
                 Find the right provider.
                 <br />
-                <em className="italic text-gold-deep">Vetted, verified,</em>
+                <em className="italic text-gold-deep dark:text-gold">Vetted, verified,</em>
                 <br />
                 ready to deliver.
               </h1>
 
-              <p className="font-sans text-base text-text-soft leading-relaxed max-w-[440px] animate-fade-up delay-200">
+              <p className="font-sans text-base text-muted-foreground leading-relaxed max-w-[440px] animate-fade-up delay-200">
                 NexusZim is Zimbabwe's verified service directory — find, compare, and brief vetted
                 providers across transport, business services, personal care, and more.
               </p>
@@ -155,13 +173,13 @@ function LandingPage() {
               <div className="flex flex-wrap gap-3 animate-fade-up delay-250">
                 <Link
                   to="/search"
-                  className="btn-cta bg-gold px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink"
+                  className="btn-cta gold-metal px-6 py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground shadow-[var(--elev-sm)]"
                 >
                   Browse Service Providers →
                 </Link>
                 <Link
                   to="/request"
-                  className="border border-forest px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                  className="border border-primary/80 bg-card px-6 py-3 rounded-[4px] font-sans text-sm font-semibold text-primary shadow-[var(--elev-sm)] hover:bg-forest hover:text-cream hover:shadow-[var(--elev-md)] hover:-translate-y-px transition-all duration-150"
                 >
                   Request a Quote
                 </Link>
@@ -173,7 +191,7 @@ function LandingPage() {
               >
                 <div className="relative flex-1">
                   <Search
-                    className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-soft/50"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50"
                     strokeWidth={1.5}
                   />
                   <input
@@ -182,14 +200,14 @@ function LandingPage() {
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="Service, city, or provider name..."
                     aria-label="Search for a service or provider"
-                    className="w-full h-11 pl-10 pr-3 bg-cream-raised border border-hairline font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest transition-colors"
-                    style={{ borderRadius: "3px 0 0 3px" }}
+                    className="w-full h-11 pl-10 pr-3 bg-card border border-border font-sans text-sm text-foreground placeholder:text-muted-foreground/50 outline-none shadow-[var(--elev-sm)] focus:border-primary focus:ring-2 focus:ring-primary/12 transition-all"
+                    style={{ borderRadius: "4px 0 0 4px" }}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="bg-gold px-5 h-11 font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors shrink-0"
-                  style={{ borderRadius: "0 3px 3px 0" }}
+                  className="btn-cta gold-metal px-5 h-11 font-sans text-sm font-semibold text-gold-foreground shrink-0"
+                  style={{ borderRadius: "0 4px 4px 0" }}
                 >
                   Search
                 </button>
@@ -233,7 +251,7 @@ function LandingPage() {
       </section>
 
       {/* ─── CATEGORY INDEX ─── */}
-      <section className="relative py-20 border-b border-hairline overflow-hidden">
+      <section className="relative py-20 border-b border-border overflow-hidden">
         {categoryBg && (
           <img
             src={categoryBg}
@@ -251,17 +269,17 @@ function LandingPage() {
         <div className="container-page relative z-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
             <div className="space-y-2">
-              <p className="eyebrow text-text-soft">
+              <p className="eyebrow text-muted-foreground">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                 Service categories
               </p>
-              <h2 className="font-display font-bold text-3xl lg:text-4xl text-text">
+              <h2 className="font-display font-bold text-3xl lg:text-4xl text-foreground">
                 What's on the register
               </h2>
             </div>
             <Link
               to="/categories"
-              className="font-sans text-sm font-semibold text-forest hover:text-gold-deep transition-colors mt-4 md:mt-0 flex items-center gap-1 group"
+              className="font-sans text-sm font-semibold text-primary hover:text-gold-deep transition-colors mt-4 md:mt-0 flex items-center gap-1 group"
             >
               All categories
               <span className="transition-transform group-hover:translate-x-[3px] duration-150">
@@ -270,7 +288,7 @@ function LandingPage() {
             </Link>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {dbCategories.slice(0, 6).map((c, i) => (
               <CategoryCard
                 key={c.id}
@@ -300,7 +318,15 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
     : ["Verified Providers", "Business Records", "Trust Certificates"];
 
   return (
-    <div className="bg-forest-ink border border-cream/10 rounded-[6px] p-6 shadow-[0_4px_24px_rgba(15,51,35,0.3)]">
+    <div className="relative bg-forest-ink border border-cream/10 rounded-[8px] p-6 shadow-[var(--elev-xl)] animate-fade-up delay-200 overflow-hidden">
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, rgba(240,205,122,0.55), transparent)",
+        }}
+      />
       <div className="flex items-start justify-between gap-3 pb-4 border-b border-cream/10">
         <div>
           <p className="eyebrow text-cream/40">

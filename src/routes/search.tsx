@@ -138,7 +138,7 @@ function SearchPage() {
   const showSpinner = isTyping || (isFetching && !isLoading);
 
   return (
-    <div className="bg-cream pt-16 min-h-screen animate-page-enter">
+    <div className="bg-background pt-16 min-h-screen animate-page-enter">
       {/* ─── STICKY SEARCH BAR ─── */}
       <div className="sticky top-16 z-30 bg-forest-ink border-b border-cream/10 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
         <div className="container-page py-5">
@@ -214,10 +214,10 @@ function SearchPage() {
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
           {/* ─── FILTER RAIL ─── */}
           <aside className="space-y-0 lg:sticky lg:top-[calc(4rem+6.5rem)] lg:self-start">
-            <div className="bg-cream-raised border border-hairline rounded-[6px] divide-y divide-hairline">
+            <div className="bg-card border border-border rounded-[6px] divide-y divide-hairline">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4">
-                <span className="eyebrow text-text-soft">
+                <span className="eyebrow text-muted-foreground">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                   Filters
                   {activeFilterCount > 0 && (
@@ -229,7 +229,7 @@ function SearchPage() {
                 {activeFilterCount > 0 && (
                   <button
                     onClick={resetFilters}
-                    className="font-sans text-[12px] text-text-soft hover:text-forest transition-colors flex items-center gap-1"
+                    className="font-sans text-[12px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
                   >
                     <X className="h-3 w-3" />
                     Clear
@@ -239,7 +239,7 @@ function SearchPage() {
 
               {/* Verification tier */}
               <div className="px-5 py-4 space-y-2">
-                <p className="eyebrow text-text-soft/60 mb-3">Verification tier</p>
+                <p className="eyebrow text-muted-foreground/60 mb-3">Verification tier</p>
                 {TIER_OPTIONS.map((t) => (
                   <label
                     key={t.value}
@@ -253,7 +253,7 @@ function SearchPage() {
                         onChange={() => setMinTier(t.value)}
                         className="accent-forest"
                       />
-                      <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
+                      <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
                         {t.label}+
                       </span>
                     </div>
@@ -263,7 +263,7 @@ function SearchPage() {
 
               {/* City */}
               <div className="px-5 py-4 space-y-2">
-                <p className="eyebrow text-text-soft/60 mb-3">City</p>
+                <p className="eyebrow text-muted-foreground/60 mb-3">City</p>
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div className="flex items-center gap-2.5">
                     <input
@@ -273,13 +273,13 @@ function SearchPage() {
                       onChange={() => setCity("all")}
                       className="accent-forest"
                     />
-                    <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
+                    <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
                       All cities
                     </span>
                   </div>
                 </label>
                 {activeCities.length === 0 ? (
-                  <p className="font-sans text-[12px] text-text-soft/50 italic">No cities yet</p>
+                  <p className="font-sans text-[12px] text-muted-foreground/50 italic">No cities yet</p>
                 ) : (
                   activeCities.slice(0, 10).map((c) => (
                     <label
@@ -294,12 +294,12 @@ function SearchPage() {
                           onChange={() => setCity(c.city)}
                           className="accent-forest"
                         />
-                        <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
+                        <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
                           {c.city}
                         </span>
                       </div>
                       {c.count > 0 && (
-                        <span className="font-mono text-[10px] text-text-soft/50">{c.count}</span>
+                        <span className="font-mono text-[10px] text-muted-foreground/50">{c.count}</span>
                       )}
                     </label>
                   ))
@@ -308,7 +308,7 @@ function SearchPage() {
 
               {/* Category */}
               <div className="px-5 py-4 space-y-2">
-                <p className="eyebrow text-text-soft/60 mb-3">Specialty</p>
+                <p className="eyebrow text-muted-foreground/60 mb-3">Specialty</p>
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div className="flex items-center gap-2.5">
                     <input
@@ -318,7 +318,7 @@ function SearchPage() {
                       onChange={() => setCategorySlug("all")}
                       className="accent-forest"
                     />
-                    <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
+                    <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
                       All specialties
                     </span>
                   </div>
@@ -336,12 +336,12 @@ function SearchPage() {
                         onChange={() => setCategorySlug(c.slug)}
                         className="accent-forest"
                       />
-                      <span className="font-sans text-[13px] text-text-soft group-hover:text-text transition-colors">
+                      <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
                         {c.name}
                       </span>
                     </div>
                     {c.provider_count > 0 && (
-                      <span className="font-mono text-[10px] text-text-soft/50">
+                      <span className="font-mono text-[10px] text-muted-foreground/50">
                         {c.provider_count}
                       </span>
                     )}
@@ -350,8 +350,8 @@ function SearchPage() {
               </div>
             </div>
 
-            <div className="mt-4 border border-hairline rounded-[6px] p-4">
-              <p className="font-sans text-[12px] text-text-soft leading-relaxed">
+            <div className="mt-4 border border-border rounded-[6px] p-4">
+              <p className="font-sans text-[12px] text-muted-foreground leading-relaxed">
                 All NexusZim providers have completed identity verification. Trust Certified
                 providers have passed an on-site audit by the NexusZim desk.
               </p>
@@ -362,7 +362,7 @@ function SearchPage() {
           <section className="space-y-4">
             {/* Sort row */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-soft">
+              <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
                 {isLoading ? (
                   <span className="animate-pulse">Searching...</span>
                 ) : (
@@ -377,7 +377,7 @@ function SearchPage() {
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="sort-select"
-                  className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft shrink-0"
+                  className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground shrink-0"
                 >
                   Sort:
                 </label>
@@ -385,7 +385,7 @@ function SearchPage() {
                   id="sort-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortKey)}
-                  className="bg-cream-raised border border-hairline rounded-[3px] px-3 py-1.5 font-sans text-[13px] text-text outline-none focus:border-forest transition-colors cursor-pointer"
+                  className="bg-card border border-border rounded-[3px] px-3 py-1.5 font-sans text-[13px] text-foreground outline-none focus:border-primary transition-colors cursor-pointer"
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -436,21 +436,21 @@ function SearchPage() {
 
             {/* Empty state */}
             {!isLoading && !showSpinner && results?.length === 0 && (
-              <div className="border border-dashed border-hairline rounded-[6px] p-16 text-center bg-cream-raised animate-fade-in">
+              <div className="border border-dashed border-border rounded-[6px] p-16 text-center bg-card animate-fade-in">
                 <div className="mb-4 flex justify-center">
                   <span className="h-12 w-12 rounded-full bg-gold/10 flex items-center justify-center">
                     <Search className="h-5 w-5 text-gold" strokeWidth={1.5} />
                   </span>
                 </div>
-                <p className="font-display text-xl text-text">No records found</p>
-                <p className="mt-3 font-sans text-[13px] text-text-soft max-w-sm mx-auto">
+                <p className="font-display text-xl text-foreground">No records found</p>
+                <p className="mt-3 font-sans text-[13px] text-muted-foreground max-w-sm mx-auto">
                   {q
                     ? `No providers match "${q}". Try a different term or remove filters.`
                     : "Try broadening your search or removing filters to see more results."}
                 </p>
                 <button
                   onClick={resetFilters}
-                  className="mt-6 border border-forest px-7 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                  className="mt-6 border border-primary px-7 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
                 >
                   Clear all filters
                 </button>
@@ -462,7 +462,7 @@ function SearchPage() {
               <div className="pt-2 flex justify-center">
                 <button
                   onClick={() => setPage((n) => n + 1)}
-                  className="border border-forest px-8 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                  className="border border-primary px-8 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
                 >
                   Load more providers
                 </button>
@@ -479,7 +479,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
   return (
     <button
       onClick={onRemove}
-      className="inline-flex items-center gap-1.5 border border-forest/30 bg-forest/5 text-forest px-3 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.06em] hover:bg-forest/10 transition-colors"
+      className="inline-flex items-center gap-1.5 border border-primary/30 bg-primary/10 text-primary px-3 py-1 rounded-[3px] font-mono text-[10px] uppercase tracking-[0.06em] hover:bg-primary/15 transition-colors"
     >
       {label}
       <X className="h-3 w-3" />

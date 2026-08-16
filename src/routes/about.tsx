@@ -54,7 +54,7 @@ const HOW_IT_WORKS = [
 
 function AboutPage() {
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       {/* Hero */}
       <section className="bg-forest-ink border-b border-cream/10 py-20 lg:py-28">
         <div className="container-page">
@@ -84,7 +84,7 @@ function AboutPage() {
             </Link>
             <Link
               to="/onboarding/provider"
-              className="border border-cream/20 px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-cream/5 transition-colors text-center"
+              className="border border-cream/20 px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-background/5 transition-colors text-center"
             >
               List your business
             </Link>
@@ -93,29 +93,29 @@ function AboutPage() {
       </section>
 
       {/* Mission */}
-      <section className="py-20 border-b border-hairline">
+      <section className="py-20 border-b border-border">
         <div className="container-page">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
             <div>
-              <p className="eyebrow text-text-soft mb-4">
+              <p className="eyebrow text-muted-foreground mb-4">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                 Why we built this
               </p>
-              <h2 className="font-display text-3xl lg:text-4xl text-text leading-tight">
+              <h2 className="font-display text-3xl lg:text-4xl text-foreground leading-tight">
                 The trust gap in Zimbabwe's service economy
               </h2>
             </div>
             <div className="space-y-5">
-              <p className="font-sans text-base text-text-soft leading-relaxed">
+              <p className="font-sans text-base text-muted-foreground leading-relaxed">
                 Zimbabwe's service economy is largely informal. Most clients find providers through word
                 of mouth, WhatsApp groups, or Facebook — with no way to verify credentials, check past
                 work, or confirm the person they're dealing with is legitimate.
               </p>
-              <p className="font-sans text-base text-text-soft leading-relaxed">
+              <p className="font-sans text-base text-muted-foreground leading-relaxed">
                 This creates friction, drives risk, and leaves excellent providers invisible — while
                 unverified operators collect deposits and disappear.
               </p>
-              <p className="font-sans text-base text-text-soft leading-relaxed">
+              <p className="font-sans text-base text-muted-foreground leading-relaxed">
                 NexusZim creates a verified public record. Providers who pass our checks earn a Hallmark
                 badge. Clients can see exactly what was verified and make informed decisions.
               </p>
@@ -125,19 +125,19 @@ function AboutPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 border-b border-hairline">
+      <section className="py-20 border-b border-border">
         <div className="container-page">
-          <p className="eyebrow text-text-soft mb-4">
+          <p className="eyebrow text-muted-foreground mb-4">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
             How it works
           </p>
-          <h2 className="font-display text-3xl lg:text-4xl text-text mb-12">
+          <h2 className="font-display text-3xl lg:text-4xl text-foreground mb-12">
             Three steps. No middleman.
           </h2>
 
           <div className="grid gap-6 md:grid-cols-3">
             {HOW_IT_WORKS.map((h) => (
-              <div key={h.step} className="bg-cream-raised border border-hairline rounded-[6px] p-6 relative overflow-hidden">
+              <div key={h.step} className="bg-card border border-border rounded-[6px] p-6 relative overflow-hidden">
                 <p
                   className="font-display text-[80px] text-hairline leading-none absolute -top-2 -right-2 select-none"
                   aria-hidden
@@ -148,8 +148,8 @@ function AboutPage() {
                   <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-gold mb-3">
                     Step {h.step}
                   </p>
-                  <h3 className="font-display text-xl text-text mb-2">{h.title}</h3>
-                  <p className="font-sans text-[13px] text-text-soft leading-relaxed">{h.desc}</p>
+                  <h3 className="font-display text-xl text-foreground mb-2">{h.title}</h3>
+                  <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">{h.desc}</p>
                 </div>
               </div>
             ))}
@@ -158,40 +158,40 @@ function AboutPage() {
       </section>
 
       {/* Trust pillars */}
-      <section className="py-20 border-b border-hairline">
+      <section className="py-20 border-b border-border">
         <div className="container-page">
-          <p className="eyebrow text-text-soft mb-4">
+          <p className="eyebrow text-muted-foreground mb-4">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
             The Hallmark system
           </p>
-          <h2 className="font-display text-3xl lg:text-4xl text-text mb-3">
+          <h2 className="font-display text-3xl lg:text-4xl text-foreground mb-3">
             What gets verified
           </h2>
-          <p className="font-sans text-base text-text-soft mb-10 max-w-xl leading-relaxed">
+          <p className="font-sans text-base text-muted-foreground mb-10 max-w-xl leading-relaxed">
             Not every provider passes every check. The Hallmark badge shows which tier a provider
             has reached — and exactly what that means.
           </p>
 
           <div className="grid gap-4 md:grid-cols-2">
             {TRUST_PILLARS.map((p) => (
-              <div key={p.title} className="flex gap-4 bg-cream-raised border border-hairline rounded-[6px] p-5">
+              <div key={p.title} className="flex gap-4 bg-card border border-border rounded-[6px] p-5">
                 <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <h3 className="font-display text-base text-text mb-1">{p.title}</h3>
-                  <p className="font-sans text-[13px] text-text-soft leading-relaxed">{p.desc}</p>
+                  <h3 className="font-display text-base text-foreground mb-1">{p.title}</h3>
+                  <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">{p.desc}</p>
                 </div>
               </div>
             ))}
           </div>
 
           {/* Tier comparison */}
-          <div className="mt-10 border border-hairline rounded-[6px] overflow-hidden">
-            <div className="grid grid-cols-4 border-b border-hairline">
-              <div className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft/60">
+          <div className="mt-10 border border-border rounded-[6px] overflow-hidden">
+            <div className="grid grid-cols-4 border-b border-border">
+              <div className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/60">
                 Check
               </div>
               {["Listed", "Verified", "Trust Certified"].map((t) => (
-                <div key={t} className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft/60 text-center">
+                <div key={t} className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/60 text-center">
                   {t}
                 </div>
               ))}
@@ -203,14 +203,14 @@ function AboutPage() {
               { check: "Rating history", listed: false, verified: false, trust: true },
               { check: "Portfolio audit", listed: false, verified: false, trust: true },
             ].map((row) => (
-              <div key={row.check} className="grid grid-cols-4 border-b border-hairline last:border-0">
-                <div className="px-4 py-3 font-sans text-[13px] text-text-soft">{row.check}</div>
+              <div key={row.check} className="grid grid-cols-4 border-b border-border last:border-0">
+                <div className="px-4 py-3 font-sans text-[13px] text-muted-foreground">{row.check}</div>
                 {[row.listed, row.verified, row.trust].map((ok, i) => (
                   <div key={i} className="px-4 py-3 text-center">
                     {ok ? (
-                      <span className="font-mono text-[11px] text-emerald-600">✓</span>
+                      <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">✓</span>
                     ) : (
-                      <span className="font-mono text-[11px] text-text-soft/30">—</span>
+                      <span className="font-mono text-[11px] text-muted-foreground/30">—</span>
                     )}
                   </div>
                 ))}
@@ -221,21 +221,21 @@ function AboutPage() {
       </section>
 
       {/* ZDP connection */}
-      <section className="py-20 border-b border-hairline">
+      <section className="py-20 border-b border-border">
         <div className="container-page max-w-2xl">
-          <p className="eyebrow text-text-soft mb-4">
+          <p className="eyebrow text-muted-foreground mb-4">
             <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
             Behind NexusZim
           </p>
-          <h2 className="font-display text-2xl text-text mb-4">
+          <h2 className="font-display text-2xl text-foreground mb-4">
             Built by ZimDataPulse
           </h2>
-          <p className="font-sans text-base text-text-soft leading-relaxed mb-5">
+          <p className="font-sans text-base text-muted-foreground leading-relaxed mb-5">
             NexusZim is a product of ZimDataPulse, a Harare-based technology company building
             digital infrastructure for Zimbabwe's service economy. Our products include market
             intelligence tools, sector data registries, and now the verified service directory.
           </p>
-          <p className="font-sans text-base text-text-soft leading-relaxed">
+          <p className="font-sans text-base text-muted-foreground leading-relaxed">
             Verification is handled by the NexusZim concierge desk. We check, we record, we
             publish — and we hold ourselves accountable to the same standard.
           </p>
@@ -260,7 +260,7 @@ function AboutPage() {
             </Link>
             <Link
               to="/onboarding/provider"
-              className="border border-cream/20 px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-cream/5 transition-colors"
+              className="border border-cream/20 px-8 py-3.5 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-background/5 transition-colors"
             >
               Apply as a provider
             </Link>

@@ -183,7 +183,7 @@ function ProviderOnboarding() {
   );
 
   return (
-    <div className="bg-cream pt-16 pb-20 min-h-screen">
+    <div className="bg-background pt-16 pb-20 min-h-screen">
       {/* Dark header strip */}
       <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page max-w-2xl py-8">
@@ -211,14 +211,14 @@ function ProviderOnboarding() {
                       ? "bg-forest text-cream"
                       : s.num === step
                         ? "bg-gold text-forest-ink"
-                        : "bg-hairline text-text-soft"
+                        : "bg-hairline text-muted-foreground"
                   }`}
                 >
                   {s.num < step ? <CheckCircle2 className="h-4 w-4" /> : s.num}
                 </div>
                 <span
                   className={`font-mono text-[9px] uppercase tracking-[0.06em] hidden sm:block ${
-                    s.num === step ? "text-forest font-bold" : "text-text-soft/60"
+                    s.num === step ? "text-primary font-bold" : "text-muted-foreground/60"
                   }`}
                 >
                   {s.label}
@@ -286,7 +286,7 @@ function ProviderOnboarding() {
                   onChange={(e) => set("sameAsPhone", e.target.checked)}
                   className="accent-forest"
                 />
-                <span className="font-sans text-[13px] text-text-soft">
+                <span className="font-sans text-[13px] text-muted-foreground">
                   WhatsApp number is the same as phone
                 </span>
               </label>
@@ -326,14 +326,14 @@ function ProviderOnboarding() {
             total={4}
           >
             {errors.categoryId && (
-              <p className="text-rose-600 font-sans text-[12px] -mt-1 mb-1">{errors.categoryId}</p>
+              <p className="text-rose-600 dark:text-rose-400 font-sans text-[12px] -mt-1 mb-1">{errors.categoryId}</p>
             )}
 
             {!showCustom && (
               <>
                 {/* Search */}
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-soft/40" strokeWidth={1.5} />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" strokeWidth={1.5} />
                   <input
                     type="text"
                     value={catSearch}
@@ -347,7 +347,7 @@ function ProviderOnboarding() {
                 {/* Category list */}
                 <div className="max-h-[380px] overflow-y-auto -mx-1 px-1 space-y-1.5 pr-2">
                   {filteredCategories.length === 0 && (
-                    <p className="font-sans text-sm text-text-soft italic py-4 text-center">
+                    <p className="font-sans text-sm text-muted-foreground italic py-4 text-center">
                       No match — try defining your own below.
                     </p>
                   )}
@@ -358,18 +358,18 @@ function ProviderOnboarding() {
                       onClick={() => { set("categoryId", cat.id); setShowCustom(false); }}
                       className={`w-full text-left px-4 py-3 rounded-[6px] border transition-all ${
                         form.categoryId === cat.id
-                          ? "border-forest bg-forest/5 ring-1 ring-forest"
-                          : "border-hairline bg-cream-raised hover:border-forest/40"
+                          ? "border-primary bg-primary/10 ring-1 ring-primary"
+                          : "border-border bg-card hover:border-primary/40"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <p className="font-display text-[15px] text-text">{cat.name}</p>
+                        <p className="font-display text-[15px] text-foreground">{cat.name}</p>
                         {form.categoryId === cat.id && (
-                          <CheckCircle2 className="h-4 w-4 text-forest shrink-0" />
+                          <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                         )}
                       </div>
                       {cat.description && (
-                        <p className="mt-0.5 font-sans text-[12px] text-text-soft leading-snug line-clamp-1">
+                        <p className="mt-0.5 font-sans text-[12px] text-muted-foreground leading-snug line-clamp-1">
                           {cat.description}
                         </p>
                       )}
@@ -378,13 +378,13 @@ function ProviderOnboarding() {
                 </div>
 
                 {/* Custom option toggle */}
-                <div className="border-t border-hairline pt-4">
+                <div className="border-t border-border pt-4">
                   <button
                     type="button"
                     onClick={() => { setShowCustom(true); set("categoryId", ""); }}
-                    className="w-full border border-dashed border-hairline rounded-[6px] py-3.5 px-4 text-left hover:border-forest transition-colors group"
+                    className="w-full border border-dashed border-border rounded-[6px] py-3.5 px-4 text-left hover:border-primary transition-colors group"
                   >
-                    <p className="font-sans text-[13px] text-text-soft group-hover:text-forest transition-colors">
+                    <p className="font-sans text-[13px] text-muted-foreground group-hover:text-primary transition-colors">
                       My category isn't listed — <span className="font-semibold">define my own</span>
                     </p>
                   </button>
@@ -395,7 +395,7 @@ function ProviderOnboarding() {
             {showCustom && (
               <div className="space-y-4">
                 <div className="border border-gold/30 bg-gold/5 rounded-[6px] px-4 py-3">
-                  <p className="font-sans text-[13px] text-text-soft leading-relaxed">
+                  <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">
                     Describe your service category in a few words. It will be added to the platform register.
                   </p>
                 </div>
@@ -413,7 +413,7 @@ function ProviderOnboarding() {
                 <button
                   type="button"
                   onClick={() => { setShowCustom(false); setCustomCategory(""); }}
-                  className="font-sans text-[12px] text-text-soft hover:text-forest transition-colors"
+                  className="font-sans text-[12px] text-muted-foreground hover:text-primary transition-colors"
                 >
                   ← Back to category list
                 </button>
@@ -450,10 +450,10 @@ function ProviderOnboarding() {
 
             {user && (
               <div>
-                <p className="eyebrow text-text-soft mb-3">
+                <p className="eyebrow text-muted-foreground mb-3">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                   Proof photos
-                  <span className="ml-2 normal-case font-sans text-[11px] text-text-soft/60 tracking-normal">
+                  <span className="ml-2 normal-case font-sans text-[11px] text-muted-foreground/60 tracking-normal">
                     Optional — you can add these later
                   </span>
                 </p>
@@ -479,7 +479,7 @@ function ProviderOnboarding() {
             step={4}
             total={4}
           >
-            <div className="bg-cream border border-hairline rounded-[6px] divide-y divide-hairline">
+            <div className="bg-background border border-border rounded-[6px] divide-y divide-hairline">
               <ReviewRow label="Business name" value={form.businessName} onEdit={() => setStep(1)} />
               <ReviewRow label="City" value={form.city} onEdit={() => setStep(1)} />
               <ReviewRow label="Phone" value={form.phone} onEdit={() => setStep(1)} />
@@ -497,25 +497,25 @@ function ProviderOnboarding() {
                 onEdit={() => setStep(2)}
               />
               <div className="flex items-start gap-4 px-5 py-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft w-28 shrink-0 mt-0.5">
+                <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground w-28 shrink-0 mt-0.5">
                   Bio
                 </span>
-                <p className="font-sans text-[13px] text-text flex-1 leading-relaxed line-clamp-3">
+                <p className="font-sans text-[13px] text-foreground flex-1 leading-relaxed line-clamp-3">
                   {form.bio || "—"}
                 </p>
                 <button
                   onClick={() => setStep(3)}
-                  className="font-sans text-[11px] text-forest hover:text-gold-deep shrink-0"
+                  className="font-sans text-[11px] text-primary hover:text-gold-deep shrink-0"
                 >
                   Edit
                 </button>
               </div>
               {form.photos.length > 0 && (
                 <div className="flex items-center gap-4 px-5 py-4">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft w-28 shrink-0">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground w-28 shrink-0">
                     Photos
                   </span>
-                  <span className="font-sans text-[13px] text-text flex-1">
+                  <span className="font-sans text-[13px] text-foreground flex-1">
                     {form.photos.length} photo{form.photos.length !== 1 ? "s" : ""} uploaded
                   </span>
                 </div>
@@ -523,14 +523,14 @@ function ProviderOnboarding() {
             </div>
 
             {/* Tier notice */}
-            <div className="border border-hairline rounded-[6px] px-5 py-4">
+            <div className="border border-border rounded-[6px] px-5 py-4">
               <div className="flex gap-3">
-                <span className="inline-block h-2 w-2 rotate-45 border border-hairline shrink-0 mt-1" />
+                <span className="inline-block h-2 w-2 rotate-45 border border-border shrink-0 mt-1" />
                 <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-text mb-1">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-foreground mb-1">
                     Tier 1 — Listed (free)
                   </p>
-                  <p className="font-sans text-[12px] text-text-soft leading-relaxed">
+                  <p className="font-sans text-[12px] text-muted-foreground leading-relaxed">
                     Your profile enters the register immediately. The NexusZim desk will contact you
                     with document requirements for Verified (Tier 2) and Trust Certified (Tier 3)
                     status.
@@ -540,7 +540,7 @@ function ProviderOnboarding() {
             </div>
 
             {submitError && (
-              <div className="border border-rose-200 bg-rose-50 px-4 py-3 rounded-[3px] font-sans text-sm text-rose-600">
+              <div className="border border-rose-500/30 bg-rose-500/10 px-4 py-3 rounded-[3px] font-sans text-sm text-rose-600 dark:text-rose-400">
                 {submitError}
               </div>
             )}
@@ -549,7 +549,7 @@ function ProviderOnboarding() {
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className="border border-hairline px-6 py-3 rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+                className="border border-border px-6 py-3 rounded-[3px] font-sans text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
               >
                 ← Back
               </button>
@@ -591,11 +591,11 @@ function StepCard({
   return (
     <div>
       <div className="mb-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">
           Step {step} of {total}
         </p>
-        <h2 className="font-display text-2xl text-text mt-1">{title}</h2>
-        <p className="font-sans text-[13px] text-text-soft mt-1">{subtitle}</p>
+        <h2 className="font-display text-2xl text-foreground mt-1">{title}</h2>
+        <p className="font-sans text-[13px] text-muted-foreground mt-1">{subtitle}</p>
       </div>
       <div className="space-y-5">{children}</div>
     </div>
@@ -617,7 +617,7 @@ function StepNav({
         <button
           type="button"
           onClick={onBack}
-          className="border border-hairline px-6 py-3 rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+          className="border border-border px-6 py-3 rounded-[3px] font-sans text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
         >
           ← Back
         </button>
@@ -645,13 +645,13 @@ function ReviewRow({
 }) {
   return (
     <div className="flex items-center gap-4 px-5 py-3">
-      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft w-28 shrink-0">
+      <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground w-28 shrink-0">
         {label}
       </span>
-      <span className="font-sans text-[13px] text-text flex-1">{value}</span>
+      <span className="font-sans text-[13px] text-foreground flex-1">{value}</span>
       <button
         onClick={onEdit}
-        className="font-sans text-[11px] text-forest hover:text-gold-deep transition-colors shrink-0"
+        className="font-sans text-[11px] text-primary hover:text-gold-deep transition-colors shrink-0"
       >
         Edit
       </button>
@@ -674,17 +674,17 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
         {label}
         {required && <span className="text-gold ml-1">*</span>}
         {hint && (
-          <span className="ml-2 normal-case tracking-normal text-text-soft/60 font-sans text-[11px]">
+          <span className="ml-2 normal-case tracking-normal text-muted-foreground/60 font-sans text-[11px]">
             {hint}
           </span>
         )}
       </label>
       {children}
-      {error && <p className="font-sans text-[12px] text-rose-600">{error}</p>}
+      {error && <p className="font-sans text-[12px] text-rose-600 dark:text-rose-400">{error}</p>}
     </div>
   );
 }

@@ -68,19 +68,19 @@ function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+      <div className="bg-background pt-16 min-h-screen grid place-items-center">
         <div className="container-page max-w-lg py-20 text-center">
           <div className="flex justify-center mb-6">
-            <div className="h-16 w-16 rounded-[6px] bg-cream-raised border border-hairline flex items-center justify-center">
-              <span className="font-mono text-text-soft/30 text-2xl">00</span>
+            <div className="h-16 w-16 rounded-[6px] bg-card border border-border flex items-center justify-center">
+              <span className="font-mono text-muted-foreground/30 text-2xl">00</span>
             </div>
           </div>
-          <p className="eyebrow text-text-soft mb-3">
+          <p className="eyebrow text-muted-foreground mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
             Enquiry brief
           </p>
-          <h1 className="font-display text-3xl text-text mb-3">Brief is empty.</h1>
-          <p className="font-sans text-sm text-text-soft leading-relaxed mb-10 max-w-sm mx-auto">
+          <h1 className="font-display text-3xl text-foreground mb-3">Brief is empty.</h1>
+          <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-10 max-w-sm mx-auto">
             Browse service categories to add what you need, then submit your brief to get responses
             from verified providers.
           </p>
@@ -96,7 +96,7 @@ function CartPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       {/* Forest header */}
       <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10">
@@ -121,11 +121,11 @@ function CartPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="bg-cream-raised border border-hairline rounded-[6px] p-6 md:p-8 transition-all hover:border-forest"
+                className="bg-card border border-border rounded-[6px] p-6 md:p-8 transition-all hover:border-primary"
               >
                 <div className="flex items-start justify-between gap-5">
                   <div className="min-w-0">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                       {item.categoryName}
                       {item.isCustom && (
                         <span className="ml-3 border border-gold/30 bg-gold/5 px-2 py-0.5 text-[9px] text-gold">
@@ -133,17 +133,17 @@ function CartPage() {
                         </span>
                       )}
                     </p>
-                    <h3 className="mt-3 font-display text-xl text-text">{item.serviceName}</h3>
+                    <h3 className="mt-3 font-display text-xl text-foreground">{item.serviceName}</h3>
                   </div>
                   <div className="text-right shrink-0">
                     {item.basePrice != null && (
-                      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft/60">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/60">
                         From ${Number(item.basePrice).toFixed(0)}
                       </p>
                     )}
                     <button
                       onClick={() => remove(item.id)}
-                      className="mt-2 font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-rose-500 transition-colors"
+                      className="mt-2 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/40 hover:text-rose-500 transition-colors"
                     >
                       Remove
                     </button>
@@ -161,8 +161,8 @@ function CartPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="bg-cream-raised border border-hairline rounded-[6px] p-6 lg:sticky lg:top-24 space-y-5">
-            <p className="eyebrow text-text-soft">
+          <aside className="bg-card border border-border rounded-[6px] p-6 lg:sticky lg:top-24 space-y-5">
+            <p className="eyebrow text-muted-foreground">
               <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
               Brief details
             </p>
@@ -201,15 +201,15 @@ function CartPage() {
               />
             </CartField>
 
-            <div className="border border-forest/20 bg-forest/5 rounded-[3px] p-4">
-              <p className="font-sans text-[12px] text-forest leading-relaxed">
+            <div className="border border-primary/20 bg-primary/10 rounded-[3px] p-4">
+              <p className="font-sans text-[12px] text-primary leading-relaxed">
                 <strong>You pay providers directly.</strong> NexusZim never holds money or charges a
                 fee.
               </p>
             </div>
 
             {error && (
-              <div role="alert" className="border border-rose-200 bg-rose-50 rounded-[3px] p-4 font-sans text-[13px] text-rose-600">
+              <div role="alert" className="border border-rose-500/30 bg-rose-500/10 rounded-[3px] p-4 font-sans text-[13px] text-rose-600 dark:text-rose-400">
                 {error}
               </div>
             )}
@@ -248,10 +248,10 @@ function CartField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
         {label}
         {hint && (
-          <span className="ml-2 normal-case tracking-normal text-text-soft/60 font-sans text-[11px]">
+          <span className="ml-2 normal-case tracking-normal text-muted-foreground/60 font-sans text-[11px]">
             {hint}
           </span>
         )}

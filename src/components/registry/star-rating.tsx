@@ -18,7 +18,7 @@ export function RatingDisplay({
     return (
       <span
         className={cn(
-          "font-mono uppercase tracking-widest text-text-soft/50",
+          "font-mono uppercase tracking-widest text-muted-foreground/50",
           size === "sm" ? "text-[10px]" : "text-[11px]",
           className,
         )}
@@ -34,19 +34,19 @@ export function RatingDisplay({
         {[1, 2, 3, 4, 5].map((i) => (
           <Star
             key={i}
-            className={cn(dim, i <= Math.round(average) ? "fill-gold text-gold" : "text-hairline")}
+            className={cn(dim, i <= Math.round(average) ? "fill-gold text-gold" : "text-muted-foreground/30")}
             strokeWidth={1.5}
           />
         ))}
       </span>
       <span
         className={cn(
-          "font-mono text-text-soft",
+          "font-mono text-muted-foreground",
           size === "sm" ? "text-[10px]" : "text-[11px]",
         )}
       >
         {average.toFixed(1)}
-        <span className="text-text-soft/50"> ({count})</span>
+        <span className="text-muted-foreground/50"> ({count})</span>
       </span>
     </span>
   );
@@ -81,7 +81,7 @@ export function StarInput({
             className="p-0.5 disabled:cursor-not-allowed transition-transform hover:scale-110"
           >
             <Star
-              className={cn("h-7 w-7", active ? "fill-gold text-gold" : "text-hairline")}
+              className={cn("h-7 w-7", active ? "fill-gold text-gold" : "text-muted-foreground/30")}
               strokeWidth={1.5}
             />
           </button>

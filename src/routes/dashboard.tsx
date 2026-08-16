@@ -165,10 +165,18 @@ function DashboardPage() {
     activeTab === "open" ? requests.filter((r) => r.status === "open") : requests;
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       {/* Forest header */}
-      <div className="bg-forest-ink border-b border-cream/10">
-        <div className="container-page py-10 md:py-14">
+      <div className="relative bg-forest-ink border-b border-cream/10 overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(42% 60% at 90% 0%, rgba(212,166,60,0.12), transparent 60%)",
+          }}
+        />
+        <div className="container-page py-10 md:py-14 relative z-10">
           <p className="eyebrow text-cream/40 mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
             Client command
@@ -182,13 +190,13 @@ function DashboardPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to="/request"
-              className="bg-gold px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+              className="btn-cta gold-metal px-7 py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground shadow-[var(--elev-sm)]"
             >
               New Brief
             </Link>
             <Link
               to="/search"
-              className="border border-cream/20 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/50 hover:bg-cream/5 transition-colors"
+              className="border border-cream/20 px-7 py-3 rounded-[4px] font-sans text-sm font-semibold text-cream hover:border-cream/50 hover:bg-cream/5 hover:-translate-y-px transition-all duration-150"
             >
               Browse Providers
             </Link>
@@ -206,7 +214,7 @@ function DashboardPage() {
 
         {/* Tab filter */}
         {requests.length > 0 && (
-          <div className="flex gap-1 border-b border-hairline">
+          <div className="flex gap-1 border-b border-border">
             <TabBtn active={activeTab === "open"} onClick={() => setActiveTab("open")}>
               Open ({openCount})
             </TabBtn>
@@ -225,22 +233,22 @@ function DashboardPage() {
               ))}
             </div>
           ) : visibleRequests.length === 0 && requests.length === 0 ? (
-            <div className="border border-dashed border-hairline rounded-[6px] p-16 text-center">
-              <h2 className="font-display text-2xl text-text mb-3">No active briefs</h2>
-              <p className="font-sans text-sm text-text-soft max-w-sm mx-auto mb-8">
+            <div className="border border-dashed border-border rounded-[8px] bg-surface-low/60 p-16 text-center">
+              <h2 className="font-display text-2xl text-foreground mb-3">No active briefs</h2>
+              <p className="font-sans text-sm text-muted-foreground max-w-sm mx-auto mb-8">
                 Start by browsing our verified network of providers, or post a brief and let them
                 come to you.
               </p>
               <Link
                 to="/search"
-                className="inline-block border border-forest px-8 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                className="inline-block border border-primary/80 bg-card px-8 py-3 rounded-[4px] font-sans text-sm font-semibold text-primary shadow-[var(--elev-sm)] hover:bg-forest hover:text-cream hover:-translate-y-px hover:shadow-[var(--elev-md)] transition-all duration-150"
               >
                 Browse Network
               </Link>
             </div>
           ) : visibleRequests.length === 0 ? (
-            <div className="border border-dashed border-hairline rounded-[6px] p-12 text-center">
-              <p className="font-sans text-sm text-text-soft">No {activeTab === "open" ? "open " : ""}briefs found.</p>
+            <div className="border border-dashed border-border rounded-[8px] bg-surface-low/60 p-12 text-center">
+              <p className="font-sans text-sm text-muted-foreground">No {activeTab === "open" ? "open " : ""}briefs found.</p>
             </div>
           ) : (
             visibleRequests.map((r) => {
@@ -248,18 +256,18 @@ function DashboardPage() {
               return (
                 <div
                   key={r.id}
-                  className="bg-cream-raised border border-hairline rounded-[6px] overflow-hidden transition-all hover:border-forest"
+                  className="bg-card border border-border rounded-[8px] overflow-hidden shadow-[var(--elev-sm)] transition-all duration-200 hover:border-primary/50 hover:shadow-[var(--elev-md)]"
                 >
                   <div className="p-6 md:p-8">
-                    <div className="flex flex-wrap items-start justify-between gap-5 border-b border-hairline pb-6">
+                    <div className="flex flex-wrap items-start justify-between gap-5 border-b border-border pb-6">
                       <div>
-                        <h3 className="font-display text-xl text-text">
+                        <h3 className="font-display text-xl text-foreground">
                           {r.service_name ?? r.title}
                         </h3>
-                        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[10px] uppercase tracking-widest text-text-soft">
+                        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                           <span>{r.city ?? "—"}</span>
                           {r.budget && (
-                            <span className="text-gold">Budget: ${Number(r.budget).toFixed(0)}</span>
+                            <span className="text-gold-deep dark:text-gold">Budget: ${Number(r.budget).toFixed(0)}</span>
                           )}
                           {r.needed_by && <span>Date: {r.needed_by}</span>}
                         </div>
@@ -267,8 +275,8 @@ function DashboardPage() {
                       <span
                         className={`border px-3 py-1 rounded-[3px] font-mono text-[9px] uppercase tracking-widest ${
                           r.status === "open"
-                            ? "border-amber-300 text-amber-600 bg-amber-50"
-                            : "border-emerald-300 text-emerald-600 bg-emerald-50"
+                            ? "border-amber-500/40 text-amber-600 bg-amber-500/10"
+                            : "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
                         }`}
                       >
                         {r.status}
@@ -276,11 +284,11 @@ function DashboardPage() {
                     </div>
 
                     <div className="mt-6">
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft mb-4">
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
                         Quotes received ({reqQuotes.length})
                       </p>
                       {reqQuotes.length === 0 ? (
-                        <p className="font-sans text-sm text-text-soft italic">
+                        <p className="font-sans text-sm text-muted-foreground italic">
                           Providers are reviewing your brief. Check back shortly.
                         </p>
                       ) : (
@@ -293,24 +301,24 @@ function DashboardPage() {
                             return (
                               <div
                                 key={q.id}
-                                className="flex flex-col md:flex-row md:items-center justify-between gap-5 border border-hairline rounded-[3px] p-5 hover:border-forest transition-colors"
+                                className="flex flex-col md:flex-row md:items-center justify-between gap-5 border border-border rounded-[3px] p-5 hover:border-primary transition-colors"
                               >
                                 <div className="min-w-0">
-                                  <p className="font-display text-base text-text">
+                                  <p className="font-display text-base text-foreground">
                                     {q.business_name ?? "Provider"}
                                   </p>
-                                  <p className="mt-1 font-display text-2xl text-gold">
+                                  <p className="mt-1 font-display text-2xl text-gold-deep dark:text-gold">
                                     ${Number(q.amount).toFixed(0)}
                                   </p>
                                   {q.message && (
-                                    <p className="mt-3 font-sans text-[13px] text-text-soft leading-relaxed italic border-l-2 border-gold/30 pl-3">
+                                    <p className="mt-3 font-sans text-[13px] text-muted-foreground leading-relaxed italic border-l-2 border-gold/30 pl-3">
                                       "{q.message}"
                                     </p>
                                   )}
                                 </div>
                                 <div className="flex shrink-0 flex-col gap-2 md:w-52">
                                   {q.status === "accepted" ? (
-                                    <span className="inline-flex items-center justify-center gap-1.5 border border-emerald-300 bg-emerald-50 px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-600">
+                                    <span className="inline-flex items-center justify-center gap-1.5 border border-emerald-500/40 bg-emerald-500/10 px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                                       <CheckCircle2 className="h-3.5 w-3.5" />
                                       Accepted
                                     </span>
@@ -318,7 +326,7 @@ function DashboardPage() {
                                     <button
                                       onClick={() => acceptQuote.mutate({ quote: q, request: r })}
                                       disabled={acceptQuote.isPending}
-                                      className="inline-flex items-center justify-center gap-2 bg-gold px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
+                                      className="btn-cta gold-metal inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-[4px] font-mono text-[10px] font-bold uppercase tracking-widest text-gold-foreground shadow-[var(--elev-sm)] disabled:opacity-60 disabled:pointer-events-none"
                                     >
                                       {acceptQuote.isPending ? "Recording…" : "Accept quote"}
                                     </button>
@@ -338,7 +346,7 @@ function DashboardPage() {
                                     {q.phone && (
                                       <a
                                         href={`tel:${q.phone}`}
-                                        className="flex-1 text-center inline-flex items-center justify-center gap-2 border border-forest/30 px-4 py-2 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest hover:bg-forest/5 transition-colors"
+                                        className="flex-1 text-center inline-flex items-center justify-center gap-2 border border-primary/30 px-4 py-2 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-primary/10 transition-colors"
                                       >
                                         <Phone className="h-3.5 w-3.5" />
                                         Call
@@ -384,12 +392,12 @@ function DashboardPage() {
 }
 
 const BOOKING_BADGE: Record<string, string> = {
-  pending: "border-amber-300 text-amber-600 bg-amber-50",
-  confirmed: "border-forest/30 text-forest bg-forest/5",
-  in_progress: "border-blue-300 text-blue-600 bg-blue-50",
-  completed: "border-emerald-300 text-emerald-600 bg-emerald-50",
-  cancelled: "border-rose-300 text-rose-600 bg-rose-50",
-  refunded: "border-text-soft/30 text-text-soft bg-hairline/30",
+  pending: "border-amber-500/40 text-amber-600 bg-amber-500/10",
+  confirmed: "border-primary/30 text-primary bg-primary/10",
+  in_progress: "border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-500/10",
+  completed: "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10",
+  cancelled: "border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/10",
+  refunded: "border-text-soft/30 text-muted-foreground bg-hairline/30",
 };
 
 function JobsSection({
@@ -407,12 +415,12 @@ function JobsSection({
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center gap-3 border-b border-hairline pb-3">
-        <h2 className="font-display text-2xl text-text">
-          Your <em className="italic text-gold">Jobs.</em>
+      <div className="flex items-center gap-3 border-b border-border pb-3">
+        <h2 className="font-display text-2xl text-foreground">
+          Your <em className="italic text-gold-deep dark:text-gold">Jobs.</em>
         </h2>
         <div className="h-px flex-1 bg-hairline" />
-        <span className="font-mono text-[10px] uppercase tracking-widest text-text-soft">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           {bookings.length} recorded
         </span>
       </div>
@@ -424,11 +432,11 @@ function JobsSection({
           return (
             <div
               key={b.id}
-              className="flex flex-col gap-4 border border-hairline bg-cream-raised rounded-[6px] p-5 md:flex-row md:items-center md:justify-between"
+              className="flex flex-col gap-4 border border-border bg-card rounded-[8px] p-5 shadow-[var(--elev-sm)] transition-shadow duration-200 hover:shadow-[var(--elev-md)] md:flex-row md:items-center md:justify-between"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-3">
-                  <h3 className="font-display text-lg text-text">
+                  <h3 className="font-display text-lg text-foreground">
                     {b.business_name ?? "Provider"}
                   </h3>
                   <span
@@ -439,9 +447,9 @@ function JobsSection({
                     {b.status.replace("_", " ")}
                   </span>
                 </div>
-                <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-text-soft">
-                  Agreed: <span className="text-gold">${Number(b.amount).toFixed(0)}</span>
-                  <span className="text-text-soft/50"> · paid directly to provider</span>
+                <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                  Agreed: <span className="text-gold-deep dark:text-gold">${Number(b.amount).toFixed(0)}</span>
+                  <span className="text-muted-foreground/50"> · paid directly to provider</span>
                 </p>
               </div>
 
@@ -450,7 +458,7 @@ function JobsSection({
                   <button
                     onClick={() => onMarkComplete(b)}
                     disabled={markPending}
-                    className="inline-flex items-center justify-center gap-2 border border-forest px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest hover:bg-forest hover:text-cream transition-colors disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 border border-primary px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-forest hover:text-cream transition-colors disabled:opacity-60"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     Mark complete
@@ -459,14 +467,14 @@ function JobsSection({
                 {canReview && (
                   <button
                     onClick={() => onReview(b)}
-                    className="inline-flex items-center justify-center gap-2 bg-gold px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest-ink hover:bg-gold-deep transition-colors"
+                    className="btn-cta gold-metal inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-[4px] font-mono text-[10px] font-bold uppercase tracking-widest text-gold-foreground shadow-[var(--elev-sm)]"
                   >
                     <Star className="h-3.5 w-3.5" />
                     Leave a review
                   </button>
                 )}
                 {b.status === "completed" && b.reviewed && (
-                  <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-emerald-600">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                     <Star className="h-3.5 w-3.5 fill-gold text-gold" />
                     Reviewed
                   </span>
@@ -525,17 +533,17 @@ function ReviewModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-cream-raised border border-hairline rounded-[6px] p-7"
+        className="w-full max-w-md bg-card border border-border rounded-[8px] p-7 shadow-[var(--elev-xl)] animate-form-enter"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="eyebrow text-text-soft mb-3">
+        <p className="eyebrow text-muted-foreground mb-3">
           <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
           Rate your experience
         </p>
-        <h3 className="font-display text-2xl text-text">
+        <h3 className="font-display text-2xl text-foreground">
           {booking.business_name ?? "Provider"}
         </h3>
-        <p className="mt-1 font-sans text-[13px] text-text-soft">
+        <p className="mt-1 font-sans text-[13px] text-muted-foreground">
           Your honest review builds trust for the whole network.
         </p>
 
@@ -555,14 +563,14 @@ function ReviewModal({
           <button
             onClick={onClose}
             disabled={submitting}
-            className="flex-1 border border-hairline py-3 rounded-[3px] font-sans text-sm font-medium text-text-soft hover:border-forest hover:text-forest transition-colors"
+            className="flex-1 border border-border py-3 rounded-[3px] font-sans text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={submit}
             disabled={submitting}
-            className="flex-1 bg-gold py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors disabled:opacity-60"
+            className="btn-cta gold-metal flex-1 py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground shadow-[var(--elev-sm)] disabled:opacity-60 disabled:pointer-events-none"
           >
             {submitting ? "Submitting…" : "Submit review"}
           </button>
@@ -574,9 +582,17 @@ function ReviewModal({
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] p-6">
-      <p className="font-display text-4xl text-gold">{value}</p>
-      <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-text-soft">{label}</p>
+    <div className="relative bg-card border border-border rounded-[8px] p-6 shadow-[var(--elev-md)] overflow-hidden transition-shadow duration-200 hover:shadow-[var(--elev-lg)]">
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[2px]"
+        style={{
+          background:
+            "linear-gradient(90deg, var(--color-gold-deep), var(--color-gold-hi), var(--color-gold-deep))",
+        }}
+      />
+      <p className="font-display text-4xl text-gold-deep dark:text-gold">{value}</p>
+      <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -595,8 +611,8 @@ function TabBtn({
       onClick={onClick}
       className={`px-4 pb-3 pt-1 font-mono text-[10px] uppercase tracking-widest transition-colors border-b-2 -mb-px ${
         active
-          ? "border-gold text-forest"
-          : "border-transparent text-text-soft hover:text-text"
+          ? "border-primary text-primary"
+          : "border-transparent text-muted-foreground hover:text-foreground"
       }`}
     >
       {children}

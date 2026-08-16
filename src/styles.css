@@ -20,17 +20,26 @@
   --radius-2xl: 12px;
   --radius-3xl: 16px;
 
-  /* Registry palette — direct token values */
+  /* Registry palette — direct token values (premium overhaul) */
   --color-forest: #0f3323;
-  --color-forest-ink: #081f14;
+  --color-forest-deep: #0b2a1c;
+  --color-forest-ink: #06160e;
   --color-forest-soft: #1a4630;
-  --color-gold: #e7a020;
-  --color-gold-deep: #b87f1a;
-  --color-cream: #f6f5f0;
-  --color-cream-raised: #fdfcf9;
-  --color-hairline: #dedacb;
+  --color-gold: #d4a63c;
+  --color-gold-hi: var(--gold-hi);
+  --color-gold-deep: #a87a1f;
+  --color-cream: #fbfaf5;
+  --color-cream-raised: #ffffff;
+  --color-hairline: #e0dccb;
   --color-text: #14251c;
   --color-text-soft: #5c6b60;
+
+  /* Premium forest-tinted shadow ramp + gold glow (exposed as shadow-* utils) */
+  --shadow-sm: var(--elev-sm);
+  --shadow-md: var(--elev-md);
+  --shadow-lg: var(--elev-lg);
+  --shadow-xl: var(--elev-xl);
+  --shadow-gold-glow: var(--glow-gold);
 
   /* Semantic aliases — keep for shadcn/ui compatibility */
   --color-background: var(--background);
@@ -49,6 +58,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-amber: var(--amber);
   --color-amber-foreground: var(--amber-foreground);
+  --color-gold-foreground: var(--gold-foreground);
   --color-surface: var(--surface);
   --color-surface-low: var(--surface-low);
   --color-surface-container: var(--surface-container);
@@ -69,31 +79,33 @@
 }
 
 :root {
-  --background: #f6f5f0;
+  --background: #fbfaf5;
   --foreground: #14251c;
 
-  --card: #fdfcf9;
+  --card: #ffffff;
   --card-foreground: #14251c;
-  --popover: #fdfcf9;
+  --popover: #ffffff;
   --popover-foreground: #14251c;
 
   --primary: #0f3323;
-  --primary-foreground: #fdfcf9;
+  --primary-foreground: #fbfaf5;
 
-  /* Gold is now actual amber gold */
-  --gold: #e7a020;
-  --gold-foreground: #081f14;
+  /* Metallic champagne gold — gradient-ready set */
+  --gold: #d4a63c;
+  --gold-hi: #f0cd7a;
+  --gold-deep: #a87a1f;
+  --gold-foreground: #06160e;
 
-  --amber: #e7a020;
-  --amber-foreground: #081f14;
+  --amber: #d4a63c;
+  --amber-foreground: #0b160e;
 
-  --secondary: #ede9db;
+  --secondary: #efece0;
   --secondary-foreground: #14251c;
 
-  --muted: #dedacb;
+  --muted: #e6e2d3;
   --muted-foreground: #5c6b60;
 
-  --accent: #f6f5f0;
+  --accent: #f4f2ea;
   --accent-foreground: #0f3323;
 
   --copper: #92400e;
@@ -102,23 +114,100 @@
   --teal: #14b8a6;
   --teal-foreground: #ffffff;
 
-  --surface: #fdfcf9;
-  --surface-low: #f6f5f0;
-  --surface-container: #ede9db;
-  --surface-high: #dedacb;
+  /* Warm layered surface elevation */
+  --surface: #fbfaf5;
+  --surface-low: #f4f2ea;
+  --surface-container: #efece0;
+  --surface-high: #e6e2d3;
 
-  --border: #dedacb;
-  --input: #dedacb;
+  --border: #e0dccb;
+  --input: #e0dccb;
   --ring: #0f3323;
 
   --success: #10b981;
   --success-foreground: #ffffff;
-  --warning: #e7a020;
-  --warning-foreground: #081f14;
+  --warning: #d4a63c;
+  --warning-foreground: #0b160e;
   --destructive: #ba1a1a;
   --destructive-foreground: #ffffff;
 
   --radius: 6px;
+
+  /* Premium forest-tinted elevation ramp (rgba of forest ink #06160e) */
+  --elev-sm: 0 1px 2px rgba(6, 22, 14, 0.06), 0 1px 1px rgba(6, 22, 14, 0.04);
+  --elev-md: 0 2px 4px rgba(6, 22, 14, 0.06), 0 4px 12px rgba(6, 22, 14, 0.07);
+  --elev-lg:
+    0 4px 8px rgba(6, 22, 14, 0.06), 0 12px 28px rgba(6, 22, 14, 0.1),
+    0 1px 2px rgba(6, 22, 14, 0.04);
+  --elev-xl:
+    0 8px 16px rgba(6, 22, 14, 0.08), 0 24px 48px rgba(6, 22, 14, 0.14),
+    0 2px 4px rgba(6, 22, 14, 0.05);
+  /* Subtle champagne-gold glow for CTAs */
+  --glow-gold:
+    0 4px 14px rgba(168, 122, 31, 0.28), 0 2px 6px rgba(212, 166, 60, 0.22);
+}
+
+.dark {
+  --background: #06160e;
+  --foreground: #f4f2ea;
+
+  --card: #0b2118;
+  --card-foreground: #f4f2ea;
+  --popover: #0b2118;
+  --popover-foreground: #f4f2ea;
+
+  --primary: #f0cd7a;
+  --primary-foreground: #06160e;
+
+  /* Gold accents unchanged for brand consistency */
+  --gold: #d4a63c;
+  --gold-hi: #f0cd7a;
+  --gold-deep: #a87a1f;
+  --gold-foreground: #06160e;
+
+  --amber: #d4a63c;
+  --amber-foreground: #06160e;
+
+  --secondary: #0f2b1f;
+  --secondary-foreground: #f4f2ea;
+
+  --muted: #0f2b1f;
+  --muted-foreground: #a9b6ac;
+
+  --accent: #0f2b1f;
+  --accent-foreground: #f0cd7a;
+
+  --copper: #d98f3c;
+  --copper-foreground: #06160e;
+
+  --teal: #2dd4bf;
+  --teal-foreground: #06160e;
+
+  /* Surfaces step up from the forest-ink canvas */
+  --surface: #0b2118;
+  --surface-low: #06160e;
+  --surface-container: #0f2b1f;
+  --surface-high: #16382a;
+
+  /* Low-alpha gold/green hairlines */
+  --border: rgba(240, 205, 122, 0.14);
+  --input: rgba(240, 205, 122, 0.18);
+  --ring: #f0cd7a;
+
+  --success: #34d399;
+  --success-foreground: #06160e;
+  --warning: #f0cd7a;
+  --warning-foreground: #06160e;
+  --destructive: #ff5449;
+  --destructive-foreground: #06160e;
+
+  /* Deeper elevation ramp on the dark canvas */
+  --elev-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --elev-md: 0 2px 4px rgba(0, 0, 0, 0.45), 0 6px 16px rgba(0, 0, 0, 0.5);
+  --elev-lg: 0 6px 14px rgba(0, 0, 0, 0.5), 0 16px 36px rgba(0, 0, 0, 0.55);
+  --elev-xl: 0 10px 22px rgba(0, 0, 0, 0.55), 0 30px 60px rgba(0, 0, 0, 0.6);
+  --glow-gold:
+    0 4px 18px rgba(240, 205, 122, 0.35), 0 2px 8px rgba(212, 166, 60, 0.28);
 }
 
 @layer base {
@@ -182,20 +271,26 @@
 @utility field-input {
   display: block;
   width: 100%;
-  background-color: var(--color-cream);
-  border: 1px solid var(--color-hairline);
-  border-radius: 3px;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
   padding: 0.625rem 0.75rem;
   font-family: var(--font-sans);
   font-size: 0.875rem;
-  color: var(--color-text);
+  color: var(--foreground);
   outline: none;
-  transition: border-color 150ms;
+  box-shadow: var(--elev-sm);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
   &::placeholder {
-    color: color-mix(in srgb, var(--color-text-soft) 50%, transparent);
+    color: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
   }
   &:focus {
-    border-color: var(--color-forest);
+    border-color: var(--ring);
+    box-shadow:
+      var(--elev-sm),
+      0 0 0 3px color-mix(in srgb, var(--ring) 14%, transparent);
   }
 }
 
@@ -325,14 +420,39 @@
 /* ─── Button interaction micro-animations ─── */
 /* Applied globally to all gold/forest CTA buttons via [data-cta] or .btn-cta */
 @utility btn-cta {
-  transition: filter 150ms ease, transform 100ms ease;
+  position: relative;
+  transition:
+    filter 150ms ease,
+    transform 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 180ms ease;
   &:hover {
-    filter: brightness(1.05);
-    transform: scale(1.02);
+    filter: brightness(1.04);
+    transform: translateY(-1px);
+    box-shadow: var(--glow-gold);
   }
   &:active {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.985);
+    box-shadow: var(--elev-sm);
   }
+}
+
+/* Metallic champagne-gold surface for premium CTAs */
+@utility gold-metal {
+  background-image: linear-gradient(
+    180deg,
+    var(--color-gold-hi) 0%,
+    var(--color-gold) 52%,
+    var(--color-gold-deep) 100%
+  );
+}
+
+/* Reusable premium elevation helpers */
+@utility elevate {
+  box-shadow: var(--elev-md);
+}
+
+@utility elevate-lg {
+  box-shadow: var(--elev-lg);
 }
 
 @media (prefers-reduced-motion: reduce) {

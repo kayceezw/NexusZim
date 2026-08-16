@@ -36,10 +36,10 @@ export const Route = createFileRoute("/providers/$providerId")({
   component: ProviderProfilePage,
   notFoundComponent: () => (
     <div className="container-page py-24 text-center">
-      <h1 className="font-display text-2xl text-text">Provider not found</h1>
+      <h1 className="font-display text-2xl text-foreground">Provider not found</h1>
       <Link
         to="/search"
-        className="mt-4 inline-block font-sans text-sm text-forest hover:underline"
+        className="mt-4 inline-block font-sans text-sm text-primary hover:underline"
       >
         Back to directory
       </Link>
@@ -71,8 +71,8 @@ function Stars({ rating }: { rating: number }) {
         <svg key={i} width="14" height="14" viewBox="0 0 24 24">
           <polygon
             points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-            fill={i <= filled ? "#e7a020" : "none"}
-            stroke={i <= filled ? "#e7a020" : "#dedacb"}
+            fill={i <= filled ? "#d4a63c" : "none"}
+            stroke={i <= filled ? "#d4a63c" : "#e0dccb"}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -95,7 +95,7 @@ function PhotoGallery({ photos, businessName }: { photos: string[]; businessName
           <button
             key={url}
             onClick={() => setLightboxIndex(i)}
-            className="aspect-[4/3] rounded-[6px] overflow-hidden bg-forest/10 hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-forest"
+            className="aspect-[4/3] rounded-[6px] overflow-hidden bg-primary/15 hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-forest"
           >
             <img
               src={url}
@@ -210,32 +210,32 @@ function ProviderProfilePage() {
       : null;
 
   return (
-    <div className="bg-cream pt-16">
+    <div className="bg-background pt-16">
       {/* ─── PAGE HEADER ─── */}
-      <div className="border-b border-hairline bg-cream-raised">
+      <div className="border-b border-border bg-card">
         <div className="container-page py-6">
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               to="/search"
-              className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft hover:text-forest transition-colors"
+              className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary transition-colors"
             >
               <ArrowLeft className="h-3 w-3" />
               Directory
             </Link>
             {category && (
               <>
-                <span className="font-mono text-[11px] text-text-soft/50">/</span>
+                <span className="font-mono text-[11px] text-muted-foreground/50">/</span>
                 <Link
                   to="/categories/$slug"
                   params={{ slug: category.slug }}
-                  className="font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft hover:text-forest transition-colors"
+                  className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary transition-colors"
                 >
                   {category.name}
                 </Link>
               </>
             )}
-            <span className="font-mono text-[11px] text-text-soft/50">/</span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-text">
+            <span className="font-mono text-[11px] text-muted-foreground/50">/</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-foreground">
               {provider.business_name}
             </span>
           </div>
@@ -246,11 +246,11 @@ function ProviderProfilePage() {
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-3">
                 <Hallmark tier={provider.tier} />
-                <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-soft">
+                <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
                   {regId}
                 </span>
                 {provider.verified && (
-                  <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.06em] text-emerald-600">
+                  <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.06em] text-emerald-600 dark:text-emerald-400">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     Verified
                   </span>
@@ -258,7 +258,7 @@ function ProviderProfilePage() {
               </div>
 
               <h1
-                className="font-display text-text"
+                className="font-display text-foreground"
                 style={{
                   fontSize: "clamp(32px, 4.5vw, 56px)",
                   lineHeight: "1.06",
@@ -270,12 +270,12 @@ function ProviderProfilePage() {
 
               <div className="flex flex-wrap items-center gap-4">
                 {category && (
-                  <span className="font-sans text-[13px] text-text-soft">
+                  <span className="font-sans text-[13px] text-muted-foreground">
                     {category.name}
                   </span>
                 )}
                 {provider.city && (
-                  <span className="flex items-center gap-1.5 font-mono text-[11px] text-text-soft">
+                  <span className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
                     <MapPin className="h-3 w-3" strokeWidth={1.5} />
                     {provider.city}
                   </span>
@@ -283,7 +283,7 @@ function ProviderProfilePage() {
                 {avgRating != null && (
                   <div className="flex items-center gap-2">
                     <Stars rating={avgRating} />
-                    <span className="font-mono text-[11px] text-text-soft">
+                    <span className="font-mono text-[11px] text-muted-foreground">
                       {avgRating.toFixed(1)} ({reviews.length})
                     </span>
                   </div>
@@ -297,7 +297,7 @@ function ProviderProfilePage() {
                   href={`https://wa.me/${provider.whatsapp.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-gold px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+                  className="btn-cta gold-metal flex items-center justify-center gap-2 px-6 py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground shadow-[var(--elev-sm)]"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
                   Contact on WhatsApp
@@ -306,7 +306,7 @@ function ProviderProfilePage() {
               {!provider.whatsapp && provider.phone && (
                 <a
                   href={`tel:${provider.phone}`}
-                  className="flex items-center justify-center gap-2 bg-gold px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+                  className="btn-cta gold-metal flex items-center justify-center gap-2 px-6 py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground shadow-[var(--elev-sm)]"
                 >
                   <Phone className="h-4 w-4" strokeWidth={1.5} />
                   Call now
@@ -314,13 +314,13 @@ function ProviderProfilePage() {
               )}
               <Link
                 to="/request"
-                className="border border-forest px-6 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors text-center"
+                className="border border-primary/80 bg-card px-6 py-3 rounded-[4px] font-sans text-sm font-semibold text-primary shadow-[var(--elev-sm)] hover:bg-forest hover:text-cream hover:-translate-y-px hover:shadow-[var(--elev-md)] transition-all duration-150 text-center"
               >
                 Post a brief
               </Link>
               <button
                 onClick={handleShare}
-                className="border border-hairline px-4 py-3 rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors flex items-center gap-2"
+                className="border border-border bg-card px-4 py-3 rounded-[4px] font-sans text-sm text-muted-foreground shadow-[var(--elev-sm)] hover:border-primary hover:text-primary transition-colors flex items-center gap-2"
               >
                 <Share2 className="h-4 w-4" strokeWidth={1.5} />
                 {copied ? "Copied!" : "Share"}
@@ -336,7 +336,7 @@ function ProviderProfilePage() {
           {/* Left: 8 columns */}
           <main className="lg:col-span-8 space-y-8">
             {/* Avatar + About */}
-            <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
+            <section className="bg-card border border-border rounded-[8px] p-7 shadow-[var(--elev-md)]">
               <div className="flex items-start gap-5 mb-6">
                 <div
                   className={`flex-shrink-0 h-16 w-16 rounded-[6px] overflow-hidden flex items-center justify-center font-sans text-xl font-bold ${avatarColor}`}
@@ -352,13 +352,13 @@ function ProviderProfilePage() {
                   )}
                 </div>
                 <div>
-                  <h2 className="font-display text-2xl text-text">About</h2>
+                  <h2 className="font-display text-2xl text-foreground">About</h2>
                   {provider.website && (
                     <a
                       href={provider.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 mt-1 font-sans text-[12px] text-text-soft hover:text-forest transition-colors"
+                      className="inline-flex items-center gap-1 mt-1 font-sans text-[12px] text-muted-foreground hover:text-primary transition-colors"
                     >
                       <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
                       {provider.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
@@ -366,21 +366,21 @@ function ProviderProfilePage() {
                   )}
                 </div>
               </div>
-              <p className="font-sans text-base text-text-soft leading-relaxed">
+              <p className="font-sans text-base text-muted-foreground leading-relaxed">
                 {provider.bio ?? "No bio provided yet."}
               </p>
             </section>
 
             {/* Portfolio photos */}
             {(providerPhotos.length > 0 || isOwnProfile) && (
-              <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
+              <section className="bg-card border border-border rounded-[8px] p-7 shadow-[var(--elev-md)]">
                 <div className="mb-5">
-                  <p className="eyebrow text-text-soft mb-2">
+                  <p className="eyebrow text-muted-foreground mb-2">
                     <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                     Provider photos
                   </p>
-                  <h2 className="font-display text-2xl text-text">Premises and work</h2>
-                  <p className="font-sans text-[13px] text-text-soft mt-1">
+                  <h2 className="font-display text-2xl text-foreground">Premises and work</h2>
+                  <p className="font-sans text-[13px] text-muted-foreground mt-1">
                     Photos shared by the provider as proof of premises and past engagements.
                   </p>
                 </div>
@@ -400,26 +400,26 @@ function ProviderProfilePage() {
             )}
 
             {/* Reviews */}
-            <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
-              <h2 className="font-display text-2xl text-text mb-2">
+            <section className="bg-card border border-border rounded-[8px] p-7 shadow-[var(--elev-md)]">
+              <h2 className="font-display text-2xl text-foreground mb-2">
                 Client references
-                <span className="font-sans text-base text-text-soft font-normal ml-3">
+                <span className="font-sans text-base text-muted-foreground font-normal ml-3">
                   ({reviews.length})
                 </span>
               </h2>
-              <p className="mb-6 font-mono text-[10px] uppercase tracking-widest text-forest/70 flex items-center gap-1.5">
+              <p className="mb-6 font-mono text-[10px] uppercase tracking-widest text-primary/70 flex items-center gap-1.5">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-forest shrink-0" />
                 Verified — only clients who hired via NexusZim can review
               </p>
 
               {reviews.length === 0 ? (
-                <div className="text-center py-8 border border-dashed border-hairline rounded-[6px]">
-                  <p className="font-sans text-[13px] text-text-soft">
+                <div className="text-center py-8 border border-dashed border-border rounded-[6px]">
+                  <p className="font-sans text-[13px] text-muted-foreground">
                     No verified references on file yet.
                   </p>
                   <Link
                     to="/request"
-                    className="mt-4 inline-flex items-center gap-1 font-sans text-[13px] font-semibold text-forest hover:text-gold-deep transition-colors"
+                    className="mt-4 inline-flex items-center gap-1 font-sans text-[13px] font-semibold text-primary hover:text-gold-deep transition-colors"
                   >
                     Post a brief to work with this provider →
                   </Link>
@@ -437,7 +437,7 @@ function ProviderProfilePage() {
           {/* Right: Verification + CTA sidebar */}
           <aside className="lg:col-span-4 space-y-5 lg:sticky lg:top-24 lg:self-start">
             {/* Verification Record */}
-            <div className="bg-forest-ink rounded-[6px] overflow-hidden">
+            <div className="bg-forest-ink rounded-[8px] overflow-hidden shadow-[var(--elev-lg)]">
               <div className="px-6 py-5 border-b border-cream/10">
                 <p className="eyebrow text-cream/40">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -478,13 +478,13 @@ function ProviderProfilePage() {
             </div>
 
             {/* Contact CTA */}
-            <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 space-y-3">
+            <div className="bg-card border border-border rounded-[8px] p-6 space-y-3 shadow-[var(--elev-md)]">
               {provider.whatsapp && (
                 <a
                   href={`https://wa.me/${provider.whatsapp.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full bg-gold py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+                  className="btn-cta gold-metal flex items-center justify-center gap-2 w-full py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground shadow-[var(--elev-sm)]"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
                   Contact on WhatsApp
@@ -493,7 +493,7 @@ function ProviderProfilePage() {
               {provider.phone && (
                 <a
                   href={`tel:${provider.phone}`}
-                  className="flex items-center justify-center gap-2 w-full border border-forest py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                  className="flex items-center justify-center gap-2 w-full border border-primary py-3 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
                 >
                   <Phone className="h-4 w-4" strokeWidth={1.5} />
                   {provider.phone}
@@ -501,18 +501,18 @@ function ProviderProfilePage() {
               )}
               <Link
                 to="/request"
-                className="block w-full text-center border border-hairline py-3 rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+                className="block w-full text-center border border-border py-3 rounded-[3px] font-sans text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
               >
                 Post a brief instead
               </Link>
-              <p className="font-sans text-[11px] text-text-soft leading-relaxed text-center">
+              <p className="font-sans text-[11px] text-muted-foreground leading-relaxed text-center">
                 Pricing is agreed directly with the provider.
               </p>
             </div>
 
             {/* Ledger */}
-            <div className="bg-cream-raised border border-hairline rounded-[6px] p-5">
-              <p className="eyebrow text-text-soft mb-3">
+            <div className="bg-card border border-border rounded-[8px] p-5 shadow-[var(--elev-md)]">
+              <p className="eyebrow text-muted-foreground mb-3">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                 On file
               </p>
@@ -540,15 +540,15 @@ function ProviderProfilePage() {
 
       {/* ─── SIMILAR PROVIDERS ─── */}
       {similarProviders.length > 0 && (
-        <div className="bg-cream-raised border-t border-hairline py-16">
+        <div className="bg-card border-t border-border py-16">
           <div className="container-page">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-display text-2xl text-text">
+              <h2 className="font-display text-2xl text-foreground">
                 Other {category?.name ?? "providers"} on register
               </h2>
               <Link
                 to="/search"
-                className="font-sans text-sm font-semibold text-forest hover:text-gold-deep transition-colors flex items-center gap-1 group"
+                className="font-sans text-sm font-semibold text-primary hover:text-gold-deep transition-colors flex items-center gap-1 group"
               >
                 Full directory
                 <span className="transition-transform group-hover:translate-x-[3px] duration-150">
@@ -566,13 +566,13 @@ function ProviderProfilePage() {
       )}
 
       {/* ─── MOBILE STICKY BAR ─── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-cream-raised border-t border-hairline px-4 py-3 flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-card border-t border-border px-4 py-3 flex gap-3 shadow-[var(--elev-xl)]">
         {provider.whatsapp && (
           <a
             href={`https://wa.me/${provider.whatsapp.replace(/\D/g, "")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 bg-gold py-3 rounded-[3px] font-sans text-sm font-semibold text-forest-ink"
+            className="gold-metal flex-1 flex items-center justify-center gap-2 py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground"
           >
             <WhatsAppIcon className="h-4 w-4" />
             WhatsApp
@@ -580,7 +580,7 @@ function ProviderProfilePage() {
         )}
         <Link
           to="/request"
-          className="flex-1 border border-forest py-3 rounded-[3px] font-sans text-sm font-semibold text-forest text-center"
+          className="flex-1 border border-primary py-3 rounded-[3px] font-sans text-sm font-semibold text-primary text-center"
         >
           Post a brief
         </Link>
@@ -598,8 +598,8 @@ function ReviewBlock({ review }: { review: ReviewRow }) {
             <svg key={i} width="12" height="12" viewBox="0 0 24 24">
               <polygon
                 points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                fill={i <= review.rating ? "#e7a020" : "none"}
-                stroke={i <= review.rating ? "#e7a020" : "#dedacb"}
+                fill={i <= review.rating ? "#d4a63c" : "none"}
+                stroke={i <= review.rating ? "#d4a63c" : "#e0dccb"}
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -608,7 +608,7 @@ function ReviewBlock({ review }: { review: ReviewRow }) {
           ))}
         </div>
       </div>
-      <p className="font-display text-lg text-text italic leading-relaxed">
+      <p className="font-display text-lg text-foreground italic leading-relaxed">
         "{review.comment ?? "No comment left."}"
       </p>
       <footer className="mt-3 flex items-center gap-3">
@@ -616,12 +616,12 @@ function ReviewBlock({ review }: { review: ReviewRow }) {
           {review.client_id.slice(0, 1).toUpperCase()}
         </div>
         <div>
-          <span className="font-sans text-[13px] font-medium text-text">Verified client</span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft ml-2">
+          <span className="font-sans text-[13px] font-medium text-foreground">Verified client</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground ml-2">
             {new Date(review.created_at).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
           </span>
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-forest/60 ml-auto">
+        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-primary/60 ml-auto">
           Reference confirmed
         </span>
       </footer>
@@ -634,11 +634,11 @@ function SimilarProviderRow({ provider }: { provider: ProviderListing }) {
   const avatarColor = providerAvatarColor(provider.user_id);
 
   return (
-    <div className="group bg-cream-raised border border-hairline rounded-[6px] hover:border-forest transition-all duration-150 relative overflow-hidden">
+    <div className="group bg-card border border-border rounded-[8px] shadow-[var(--elev-sm)] hover:border-primary hover:shadow-[var(--elev-md)] hover:-translate-y-px transition-all duration-150 relative overflow-hidden">
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-150" />
       <div className="flex gap-0 min-h-[80px]">
         <div
-          className={`flex-shrink-0 w-[64px] flex items-center justify-center font-sans text-base font-bold border-r border-hairline ${avatarColor}`}
+          className={`flex-shrink-0 w-[64px] flex items-center justify-center font-sans text-base font-bold border-r border-border ${avatarColor}`}
         >
           {provider.photos?.[0] ? (
             <img
@@ -655,13 +655,13 @@ function SimilarProviderRow({ provider }: { provider: ProviderListing }) {
             <Link
               to="/providers/$providerId"
               params={{ providerId: provider.user_id }}
-              className="font-display text-base text-text group-hover:text-forest transition-colors"
+              className="font-display text-base text-foreground group-hover:text-primary transition-colors"
             >
               {provider.business_name}
             </Link>
             <HallmarkComp tier={provider.tier} />
           </div>
-          <p className="mt-1 font-mono text-[11px] text-text-soft">{provider.city}</p>
+          <p className="mt-1 font-mono text-[11px] text-muted-foreground">{provider.city}</p>
         </div>
       </div>
     </div>

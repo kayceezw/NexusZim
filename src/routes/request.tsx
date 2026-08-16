@@ -147,33 +147,33 @@ function RequestPage() {
   if (submitted) {
     const cat = categories.find((c) => c.slug === form.categorySlug);
     return (
-      <div className="bg-cream pt-16 min-h-screen">
+      <div className="bg-background pt-16 min-h-screen">
         <div className="container-page max-w-lg py-20 text-center">
-          <div className="bg-cream-raised border border-hairline rounded-[6px] p-12">
+          <div className="bg-card border border-border rounded-[6px] p-12">
             <div className="flex justify-center mb-6">
-              <div className="h-14 w-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+              <div className="h-14 w-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
                 <CheckCircle2 className="h-7 w-7 text-emerald-500" strokeWidth={1.5} />
               </div>
             </div>
 
-            <p className="eyebrow text-text-soft mb-3">
+            <p className="eyebrow text-muted-foreground mb-3">
               <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
               Brief submitted
             </p>
-            <h1 className="font-display text-3xl text-text mb-3">
+            <h1 className="font-display text-3xl text-foreground mb-3">
               We've logged your brief.
             </h1>
-            <p className="font-sans text-[13px] text-text-soft leading-relaxed mb-2">
+            <p className="font-sans text-[13px] text-muted-foreground leading-relaxed mb-2">
               Verified providers in{" "}
-              <span className="font-medium text-text">{cat?.name ?? "your category"}</span>{" "}
+              <span className="font-medium text-foreground">{cat?.name ?? "your category"}</span>{" "}
               will contact you via WhatsApp or phone to discuss your requirements.
             </p>
-            <p className="font-sans text-[12px] text-text-soft/60">
+            <p className="font-sans text-[12px] text-muted-foreground/60">
               You pay the provider directly. NexusZim never handles money.
             </p>
 
             {submittedId && (
-              <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft/40">
+              <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/40">
                 Brief reference: {submittedId.slice(0, 8).toUpperCase()}
               </p>
             )}
@@ -191,14 +191,14 @@ function RequestPage() {
                 <Link
                   to="/categories/$slug"
                   params={{ slug: cat.slug }}
-                  className="border border-forest py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                  className="border border-primary py-3 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
                 >
                   Browse {cat.name} providers
                 </Link>
               )}
               <Link
                 to="/search"
-                className="border border-hairline py-3 rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+                className="border border-border py-3 rounded-[3px] font-sans text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
               >
                 Browse the full directory
               </Link>
@@ -211,15 +211,15 @@ function RequestPage() {
 
   if (!loading && !user) {
     return (
-      <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+      <div className="bg-background pt-16 min-h-screen grid place-items-center">
         <div className="container-page max-w-lg py-20 text-center">
-          <div className="bg-cream-raised border border-hairline rounded-[6px] p-12">
-            <p className="eyebrow text-text-soft mb-3">
+          <div className="bg-card border border-border rounded-[6px] p-12">
+            <p className="eyebrow text-muted-foreground mb-3">
               <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
               Post a brief
             </p>
-            <h1 className="font-display text-3xl text-text mb-3">Sign in to continue.</h1>
-            <p className="font-sans text-[13px] text-text-soft leading-relaxed mb-8">
+            <h1 className="font-display text-3xl text-foreground mb-3">Sign in to continue.</h1>
+            <p className="font-sans text-[13px] text-muted-foreground leading-relaxed mb-8">
               Create a free account or log in to post your service brief. Providers will contact you
               directly via the details on your profile.
             </p>
@@ -232,7 +232,7 @@ function RequestPage() {
               </Link>
               <Link
                 to="/signup"
-                className="border border-forest py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+                className="border border-primary py-3 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
               >
                 Create a free account
               </Link>
@@ -244,7 +244,7 @@ function RequestPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       {/* Forest header */}
       <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page max-w-2xl py-10">
@@ -265,14 +265,14 @@ function RequestPage() {
       <div className="container-page max-w-2xl py-10">
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="border border-rose-200 bg-rose-50 px-4 py-3 rounded-[3px] font-sans text-sm text-rose-600">
+            <div className="border border-rose-500/30 bg-rose-500/10 px-4 py-3 rounded-[3px] font-sans text-sm text-rose-600 dark:text-rose-400">
               {error}
             </div>
           )}
 
           {/* Service details */}
-          <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 space-y-5">
-            <p className="eyebrow text-text-soft">
+          <div className="bg-card border border-border rounded-[6px] p-7 space-y-5">
+            <p className="eyebrow text-muted-foreground">
               <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
               What do you need?
             </p>
@@ -354,13 +354,13 @@ function RequestPage() {
           </div>
 
           {/* Contact details */}
-          <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 space-y-5">
+          <div className="bg-card border border-border rounded-[6px] p-7 space-y-5">
             <div>
-              <p className="eyebrow text-text-soft mb-1">
+              <p className="eyebrow text-muted-foreground mb-1">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                 Your contact details
               </p>
-              <p className="font-sans text-[12px] text-text-soft">
+              <p className="font-sans text-[12px] text-muted-foreground">
                 Providers will use these to send you quotes. Pre-filled from your profile — edit if
                 needed.
               </p>
@@ -391,10 +391,10 @@ function RequestPage() {
           </div>
 
           {/* Trust note */}
-          <div className="border border-hairline rounded-[6px] px-5 py-4">
+          <div className="border border-border rounded-[6px] px-5 py-4">
             <div className="flex gap-3">
-              <span className="inline-block h-2 w-2 rotate-45 border border-hairline shrink-0 mt-0.5" />
-              <p className="font-sans text-[12px] text-text-soft leading-relaxed">
+              <span className="inline-block h-2 w-2 rotate-45 border border-border shrink-0 mt-0.5" />
+              <p className="font-sans text-[12px] text-muted-foreground leading-relaxed">
                 Providers contact you directly via WhatsApp or phone. You agree a fee and pay them
                 directly. NexusZim never holds your money.
               </p>
@@ -402,8 +402,8 @@ function RequestPage() {
           </div>
 
           {search.providerId && (
-            <div className="border border-forest/30 bg-forest/5 rounded-[6px] px-5 py-4">
-              <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-forest">
+            <div className="border border-primary/30 bg-primary/10 rounded-[6px] px-5 py-4">
+              <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-primary">
                 ✓ This brief will be sent directly to your selected provider.
               </p>
             </div>
@@ -435,11 +435,11 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
         {label}
         {required && <span className="text-gold ml-1">*</span>}
         {hint && (
-          <span className="ml-2 normal-case tracking-normal text-text-soft/60 font-sans text-[11px]">
+          <span className="ml-2 normal-case tracking-normal text-muted-foreground/60 font-sans text-[11px]">
             {hint}
           </span>
         )}

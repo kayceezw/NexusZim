@@ -55,7 +55,7 @@ function ContactPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       {/* Forest header */}
       <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-12 md:py-16">
@@ -81,7 +81,7 @@ function ContactPage() {
           {/* Contact details */}
           <div className="space-y-8">
             <div>
-              <p className="eyebrow text-text-soft mb-5">
+              <p className="eyebrow text-muted-foreground mb-5">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                 Reach us directly
               </p>
@@ -104,21 +104,21 @@ function ContactPage() {
               </div>
             </div>
 
-            <div className="border border-hairline rounded-[6px] p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft mb-2">
+            <div className="border border-border rounded-[6px] p-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground mb-2">
                 Response time
               </p>
-              <p className="font-sans text-[13px] text-text-soft leading-relaxed">
+              <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">
                 We typically respond within one business day. For urgent provider enquiries,
                 WhatsApp is fastest.
               </p>
             </div>
 
-            <div className="border border-hairline rounded-[6px] p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-soft mb-2">
+            <div className="border border-border rounded-[6px] p-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground mb-2">
                 Verification enquiries
               </p>
-              <p className="font-sans text-[13px] text-text-soft leading-relaxed">
+              <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">
                 To begin the verification process or upgrade your listing tier, mention it in your
                 message and we'll guide you through the steps.
               </p>
@@ -126,36 +126,36 @@ function ContactPage() {
           </div>
 
           {/* Contact form */}
-          <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-10">
+          <div className="bg-card border border-border rounded-[6px] p-7 md:p-10">
             {sent ? (
               <div className="text-center py-12">
                 <div className="flex justify-center mb-6">
-                  <div className="h-14 w-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                  <div className="h-14 w-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
                     <CheckCircle2 className="h-7 w-7 text-emerald-500" strokeWidth={1.5} />
                   </div>
                 </div>
-                <p className="eyebrow text-text-soft mb-3">
+                <p className="eyebrow text-muted-foreground mb-3">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                   Message sent
                 </p>
-                <h2 className="font-display text-2xl text-text mb-3">
+                <h2 className="font-display text-2xl text-foreground mb-3">
                   Message dispatched.
                 </h2>
-                <p className="font-sans text-[13px] text-text-soft leading-relaxed max-w-xs mx-auto">
+                <p className="font-sans text-[13px] text-muted-foreground leading-relaxed max-w-xs mx-auto">
                   The operator will respond to{" "}
-                  <span className="font-medium text-text">{form.email}</span> within one business
+                  <span className="font-medium text-foreground">{form.email}</span> within one business
                   day.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <p className="eyebrow text-text-soft mb-4">
+                <p className="eyebrow text-muted-foreground mb-4">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                   Send a message
                 </p>
 
                 {error && (
-                  <div className="border border-rose-200 bg-rose-50 px-4 py-3 rounded-[3px] font-sans text-sm text-rose-600">
+                  <div className="border border-rose-500/30 bg-rose-500/10 px-4 py-3 rounded-[3px] font-sans text-sm text-rose-600 dark:text-rose-400">
                     {error}
                   </div>
                 )}
@@ -232,8 +232,8 @@ function ContactItem({
         {icon}
       </div>
       <div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-text-soft/60">{label}</p>
-        <p className="mt-0.5 font-sans text-sm text-text">{value}</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground/60">{label}</p>
+        <p className="mt-0.5 font-sans text-sm text-foreground">{value}</p>
       </div>
     </div>
   );
@@ -252,11 +252,11 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-text-soft">
+      <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
         {label}
         {required && <span className="text-gold ml-1">*</span>}
         {hint && (
-          <span className="ml-2 normal-case tracking-normal text-text-soft/60 font-sans text-[11px]">
+          <span className="ml-2 normal-case tracking-normal text-muted-foreground/60 font-sans text-[11px]">
             {hint}
           </span>
         )}

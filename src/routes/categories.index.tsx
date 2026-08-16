@@ -27,7 +27,7 @@ function CategoriesPage() {
   const totalProviders = dbCategories.reduce((s, c) => s + c.provider_count, 0);
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       {/* Forest header */}
       <div className="bg-forest-ink border-b border-cream/10 py-12">
         <div className="container-page">
@@ -47,12 +47,12 @@ function CategoriesPage() {
       {/* Category grid */}
       <div className="container-page py-12 pb-8">
         {isLoading ? (
-          <p className="font-mono text-[10px] text-text-soft/40 animate-pulse uppercase tracking-widest">
+          <p className="font-mono text-[10px] text-muted-foreground/40 animate-pulse uppercase tracking-widest">
             Loading categories...
           </p>
         ) : dbCategories.length === 0 ? (
-          <div className="border border-dashed border-hairline rounded-[6px] p-16 text-center">
-            <p className="font-sans text-sm text-text-soft">No categories yet.</p>
+          <div className="border border-dashed border-border rounded-[6px] p-16 text-center">
+            <p className="font-sans text-sm text-muted-foreground">No categories yet.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -77,25 +77,25 @@ function CategoriesPage() {
               {dbCategories.map((cat) => (
                 <div
                   key={cat.id}
-                  className="border border-hairline bg-cream-raised rounded-[6px] overflow-hidden"
+                  className="border border-border bg-card rounded-[6px] overflow-hidden"
                 >
                   {/* Parent header */}
                   <Link
                     to="/categories/$slug"
                     params={{ slug: cat.slug }}
-                    className="group flex items-center gap-3 px-5 py-4 border-b border-hairline hover:bg-forest hover:border-forest transition-colors"
+                    className="group flex items-center gap-3 px-5 py-4 border-b border-border hover:bg-forest hover:border-primary transition-colors"
                   >
-                    <span className="font-display text-base font-bold text-text group-hover:text-white transition-colors flex-1 leading-tight">
+                    <span className="font-display text-base font-bold text-foreground group-hover:text-white transition-colors flex-1 leading-tight">
                       {cat.name}
                     </span>
-                    <span className="font-mono text-[9px] text-text-soft/50 group-hover:text-white/50 transition-colors shrink-0">
+                    <span className="font-mono text-[9px] text-muted-foreground/50 group-hover:text-white/50 transition-colors shrink-0">
                       {cat.provider_count} on register
                     </span>
                   </Link>
 
                   {cat.description && (
                     <div className="px-5 py-4">
-                      <p className="font-sans text-[13px] text-text-soft leading-relaxed line-clamp-3">
+                      <p className="font-sans text-[13px] text-muted-foreground leading-relaxed line-clamp-3">
                         {cat.description}
                       </p>
                     </div>

@@ -62,32 +62,32 @@ function LoginPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen grid place-items-center animate-page-enter">
+    <div className="bg-background pt-16 min-h-screen grid place-items-center animate-page-enter">
       <div className="w-full max-w-md my-10 px-5 sm:px-0">
         {/* Brand mark */}
         <div className="text-center mb-8 animate-fade-up">
           <div className="inline-flex items-center gap-2 mb-4">
             <span className="inline-block h-2 w-2 rotate-45 bg-gold" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft">
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
               NexusZim
             </span>
           </div>
-          <h1 className="font-display text-3xl text-text">
+          <h1 className="font-display text-3xl text-foreground">
             Welcome <em className="italic text-gold">back.</em>
           </h1>
-          <p className="mt-2 font-sans text-sm text-text-soft">
+          <p className="mt-2 font-sans text-sm text-muted-foreground">
             Log in to manage your briefs and access intelligence.
           </p>
         </div>
 
         <form
           onSubmit={onSubmit}
-          className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9 space-y-5 animate-form-enter"
+          className="bg-card border border-border rounded-[6px] p-7 md:p-9 space-y-5 animate-form-enter"
         >
           {error && (
             <div
               role="alert"
-              className="border border-amber-300 bg-amber-50 rounded-[3px] px-4 py-3 font-sans text-sm text-amber-800 leading-relaxed"
+              className="border border-amber-500/40 bg-amber-500/10 rounded-[3px] px-4 py-3 font-sans text-sm text-amber-600 leading-relaxed"
             >
               {error}
             </div>
@@ -98,13 +98,13 @@ function LoginPage() {
               type="button"
               onClick={resendConfirmation}
               disabled={resending || !email}
-              className="w-full text-center font-sans text-[13px] font-semibold text-forest hover:text-gold-deep transition-colors disabled:opacity-60"
+              className="w-full text-center font-sans text-[13px] font-semibold text-primary hover:text-gold-deep transition-colors disabled:opacity-60"
             >
               {resending ? "Sending…" : "Resend confirmation email"}
             </button>
           )}
           {resent && (
-            <p className="text-center font-sans text-[13px] text-emerald-600">
+            <p className="text-center font-sans text-[13px] text-emerald-600 dark:text-emerald-400">
               ✓ Confirmation link sent to {email}. Check your inbox.
             </p>
           )}
@@ -112,7 +112,7 @@ function LoginPage() {
           <div className="space-y-1.5">
             <label
               htmlFor="login-email"
-              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium"
+              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-foreground font-medium"
             >
               Email address
             </label>
@@ -124,7 +124,7 @@ function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com"
-              className="w-full h-11 px-4 bg-cream border border-hairline rounded-[3px] font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest focus:ring-2 focus:ring-forest/10 transition-all"
+              className="w-full h-11 px-4 bg-background border border-border rounded-[3px] font-sans text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
             />
           </div>
 
@@ -132,7 +132,7 @@ function LoginPage() {
             <div className="flex items-center justify-between">
               <label
                 htmlFor="login-password"
-                className="font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium"
+                className="font-mono text-[11px] uppercase tracking-[0.1em] text-foreground font-medium"
               >
                 Password
               </label>
@@ -152,12 +152,12 @@ function LoginPage() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-11 px-4 pr-11 bg-cream border border-hairline rounded-[3px] font-sans text-sm text-text outline-none focus:border-forest focus:ring-2 focus:ring-forest/10 transition-all"
+                className="w-full h-11 px-4 pr-11 bg-background border border-border rounded-[3px] font-sans text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-soft/40 hover:text-forest transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-primary transition-colors"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -173,9 +173,9 @@ function LoginPage() {
             {loading ? "Logging in..." : "Log in"}
           </button>
 
-          <p className="text-center font-sans text-[13px] text-text-soft">
+          <p className="text-center font-sans text-[13px] text-muted-foreground">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-forest hover:underline font-medium">
+            <Link to="/signup" className="text-primary hover:underline font-medium">
               Create account
             </Link>
           </p>

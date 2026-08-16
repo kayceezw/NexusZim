@@ -58,9 +58,9 @@ function profileCompletion(p: ProviderRow): { pct: number; missing: string[] } {
 
 const TIER_LABELS: Record<number, string> = { 1: "Listed", 2: "Checked", 3: "Trusted", 4: "Elite" };
 const TIER_COLORS: Record<number, string> = {
-  1: "text-text-soft border-hairline",
-  2: "text-blue-500 border-blue-300",
-  3: "text-amber-600 border-amber-300",
+  1: "text-muted-foreground border-border",
+  2: "text-blue-500 border-blue-500/40",
+  3: "text-amber-600 border-amber-500/40",
   4: "text-gold border-gold/50",
 };
 
@@ -199,7 +199,7 @@ function ProviderDashboard() {
   const tier = provider?.tier ?? 1;
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       {/* Forest header */}
       <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10 md:py-14">
@@ -234,7 +234,7 @@ function ProviderDashboard() {
           <div className="mt-6">
             <Link
               to="/onboarding/provider"
-              className="border border-cream/20 px-5 py-2.5 rounded-[3px] font-sans text-sm text-cream hover:border-cream/50 hover:bg-cream/5 transition-colors"
+              className="border border-cream/20 px-5 py-2.5 rounded-[3px] font-sans text-sm text-cream hover:border-cream/50 hover:bg-background/5 transition-colors"
             >
               Edit profile
             </Link>
@@ -277,11 +277,11 @@ function ProviderDashboard() {
 
         {/* Profile Completion */}
         {completion && completion.pct < 100 && (
-          <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 md:p-8">
+          <div className="bg-card border border-border rounded-[6px] p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                     Profile completion
                   </p>
                   <span className="font-mono text-sm font-bold text-gold">{completion.pct}%</span>
@@ -293,7 +293,7 @@ function ProviderDashboard() {
                   />
                 </div>
                 {completion.missing.length > 0 && (
-                  <p className="mt-3 font-mono text-[9px] text-text-soft/60 uppercase tracking-wider">
+                  <p className="mt-3 font-mono text-[9px] text-muted-foreground/60 uppercase tracking-wider">
                     Missing: {completion.missing.join(" · ")}
                   </p>
                 )}
@@ -310,22 +310,22 @@ function ProviderDashboard() {
 
         {/* Featured upsell for T1/T2 */}
         {tier < 3 && (
-          <div className="border border-forest/20 bg-forest/5 rounded-[6px] p-6 md:p-8 grid gap-6 md:grid-cols-[1fr_auto] items-center">
+          <div className="border border-primary/20 bg-primary/10 rounded-[6px] p-6 md:p-8 grid gap-6 md:grid-cols-[1fr_auto] items-center">
             <div>
-              <p className="eyebrow text-text-soft mb-2">
+              <p className="eyebrow text-muted-foreground mb-2">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                 Upgrade your visibility
               </p>
-              <h3 className="font-display text-xl text-text mb-1">
+              <h3 className="font-display text-xl text-foreground mb-1">
                 Featured listings get <span className="text-gold">8× more enquiries.</span>
               </h3>
-              <p className="font-sans text-[13px] text-text-soft leading-relaxed">
+              <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">
                 Appear at the top of your category and on the homepage. Starts at $15/month.
               </p>
             </div>
             <Link
               to="/contact"
-              className="shrink-0 border border-forest px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors whitespace-nowrap"
+              className="shrink-0 border border-primary px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors whitespace-nowrap"
             >
               Get featured →
             </Link>
@@ -334,16 +334,16 @@ function ProviderDashboard() {
 
         {/* Your Jobs — the delivery + reputation side of the loop */}
         {myBookings.length > 0 && (
-          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-10">
-            <div className="flex items-center justify-between border-b border-hairline pb-5 mb-8">
+          <section className="bg-card border border-border rounded-[6px] p-7 md:p-10">
+            <div className="flex items-center justify-between border-b border-border pb-5 mb-8">
               <div>
-                <p className="eyebrow text-text-soft mb-1">
+                <p className="eyebrow text-muted-foreground mb-1">
                   <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                   Confirmed work
                 </p>
-                <h2 className="font-display text-xl text-text">Your Jobs</h2>
+                <h2 className="font-display text-xl text-foreground">Your Jobs</h2>
               </div>
-              <span className="font-mono text-[10px] text-text-soft uppercase tracking-widest">
+              <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
                 {completedJobs} completed
               </span>
             </div>
@@ -362,16 +362,16 @@ function ProviderDashboard() {
         )}
 
         {/* Available Briefs */}
-        <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-10">
-          <div className="flex items-center justify-between border-b border-hairline pb-5 mb-8">
+        <section className="bg-card border border-border rounded-[6px] p-7 md:p-10">
+          <div className="flex items-center justify-between border-b border-border pb-5 mb-8">
             <div>
-              <p className="eyebrow text-text-soft mb-1">
+              <p className="eyebrow text-muted-foreground mb-1">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
                 Incoming briefs
               </p>
-              <h2 className="font-display text-xl text-text">Available Briefs</h2>
+              <h2 className="font-display text-xl text-foreground">Available Briefs</h2>
             </div>
-            <span className="font-mono text-[10px] text-text-soft uppercase tracking-widest">
+            <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
               {requests.length} open
             </span>
           </div>
@@ -383,7 +383,7 @@ function ProviderDashboard() {
               ))}
             </div>
           ) : requests.length === 0 ? (
-            <p className="font-sans text-sm text-text-soft italic">
+            <p className="font-sans text-sm text-muted-foreground italic">
               No briefs currently match your category. Check back shortly.
             </p>
           ) : (
@@ -403,25 +403,25 @@ function ProviderDashboard() {
                 return (
                   <div
                     key={r.id}
-                    className="border border-hairline rounded-[3px] transition-all hover:border-forest"
+                    className="border border-border rounded-[3px] transition-all hover:border-primary"
                   >
                     <div className="p-5 md:p-6">
                       <div className="flex flex-col md:flex-row md:items-start justify-between gap-5">
                         <div className="min-w-0 flex-1">
-                          <h3 className="font-display text-lg text-text">
+                          <h3 className="font-display text-lg text-foreground">
                             {r.service_name ?? r.title}
                           </h3>
-                          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[10px] uppercase tracking-widest text-text-soft">
+                          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                             <span>{r.city ?? "—"}</span>
                             {r.budget && (
                               <span className="text-gold">Budget: ${Number(r.budget).toFixed(0)}</span>
                             )}
                             <span>Needed: {r.needed_by ?? "ASAP"}</span>
-                            <span className="text-text-soft/40">{timeAgo(r.created_at)}</span>
+                            <span className="text-muted-foreground/40">{timeAgo(r.created_at)}</span>
                           </div>
 
                           {r.description && (
-                            <p className="mt-3 font-sans text-[13px] text-text-soft leading-relaxed max-w-2xl line-clamp-2">
+                            <p className="mt-3 font-sans text-[13px] text-muted-foreground leading-relaxed max-w-2xl line-clamp-2">
                               {r.description}
                             </p>
                           )}
@@ -440,7 +440,7 @@ function ProviderDashboard() {
                             {r.client_email && (
                               <a
                                 href={`mailto:${r.client_email}?subject=${emailSubject}&body=${emailBody}`}
-                                className="border border-forest/30 px-4 py-2 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest hover:bg-forest/5 transition-colors"
+                                className="border border-primary/30 px-4 py-2 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-primary/10 transition-colors"
                               >
                                 Email
                               </a>
@@ -450,9 +450,9 @@ function ProviderDashboard() {
 
                         <div className="flex shrink-0 flex-col gap-2">
                           {alreadyQuoted ? (
-                            <div className="flex items-center gap-2 border border-emerald-200 bg-emerald-50 px-4 py-3 rounded-[3px]">
+                            <div className="flex items-center gap-2 border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 rounded-[3px]">
                               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                              <span className="font-mono text-[10px] uppercase tracking-widest text-emerald-600">
+                              <span className="font-mono text-[10px] uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                                 Quoted
                               </span>
                             </div>
@@ -474,13 +474,13 @@ function ProviderDashboard() {
                     </div>
 
                     {isExpanded && !alreadyQuoted && (
-                      <div className="border-t border-hairline bg-cream px-5 py-5 md:px-6">
-                        <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft mb-4">
+                      <div className="border-t border-border bg-background px-5 py-5 md:px-6">
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
                           Your quote
                         </p>
                         <div className="grid gap-3 md:grid-cols-[1fr_2fr_auto]">
                           <div>
-                            <label className="block font-mono text-[9px] uppercase tracking-widest text-text-soft/60 mb-1.5">
+                            <label className="block font-mono text-[9px] uppercase tracking-widest text-muted-foreground/60 mb-1.5">
                               Amount (USD) *
                             </label>
                             <input
@@ -495,7 +495,7 @@ function ProviderDashboard() {
                             />
                           </div>
                           <div>
-                            <label className="block font-mono text-[9px] uppercase tracking-widest text-text-soft/60 mb-1.5">
+                            <label className="block font-mono text-[9px] uppercase tracking-widest text-muted-foreground/60 mb-1.5">
                               Message (optional)
                             </label>
                             <input
@@ -539,12 +539,12 @@ function ProviderDashboard() {
 }
 
 const PROVIDER_JOB_BADGE: Record<string, string> = {
-  pending: "border-amber-300 text-amber-600 bg-amber-50",
-  confirmed: "border-forest/30 text-forest bg-forest/5",
-  in_progress: "border-blue-300 text-blue-600 bg-blue-50",
-  completed: "border-emerald-300 text-emerald-600 bg-emerald-50",
-  cancelled: "border-rose-300 text-rose-600 bg-rose-50",
-  refunded: "border-text-soft/30 text-text-soft bg-hairline/30",
+  pending: "border-amber-500/40 text-amber-600 bg-amber-500/10",
+  confirmed: "border-primary/30 text-primary bg-primary/10",
+  in_progress: "border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-500/10",
+  completed: "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10",
+  cancelled: "border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/10",
+  refunded: "border-text-soft/30 text-muted-foreground bg-hairline/30",
 };
 
 function ProviderJobRow({
@@ -561,11 +561,11 @@ function ProviderJobRow({
   const canStart = booking.status === "confirmed" || booking.status === "pending";
   const canComplete = booking.status === "in_progress";
   return (
-    <div className="border border-hairline rounded-[3px] p-5 md:p-6">
+    <div className="border border-border rounded-[3px] p-5 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-3">
-            <h3 className="font-display text-lg text-text">{booking.notes || "Job"}</h3>
+            <h3 className="font-display text-lg text-foreground">{booking.notes || "Job"}</h3>
             <span
               className={`border px-2.5 py-0.5 rounded-[3px] font-mono text-[9px] uppercase tracking-widest ${
                 PROVIDER_JOB_BADGE[booking.status] ?? PROVIDER_JOB_BADGE.pending
@@ -574,22 +574,22 @@ function ProviderJobRow({
               {booking.status.replace("_", " ")}
             </span>
           </div>
-          <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-text-soft">
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
             Agreed: <span className="text-gold">${Number(booking.amount).toFixed(0)}</span>
-            <span className="text-text-soft/50"> · paid to you directly</span>
+            <span className="text-muted-foreground/50"> · paid to you directly</span>
           </p>
           {booking.status === "completed" && booking.reviewed && (
             <div className="mt-3 border-l-2 border-gold/40 pl-3">
               <RatingDisplay average={booking.review_rating ?? 0} count={1} />
               {booking.review_comment && (
-                <p className="mt-1.5 font-sans text-[13px] italic text-text-soft leading-relaxed">
+                <p className="mt-1.5 font-sans text-[13px] italic text-muted-foreground leading-relaxed">
                   "{booking.review_comment}"
                 </p>
               )}
             </div>
           )}
           {booking.status === "completed" && !booking.reviewed && (
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-text-soft/60">
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
               Awaiting client review
             </p>
           )}
@@ -599,7 +599,7 @@ function ProviderJobRow({
             <button
               onClick={onStart}
               disabled={busy}
-              className="inline-flex items-center justify-center gap-2 border border-forest px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-forest hover:bg-forest hover:text-cream transition-colors disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 border border-primary px-5 py-2.5 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-forest hover:text-cream transition-colors disabled:opacity-60"
             >
               Start job
             </button>
@@ -632,15 +632,15 @@ function VisibilityStat({
   trend: string;
 }) {
   return (
-    <div className="bg-cream-raised border border-hairline rounded-[6px] p-5 flex flex-col gap-3">
+    <div className="bg-card border border-border rounded-[6px] p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         {icon}
-        <span className="font-mono text-[9px] text-text-soft/60 uppercase tracking-widest">
+        <span className="font-mono text-[9px] text-muted-foreground/60 uppercase tracking-widest">
           {trend}
         </span>
       </div>
-      <p className="font-display text-3xl text-text">{value}</p>
-      <p className="font-mono text-[9px] uppercase tracking-widest text-text-soft">{label}</p>
+      <p className="font-display text-3xl text-foreground">{value}</p>
+      <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">{label}</p>
     </div>
   );
 }

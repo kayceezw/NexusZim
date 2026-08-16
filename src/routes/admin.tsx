@@ -143,7 +143,7 @@ function AdminPage() {
   ];
 
   return (
-    <div className="bg-cream pt-16 min-h-screen animate-page-enter">
+    <div className="bg-background pt-16 min-h-screen animate-page-enter">
       {/* Forest header */}
       <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10">
@@ -200,7 +200,7 @@ function AdminPage() {
 
         {/* Platform traffic — visitor analytics */}
         <div>
-          <p className="eyebrow text-text-soft mb-3">
+          <p className="eyebrow text-muted-foreground mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
             Platform traffic
           </p>
@@ -218,13 +218,13 @@ function AdminPage() {
 
         {/* Amber alert banner if pending providers exist */}
         {pendingCount > 0 && (
-          <div className="flex items-start gap-4 bg-amber-50 border border-amber-300 rounded-[6px] px-5 py-4 animate-fade-in">
+          <div className="flex items-start gap-4 bg-amber-500/10 border border-amber-500/40 rounded-[6px] px-5 py-4 animate-fade-in">
             <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" strokeWidth={1.5} />
             <div className="flex-1 min-w-0">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-amber-700 mb-1">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-amber-600 mb-1">
                 Action required
               </p>
-              <p className="font-sans text-sm text-amber-800">
+              <p className="font-sans text-sm text-amber-600">
                 <span className="font-semibold">{pendingCount} provider{pendingCount !== 1 ? "s" : ""}</span>{" "}
                 {pendingCount === 1 ? "has" : "have"} submitted an application and{" "}
                 {pendingCount === 1 ? "is" : "are"} awaiting verification. Review and approve or reject below.
@@ -240,15 +240,15 @@ function AdminPage() {
         )}
 
         {/* Tab navigation */}
-        <div className="border-b border-hairline flex gap-0 overflow-x-auto no-scrollbar">
+        <div className="border-b border-border flex gap-0 overflow-x-auto no-scrollbar">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-5 py-3 font-mono text-[10px] uppercase tracking-widest border-b-2 transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "border-forest text-forest"
-                  : "border-transparent text-text-soft hover:text-text"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               {tab.label}
@@ -265,7 +265,7 @@ function AdminPage() {
         {activeTab === "pending" && (
           <section className="space-y-4 animate-fade-in">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-xl text-text">
+              <h2 className="font-display text-xl text-foreground">
                 Pending Verifications
                 {pendingCount > 0 && (
                   <span className="ml-3 inline-flex items-center justify-center h-6 w-6 rounded-full bg-amber-500 text-white font-mono text-[10px] font-bold">
@@ -276,10 +276,10 @@ function AdminPage() {
             </div>
 
             {pending.length === 0 ? (
-              <div className="border border-dashed border-hairline rounded-[6px] p-12 text-center bg-cream-raised">
+              <div className="border border-dashed border-border rounded-[6px] p-12 text-center bg-card">
                 <CheckCheck className="h-8 w-8 text-emerald-400 mx-auto mb-3" strokeWidth={1.5} />
-                <p className="font-display text-lg text-text">All clear</p>
-                <p className="mt-1 font-sans text-sm text-text-soft">
+                <p className="font-display text-lg text-foreground">All clear</p>
+                <p className="mt-1 font-sans text-sm text-muted-foreground">
                   No providers awaiting verification.
                 </p>
               </div>
@@ -290,26 +290,26 @@ function AdminPage() {
                   return (
                     <div
                       key={p.user_id}
-                      className="flex flex-col gap-5 border border-amber-200 bg-amber-50/40 rounded-[6px] p-5 md:flex-row md:items-center md:justify-between hover:border-amber-300 transition-colors"
+                      className="flex flex-col gap-5 border border-amber-500/30 bg-amber-500/10 rounded-[6px] p-5 md:flex-row md:items-center md:justify-between hover:border-amber-500/40 transition-colors"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="inline-block h-2 w-2 rounded-full bg-amber-400 shrink-0" />
-                          <p className="font-display text-lg text-text">{p.business_name}</p>
+                          <p className="font-display text-lg text-foreground">{p.business_name}</p>
                         </div>
-                        <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft">
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                           {(p.categories as { name: string } | null)?.name ?? "No category"} ·{" "}
                           {p.city ?? "—"}
                         </p>
                         {email && (
-                          <p className="mt-1 font-mono text-[9px] text-text-soft/60">{email}</p>
+                          <p className="mt-1 font-mono text-[9px] text-muted-foreground/60">{email}</p>
                         )}
                         {p.bio && (
-                          <p className="mt-2 font-sans text-[13px] text-text-soft line-clamp-2">
+                          <p className="mt-2 font-sans text-[13px] text-muted-foreground line-clamp-2">
                             {p.bio}
                           </p>
                         )}
-                        <p className="mt-2 font-mono text-[9px] text-text-soft/40 uppercase tracking-widest">
+                        <p className="mt-2 font-mono text-[9px] text-muted-foreground/40 uppercase tracking-widest">
                           Applied{" "}
                           {new Date(p.created_at).toLocaleDateString("en-ZW", {
                             day: "numeric",
@@ -323,7 +323,7 @@ function AdminPage() {
                         {email && (
                           <button
                             onClick={() => sendPasswordReset(email)}
-                            className="flex items-center gap-1.5 border border-hairline px-3 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-text-soft hover:border-forest hover:text-forest transition-colors"
+                            className="flex items-center gap-1.5 border border-border px-3 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                             title="Send password reset email"
                           >
                             <Mail className="h-3 w-3" />
@@ -345,7 +345,7 @@ function AdminPage() {
                         <button
                           onClick={() => rejectProvider.mutate(p.user_id)}
                           disabled={rejectProvider.isPending}
-                          className="flex items-center gap-1.5 border border-rose-300 text-rose-500 hover:bg-rose-50 px-4 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest transition-colors disabled:opacity-60"
+                          className="flex items-center gap-1.5 border border-rose-500/40 text-rose-500 hover:bg-rose-500/10 px-4 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest transition-colors disabled:opacity-60"
                         >
                           <XCircle className="h-3.5 w-3.5" />
                           Reject
@@ -360,7 +360,7 @@ function AdminPage() {
                               disabled={setTier.isPending}
                               className={`px-3 py-2 rounded-[3px] font-mono text-[9px] uppercase tracking-widest border transition-colors disabled:opacity-60 ${
                                 t === 3
-                                  ? "border-amber-300 text-amber-600 hover:bg-amber-50"
+                                  ? "border-amber-500/40 text-amber-600 hover:bg-amber-500/10"
                                   : "border-gold/50 text-gold hover:bg-gold hover:text-forest-ink"
                               }`}
                             >
@@ -379,31 +379,31 @@ function AdminPage() {
 
         {/* ─── TAB: VERIFIED DIRECTORY ─── */}
         {activeTab === "verified" && (
-          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 animate-fade-in">
-            <h2 className="font-display text-xl text-text mb-6">
+          <section className="bg-card border border-border rounded-[6px] p-7 animate-fade-in">
+            <h2 className="font-display text-xl text-foreground mb-6">
               Verified Directory ({approved.length})
             </h2>
             <div className="space-y-2">
               {approved.length === 0 && (
-                <p className="font-sans text-sm text-text-soft italic">None yet.</p>
+                <p className="font-sans text-sm text-muted-foreground italic">None yet.</p>
               )}
               {approved.map((p) => {
                 const email = p.email ?? null;
                 return (
                   <div
                     key={p.user_id}
-                    className="flex items-center justify-between border border-hairline rounded-[3px] px-4 py-3 hover:border-forest transition-colors"
+                    className="flex items-center justify-between border border-border rounded-[3px] px-4 py-3 hover:border-primary transition-colors"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="truncate font-display text-sm text-text">
+                        <p className="truncate font-display text-sm text-foreground">
                           {p.business_name}
                         </p>
-                        <span className="shrink-0 font-mono text-[8px] text-emerald-500 border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider">
+                        <span className="shrink-0 font-mono text-[8px] text-emerald-500 border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider">
                           verified
                         </span>
                       </div>
-                      <p className="font-mono text-[9px] uppercase tracking-widest text-text-soft">
+                      <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
                         Tier {p.tier} · {p.city ?? "—"}
                         {email && ` · ${email}`}
                       </p>
@@ -416,8 +416,8 @@ function AdminPage() {
                           disabled={p.tier === t}
                           className={`px-2.5 py-1 rounded-[3px] font-mono text-[8px] uppercase tracking-widest border transition-colors disabled:opacity-30 ${
                             p.tier === t
-                              ? "border-forest bg-forest/5 text-forest"
-                              : "border-hairline text-text-soft hover:border-forest hover:text-forest"
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border text-muted-foreground hover:border-primary hover:text-primary"
                           }`}
                         >
                           T{t}
@@ -426,7 +426,7 @@ function AdminPage() {
                       {email && (
                         <button
                           onClick={() => sendPasswordReset(email)}
-                          className="flex items-center gap-1 border border-hairline px-2.5 py-1.5 rounded-[3px] font-mono text-[8px] uppercase tracking-widest text-text-soft hover:border-forest hover:text-forest transition-colors"
+                          className="flex items-center gap-1 border border-border px-2.5 py-1.5 rounded-[3px] font-mono text-[8px] uppercase tracking-widest text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                           title={`Send password reset to ${email}`}
                         >
                           <Mail className="h-3 w-3" />
@@ -434,7 +434,7 @@ function AdminPage() {
                       )}
                       <button
                         onClick={() => setTier.mutate({ userId: p.user_id, tier: 1 })}
-                        className="font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-rose-500 transition-colors"
+                        className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/40 hover:text-rose-500 transition-colors"
                       >
                         Demote
                       </button>
@@ -448,25 +448,25 @@ function AdminPage() {
 
         {/* ─── TAB: CLIENTS ─── */}
         {activeTab === "clients" && (
-          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 animate-fade-in">
-            <h2 className="font-display text-xl text-text mb-6">
+          <section className="bg-card border border-border rounded-[6px] p-7 animate-fade-in">
+            <h2 className="font-display text-xl text-foreground mb-6">
               Platform Clients ({clients?.length ?? 0})
             </h2>
             <div className="space-y-2">
               {(clients ?? []).map((c) => (
                 <div
                   key={c.id}
-                  className="flex items-center justify-between border border-hairline rounded-[3px] px-4 py-3 hover:border-forest transition-colors"
+                  className="flex items-center justify-between border border-border rounded-[3px] px-4 py-3 hover:border-primary transition-colors"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-display text-sm text-text">
+                    <p className="truncate font-display text-sm text-foreground">
                       {c.full_name || "(no name)"}
                     </p>
-                    <p className="truncate font-mono text-[9px] text-text-soft">{c.email}</p>
+                    <p className="truncate font-mono text-[9px] text-muted-foreground">{c.email}</p>
                   </div>
                   <span
                     className={`font-mono text-[9px] uppercase tracking-widest ${
-                      c.onboarding_completed ? "text-emerald-500" : "text-text-soft/40"
+                      c.onboarding_completed ? "text-emerald-500" : "text-muted-foreground/40"
                     }`}
                   >
                     {c.onboarding_completed ? "Active" : "Pending"}
@@ -479,12 +479,12 @@ function AdminPage() {
 
         {/* ─── TAB: ENQUIRY STREAM ─── */}
         {activeTab === "enquiries" && (
-          <section className="bg-cream-raised border border-hairline rounded-[6px] p-7 animate-fade-in">
-            <h2 className="font-display text-xl text-text mb-6">Enquiry Stream</h2>
+          <section className="bg-card border border-border rounded-[6px] p-7 animate-fade-in">
+            <h2 className="font-display text-xl text-foreground mb-6">Enquiry Stream</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft border-b border-hairline">
+                  <tr className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground border-b border-border">
                     <th className="pb-4 pr-6">Request Title</th>
                     <th className="pb-4 pr-6">Client</th>
                     <th className="pb-4 pr-6">Budget</th>
@@ -493,19 +493,19 @@ function AdminPage() {
                 </thead>
                 <tbody className="divide-y divide-hairline">
                   {(requests ?? []).map((r) => (
-                    <tr key={r.id} className="group hover:bg-cream transition-colors">
-                      <td className="py-3 pr-6 font-display text-sm text-text group-hover:text-forest transition-colors">
+                    <tr key={r.id} className="group hover:bg-background transition-colors">
+                      <td className="py-3 pr-6 font-display text-sm text-foreground group-hover:text-primary transition-colors">
                         {r.title}
                       </td>
                       <td className="py-3 pr-6">
-                        <p className="font-sans text-[13px] text-text-soft">{r.client_name ?? "—"}</p>
-                        <p className="font-mono text-[9px] text-text-soft/60">{r.client_email}</p>
+                        <p className="font-sans text-[13px] text-muted-foreground">{r.client_name ?? "—"}</p>
+                        <p className="font-mono text-[9px] text-muted-foreground/60">{r.client_email}</p>
                       </td>
-                      <td className="py-3 pr-6 font-mono text-xs text-text-soft">
+                      <td className="py-3 pr-6 font-mono text-xs text-muted-foreground">
                         {r.budget ? `$${r.budget}` : "—"}
                       </td>
                       <td className="py-3 text-right">
-                        <span className="border border-hairline px-2 py-1 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-text-soft">
+                        <span className="border border-border px-2 py-1 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
                           {r.status}
                         </span>
                       </td>
@@ -602,16 +602,16 @@ function AddProviderSection() {
   }
 
   return (
-    <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
+    <section className="bg-card border border-border rounded-[6px] p-7">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="font-display text-xl text-text">Add Provider</h2>
-            <span className="font-mono text-[8px] text-emerald-600 border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider">
+            <h2 className="font-display text-xl text-foreground">Add Provider</h2>
+            <span className="font-mono text-[8px] text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider">
               auto-verified
             </span>
           </div>
-          <p className="font-sans text-[12px] text-text-soft">
+          <p className="font-sans text-[12px] text-muted-foreground">
             Providers you add here are automatically verified — you've checked them in person.
           </p>
         </div>
@@ -628,30 +628,30 @@ function AddProviderSection() {
       </div>
 
       {result && (
-        <div className="mt-6 border border-emerald-200 bg-emerald-50 rounded-[6px] p-6 space-y-4">
+        <div className="mt-6 border border-emerald-500/30 bg-emerald-500/10 rounded-[6px] p-6 space-y-4">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
-            <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-600">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
               Provider Account Created
             </p>
           </div>
           <div className="font-mono text-sm space-y-1.5">
             <p>
-              <span className="text-text-soft">Email: </span>
-              <span className="text-text">{result.email}</span>
+              <span className="text-muted-foreground">Email: </span>
+              <span className="text-foreground">{result.email}</span>
             </p>
             <p>
-              <span className="text-text-soft">Password: </span>
+              <span className="text-muted-foreground">Password: </span>
               <span className="text-gold font-bold tracking-widest">{result.tempPassword}</span>
             </p>
           </div>
-          <p className="font-sans text-[12px] text-text-soft">
+          <p className="font-sans text-[12px] text-muted-foreground">
             Share these credentials with the provider. They can change their password after first
             login.
           </p>
           <button
             onClick={copyCredentials}
-            className="flex items-center gap-2 border border-forest/30 px-5 py-2 rounded-[3px] font-mono text-[10px] uppercase tracking-widest text-forest hover:bg-forest hover:text-cream transition-colors"
+            className="flex items-center gap-2 border border-primary/30 px-5 py-2 rounded-[3px] font-mono text-[10px] uppercase tracking-widest text-primary hover:bg-forest hover:text-cream transition-colors"
           >
             {copied ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
             {copied ? "Copied!" : "Copy Login Details"}
@@ -689,7 +689,7 @@ function AddProviderSection() {
             />
 
             <div className="space-y-1.5">
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-text-soft">
+              <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                 Category
               </label>
               <select
@@ -707,7 +707,7 @@ function AddProviderSection() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-text-soft">
+              <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                 Verification Tier
               </label>
               <select
@@ -738,7 +738,7 @@ function AddProviderSection() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block font-mono text-[10px] uppercase tracking-widest text-text-soft">
+            <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               Bio / Description
             </label>
             <textarea
@@ -778,7 +778,7 @@ function AdminField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block font-mono text-[10px] uppercase tracking-widest text-text-soft">
+      <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
         {label}
       </label>
       <input
@@ -803,14 +803,14 @@ function Tile({
 }) {
   return (
     <div
-      className={`bg-cream-raised border rounded-[6px] p-6 transition-colors ${
-        highlight ? "border-amber-300 bg-amber-50/40" : "border-hairline"
+      className={`bg-card border rounded-[6px] p-6 transition-colors ${
+        highlight ? "border-amber-500/40 bg-amber-500/10" : "border-border"
       }`}
     >
       <p className={`font-display text-4xl ${highlight ? "text-amber-500" : "text-gold"}`}>
         {value}
       </p>
-      <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-text-soft">{label}</p>
+      <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -880,30 +880,30 @@ function HeroFeatureSection() {
   }
 
   return (
-    <section className="bg-cream-raised border border-hairline rounded-[6px] p-7">
+    <section className="bg-card border border-border rounded-[6px] p-7">
       <div className="mb-6">
-        <h2 className="font-display text-xl text-text">Hero Featured Provider</h2>
-        <p className="font-sans text-[12px] text-text-soft mt-1">
+        <h2 className="font-display text-xl text-foreground">Hero Featured Provider</h2>
+        <p className="font-sans text-[12px] text-muted-foreground mt-1">
           The provider shown in the registry card on the homepage hero. Leave unset to show the
           NexusZim default.
         </p>
       </div>
 
       {currentProvider && (
-        <div className="mb-5 flex items-center gap-3 border border-emerald-200 bg-emerald-50 rounded-[6px] px-5 py-3">
-          <span className="font-mono text-[8px] text-emerald-600 border border-emerald-200 bg-emerald-100 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider shrink-0">
+        <div className="mb-5 flex items-center gap-3 border border-emerald-500/30 bg-emerald-500/10 rounded-[6px] px-5 py-3">
+          <span className="font-mono text-[8px] text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 bg-emerald-500/15 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider shrink-0">
             Current
           </span>
-          <p className="font-display text-sm text-text flex-1">
+          <p className="font-display text-sm text-foreground flex-1">
             {currentProvider.business_name}
-            <span className="font-sans font-normal text-text-soft ml-2 text-[12px]">
+            <span className="font-sans font-normal text-muted-foreground ml-2 text-[12px]">
               · {currentProvider.city ?? "—"} · Tier {currentProvider.tier}
             </span>
           </p>
           <button
             onClick={clearFeatured}
             disabled={saving}
-            className="font-mono text-[9px] uppercase tracking-widest text-text-soft/50 hover:text-rose-500 transition-colors"
+            className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/50 hover:text-rose-500 transition-colors"
           >
             Clear
           </button>
@@ -911,8 +911,8 @@ function HeroFeatureSection() {
       )}
 
       {!currentProvider && (
-        <div className="mb-5 border border-hairline rounded-[6px] px-5 py-3">
-          <p className="font-sans text-[13px] text-text-soft italic">
+        <div className="mb-5 border border-border rounded-[6px] px-5 py-3">
+          <p className="font-sans text-[13px] text-muted-foreground italic">
             Showing default — "NexusZim"
           </p>
         </div>
@@ -920,7 +920,7 @@ function HeroFeatureSection() {
 
       <div className="flex items-end gap-3">
         <div className="flex-1 space-y-1.5">
-          <label className="block font-mono text-[10px] uppercase tracking-widest text-text-soft">
+          <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             Select Provider
           </label>
           <select

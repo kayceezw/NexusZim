@@ -63,27 +63,27 @@ function AuthCallback() {
   }, [loading, session, error, navigate]);
 
   return (
-    <div className="bg-cream pt-16 min-h-screen grid place-items-center animate-page-enter">
+    <div className="bg-background pt-16 min-h-screen grid place-items-center animate-page-enter">
       <div className="w-full max-w-md my-10 px-5 sm:px-0 text-center">
-        <div className="bg-cream-raised border border-hairline rounded-[6px] p-8 md:p-9 space-y-5">
+        <div className="bg-card border border-border rounded-[6px] p-8 md:p-9 space-y-5">
           {!error ? (
             <>
               <div className="mx-auto h-12 w-12 rounded-full border-2 border-gold/25 border-t-gold animate-spin" />
-              <h1 className="font-display text-2xl text-text">
+              <h1 className="font-display text-2xl text-foreground">
                 Confirming your <em className="italic text-gold">account…</em>
               </h1>
-              <p className="font-sans text-sm text-text-soft">
+              <p className="font-sans text-sm text-muted-foreground">
                 One moment while we verify your email.
               </p>
             </>
           ) : (
             <>
-              <p className="eyebrow text-text-soft justify-center">
+              <p className="eyebrow text-muted-foreground justify-center">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                 Confirmation issue
               </p>
-              <h1 className="font-display text-2xl text-text">This link didn't work</h1>
-              <p className="font-sans text-sm text-text-soft leading-relaxed">{error}</p>
+              <h1 className="font-display text-2xl text-foreground">This link didn't work</h1>
+              <p className="font-sans text-sm text-muted-foreground leading-relaxed">{error}</p>
               <Link
                 to="/login"
                 className="block w-full bg-gold py-3.5 rounded-[3px] font-sans text-sm font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
@@ -92,7 +92,7 @@ function AuthCallback() {
               </Link>
               <Link
                 to="/signup"
-                className="block font-sans text-[13px] text-forest hover:underline"
+                className="block font-sans text-[13px] text-primary hover:underline"
               >
                 Or create a new account
               </Link>

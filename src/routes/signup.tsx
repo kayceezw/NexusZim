@@ -68,20 +68,20 @@ function SignupPage() {
   // ─── Confirmation pending state ───
   if (confirmationPending) {
     return (
-      <div className="bg-cream pt-16 min-h-screen grid place-items-center animate-page-enter">
+      <div className="bg-background pt-16 min-h-screen grid place-items-center animate-page-enter">
         <div className="w-full max-w-md my-10 px-5 sm:px-0">
-          <div className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9 space-y-5 animate-form-enter text-center">
+          <div className="bg-card border border-border rounded-[6px] p-7 md:p-9 space-y-5 animate-form-enter text-center">
             <div className="flex justify-center mb-2">
               <span className="h-14 w-14 rounded-full bg-gold/10 flex items-center justify-center">
                 <MailIcon />
               </span>
             </div>
             <div>
-              <p className="eyebrow text-text-soft mb-2 justify-center">
+              <p className="eyebrow text-muted-foreground mb-2 justify-center">
                 <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
                 Almost there
               </p>
-              <h1 className="font-display text-2xl text-text">
+              <h1 className="font-display text-2xl text-foreground">
                 Check your <em className="italic text-gold">email.</em>
               </h1>
             </div>
@@ -90,9 +90,9 @@ function SignupPage() {
               <p className="font-mono text-[10px] uppercase tracking-widest text-gold mb-2">
                 Confirmation link sent
               </p>
-              <p className="font-sans text-sm text-text-soft leading-relaxed">
+              <p className="font-sans text-sm text-muted-foreground leading-relaxed">
                 We sent a confirmation link to{" "}
-                <span className="font-medium text-text">{email}</span>. Click the link in that
+                <span className="font-medium text-foreground">{email}</span>. Click the link in that
                 email to activate your account, then log in.
               </p>
             </div>
@@ -105,7 +105,7 @@ function SignupPage() {
               ].map((tip) => (
                 <li
                   key={tip}
-                  className="flex items-start gap-2 font-sans text-[13px] text-text-soft"
+                  className="flex items-start gap-2 font-sans text-[13px] text-muted-foreground"
                 >
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 border border-current" />
                   {tip}
@@ -121,7 +121,7 @@ function SignupPage() {
             </Link>
 
             {resent ? (
-              <p className="font-sans text-[13px] text-emerald-600">
+              <p className="font-sans text-[13px] text-emerald-600 dark:text-emerald-400">
                 ✓ New confirmation link sent to {email}.
               </p>
             ) : (
@@ -129,17 +129,17 @@ function SignupPage() {
                 type="button"
                 onClick={resendConfirmation}
                 disabled={resending}
-                className="w-full text-center font-sans text-[13px] font-semibold text-forest hover:text-gold-deep transition-colors disabled:opacity-60"
+                className="w-full text-center font-sans text-[13px] font-semibold text-primary hover:text-gold-deep transition-colors disabled:opacity-60"
               >
                 {resending ? "Sending…" : "Didn't get it? Resend confirmation email"}
               </button>
             )}
-            {error && <p className="font-sans text-[13px] text-rose-600">{error}</p>}
+            {error && <p className="font-sans text-[13px] text-rose-600 dark:text-rose-400">{error}</p>}
 
             <button
               type="button"
               onClick={() => setConfirmationPending(false)}
-              className="w-full text-center font-mono text-[9px] uppercase tracking-widest text-text-soft/40 hover:text-text-soft transition-colors"
+              className="w-full text-center font-mono text-[9px] uppercase tracking-widest text-muted-foreground/40 hover:text-muted-foreground transition-colors"
             >
               Try a different email
             </button>
@@ -150,32 +150,32 @@ function SignupPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen grid place-items-center animate-page-enter">
+    <div className="bg-background pt-16 min-h-screen grid place-items-center animate-page-enter">
       <div className="w-full max-w-md my-10 px-5 sm:px-0">
         {/* Brand mark */}
         <div className="text-center mb-8 animate-fade-up">
           <div className="inline-flex items-center gap-2 mb-4">
             <span className="inline-block h-2 w-2 rotate-45 bg-gold" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-text-soft">
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
               NexusZim
             </span>
           </div>
-          <h1 className="font-display text-3xl text-text">
+          <h1 className="font-display text-3xl text-foreground">
             Join the <em className="italic text-gold">register.</em>
           </h1>
-          <p className="mt-2 font-sans text-sm text-text-soft">
+          <p className="mt-2 font-sans text-sm text-muted-foreground">
             Create your account to post briefs or list your business.
           </p>
         </div>
 
         <form
           onSubmit={onSubmit}
-          className="bg-cream-raised border border-hairline rounded-[6px] p-7 md:p-9 space-y-5 animate-form-enter"
+          className="bg-card border border-border rounded-[6px] p-7 md:p-9 space-y-5 animate-form-enter"
         >
           {error && (
             <div
               role="alert"
-              className="border border-amber-300 bg-amber-50 rounded-[3px] px-4 py-3 font-sans text-sm text-amber-800 leading-relaxed"
+              className="border border-amber-500/40 bg-amber-500/10 rounded-[3px] px-4 py-3 font-sans text-sm text-amber-600 leading-relaxed"
             >
               {error}
             </div>
@@ -183,7 +183,7 @@ function SignupPage() {
 
           {/* Role selector */}
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium mb-2">
+            <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-foreground font-medium mb-2">
               I am joining as
             </p>
             <div className="grid grid-cols-2 gap-2">
@@ -202,7 +202,7 @@ function SignupPage() {
           <div className="space-y-1.5">
             <label
               htmlFor="signup-name"
-              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium"
+              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-foreground font-medium"
             >
               Full name <span className="text-gold">*</span>
             </label>
@@ -213,14 +213,14 @@ function SignupPage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Your full name"
-              className="w-full h-11 px-4 bg-cream border border-hairline rounded-[3px] font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest focus:ring-2 focus:ring-forest/10 transition-all"
+              className="w-full h-11 px-4 bg-background border border-border rounded-[3px] font-sans text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
             />
           </div>
 
           <div className="space-y-1.5">
             <label
               htmlFor="signup-email"
-              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium"
+              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-foreground font-medium"
             >
               Email address <span className="text-gold">*</span>
             </label>
@@ -232,14 +232,14 @@ function SignupPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com"
-              className="w-full h-11 px-4 bg-cream border border-hairline rounded-[3px] font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest focus:ring-2 focus:ring-forest/10 transition-all"
+              className="w-full h-11 px-4 bg-background border border-border rounded-[3px] font-sans text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
             />
           </div>
 
           <div className="space-y-1.5">
             <label
               htmlFor="signup-password"
-              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-text font-medium"
+              className="block font-mono text-[11px] uppercase tracking-[0.1em] text-foreground font-medium"
             >
               Password <span className="text-gold">*</span>
             </label>
@@ -252,7 +252,7 @@ function SignupPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 8 characters"
-              className="w-full h-11 px-4 bg-cream border border-hairline rounded-[3px] font-sans text-sm text-text placeholder:text-text-soft/50 outline-none focus:border-forest focus:ring-2 focus:ring-forest/10 transition-all"
+              className="w-full h-11 px-4 bg-background border border-border rounded-[3px] font-sans text-sm text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
             />
           </div>
 
@@ -264,9 +264,9 @@ function SignupPage() {
             {loading ? "Creating account..." : "Create account"}
           </button>
 
-          <p className="text-center font-sans text-[13px] text-text-soft">
+          <p className="text-center font-sans text-[13px] text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/login" className="text-forest hover:underline font-medium">
+            <Link to="/login" className="text-primary hover:underline font-medium">
               Log in
             </Link>
           </p>
@@ -292,7 +292,7 @@ function RoleBtn({
       className={`border px-4 py-3 rounded-[3px] font-sans text-[12px] font-semibold transition-all ${
         active
           ? "border-gold bg-gold text-forest-ink"
-          : "border-hairline text-text-soft hover:border-forest hover:text-forest"
+          : "border-border text-muted-foreground hover:border-primary hover:text-primary"
       }`}
     >
       {children}
@@ -307,7 +307,7 @@ function MailIcon() {
       height="28"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#e7a020"
+      stroke="#d4a63c"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"

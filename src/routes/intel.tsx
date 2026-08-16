@@ -7,7 +7,7 @@ export const Route = createFileRoute("/intel")({
 
 function IntelLayout() {
   return (
-    <div className="min-h-screen bg-cream pt-16">
+    <div className="min-h-screen bg-background pt-16">
       {/* Dark forest header */}
       <div className="bg-forest-ink border-b border-cream/10">
         <div className="container-page py-10">
@@ -46,7 +46,7 @@ function IntelTab({ to, label, icon }: { to: string; label: string; icon: React.
     <Link
       to={to}
       activeProps={{ className: "bg-gold text-forest-ink" }}
-      inactiveProps={{ className: "text-cream/60 hover:text-cream hover:bg-cream/10" }}
+      inactiveProps={{ className: "text-cream/60 hover:text-cream hover:bg-background/10" }}
       className="flex items-center gap-2 px-4 py-2 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest transition-all"
     >
       {icon}
@@ -82,18 +82,18 @@ function IntelCard({
   return (
     <Link
       to={to}
-      className="group bg-cream-raised border border-hairline rounded-[6px] p-6 transition-all hover:border-forest hover:shadow-[0_4px_20px_rgba(15,51,35,0.1)] relative overflow-hidden"
+      className="group bg-card border border-border rounded-[6px] p-6 transition-all hover:border-primary hover:shadow-[0_4px_20px_rgba(15,51,35,0.1)] relative overflow-hidden"
     >
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-200" />
-      <p className="eyebrow text-text-soft/60 mb-3">
+      <p className="eyebrow text-muted-foreground/60 mb-3">
         <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
         {eyebrow}
       </p>
-      <h3 className="font-display text-xl text-text group-hover:text-forest transition-colors">
+      <h3 className="font-display text-xl text-foreground group-hover:text-primary transition-colors">
         {title}
       </h3>
-      <p className="mt-2 font-sans text-[13px] text-text-soft leading-relaxed">{description}</p>
-      <div className="mt-6 flex items-center gap-1 font-sans text-[12px] font-semibold text-forest group-hover:text-gold-deep transition-colors">
+      <p className="mt-2 font-sans text-[13px] text-muted-foreground leading-relaxed">{description}</p>
+      <div className="mt-6 flex items-center gap-1 font-sans text-[12px] font-semibold text-primary group-hover:text-gold-deep transition-colors">
         Access data
         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-[3px] duration-150" />
       </div>

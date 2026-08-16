@@ -24,8 +24,8 @@ export const Route = createFileRoute("/book/$providerId")({
   component: EnquiryPage,
   notFoundComponent: () => (
     <div className="container-page py-24 text-center">
-      <h1 className="font-display text-2xl text-text">Provider not found</h1>
-      <Link to="/search" className="mt-4 inline-block font-sans text-sm text-forest hover:underline">
+      <h1 className="font-display text-2xl text-foreground">Provider not found</h1>
+      <Link to="/search" className="mt-4 inline-block font-sans text-sm text-primary hover:underline">
         Back to directory
       </Link>
     </div>
@@ -84,30 +84,30 @@ function EnquiryPage() {
 
   if (done) {
     return (
-      <div className="bg-cream pt-16 min-h-screen grid place-items-center">
+      <div className="bg-background pt-16 min-h-screen grid place-items-center">
         <div className="container-page py-20 text-center max-w-xl mx-auto">
-          <div className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 border border-emerald-200">
+          <div className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/30">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <p className="eyebrow text-text-soft mb-4">
+          <p className="eyebrow text-muted-foreground mb-4">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
             Enquiry sent
           </p>
           <h1
-            className="font-display text-text"
+            className="font-display text-foreground"
             style={{ fontSize: "clamp(28px, 4vw, 44px)", lineHeight: "1.08", letterSpacing: "-0.02em" }}
           >
             {provider.business_name} has your details.
           </h1>
-          <p className="mt-5 font-sans text-base text-text-soft leading-relaxed">
+          <p className="mt-5 font-sans text-base text-muted-foreground leading-relaxed">
             They typically respond within{" "}
-            <strong className="text-text font-medium">a day</strong>. They'll reach out directly to
+            <strong className="text-foreground font-medium">a day</strong>. They'll reach out directly to
             discuss your requirements and agree on a fee.
           </p>
-          <div className="mt-6 mx-auto max-w-sm border border-forest/20 bg-forest/5 rounded-[6px] p-5">
-            <p className="font-sans text-[13px] text-forest leading-relaxed">
+          <div className="mt-6 mx-auto max-w-sm border border-primary/20 bg-primary/10 rounded-[6px] p-5">
+            <p className="font-sans text-[13px] text-primary leading-relaxed">
               <strong>You pay the provider directly.</strong> NexusZim never holds money or charges a
               fee. The final rate is whatever you agree with the provider.
             </p>
@@ -121,7 +121,7 @@ function EnquiryPage() {
             </Link>
             <Link
               to="/"
-              className="border border-forest px-8 py-3 rounded-[3px] font-sans text-sm font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+              className="border border-primary px-8 py-3 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
             >
               Return Home
             </Link>
@@ -132,12 +132,12 @@ function EnquiryPage() {
   }
 
   return (
-    <div className="bg-cream pt-16 min-h-screen">
+    <div className="bg-background pt-16 min-h-screen">
       <div className="container-page pt-8 pb-2">
         <Link
           to="/providers/$providerId"
           params={{ providerId: provider.user_id }}
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-text-soft hover:text-forest transition-colors"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground hover:text-primary transition-colors"
         >
           <ArrowLeft className="h-3 w-3" />
           Back to profile
@@ -148,26 +148,26 @@ function EnquiryPage() {
         <div className="grid gap-10 lg:grid-cols-[1fr_340px]">
           {/* Form */}
           <div>
-            <p className="eyebrow text-text-soft mb-4">
+            <p className="eyebrow text-muted-foreground mb-4">
               <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
               Direct Enquiry
             </p>
             <h1
-              className="font-display text-text mb-2"
+              className="font-display text-foreground mb-2"
               style={{ fontSize: "clamp(28px, 4vw, 44px)", lineHeight: "1.08", letterSpacing: "-0.02em" }}
             >
               Send enquiry to{" "}
-              <em className="italic text-forest">{provider.business_name}</em>
+              <em className="italic text-primary">{provider.business_name}</em>
             </h1>
-            <p className="font-sans text-[14px] text-text-soft mb-8 max-w-lg">
+            <p className="font-sans text-[14px] text-muted-foreground mb-8 max-w-lg">
               Share your requirements. The provider will contact you directly to discuss scope and
               agree on a fee — no payment goes through NexusZim.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Requirements */}
-              <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 space-y-5">
-                <h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-text-soft">
+              <div className="bg-card border border-border rounded-[6px] p-6 space-y-5">
+                <h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
                   Your requirements
                 </h2>
 
@@ -210,7 +210,7 @@ function EnquiryPage() {
                   id="eq-budget"
                 >
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[12px] text-text-soft pointer-events-none">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[12px] text-muted-foreground pointer-events-none">
                       $
                     </span>
                     <input
@@ -227,12 +227,12 @@ function EnquiryPage() {
               </div>
 
               {/* Contact */}
-              <div className="bg-cream-raised border border-hairline rounded-[6px] p-6 space-y-5">
+              <div className="bg-card border border-border rounded-[6px] p-6 space-y-5">
                 <div>
-                  <h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-text-soft">
+                  <h2 className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
                     Your contact details
                   </h2>
-                  <p className="mt-1 font-sans text-[12px] text-text-soft">
+                  <p className="mt-1 font-sans text-[12px] text-muted-foreground">
                     The provider uses these to reach you directly.
                   </p>
                 </div>
@@ -278,7 +278,7 @@ function EnquiryPage() {
               </div>
 
               {error && (
-                <div role="alert" className="border border-rose-300 bg-rose-50 rounded-[3px] p-4 font-sans text-sm text-rose-700">
+                <div role="alert" className="border border-rose-500/40 bg-rose-500/10 rounded-[3px] p-4 font-sans text-sm text-rose-600 dark:text-rose-400">
                   {error}
                 </div>
               )}
@@ -291,7 +291,7 @@ function EnquiryPage() {
                 {submitting ? "Sending…" : `Send enquiry to ${provider.business_name}`}
               </button>
 
-              <p className="text-center font-sans text-[12px] text-text-soft">
+              <p className="text-center font-sans text-[12px] text-muted-foreground">
                 NexusZim does not take a fee. You pay the provider directly after agreeing on terms.
               </p>
             </form>
@@ -299,42 +299,42 @@ function EnquiryPage() {
 
           {/* Provider sidebar */}
           <aside className="lg:sticky lg:top-24 lg:self-start space-y-4">
-            <div className="bg-cream-raised border border-hairline rounded-[6px] overflow-hidden">
+            <div className="bg-card border border-border rounded-[6px] overflow-hidden">
               <div
-                className={`flex items-center justify-center py-10 border-b border-hairline ${avatarColor}`}
+                className={`flex items-center justify-center py-10 border-b border-border ${avatarColor}`}
               >
                 <span className="font-sans text-3xl font-bold tracking-tight">{initials}</span>
               </div>
               <div className="p-5 space-y-4">
                 <div>
-                  <h3 className="font-display text-xl text-text">{provider.business_name}</h3>
+                  <h3 className="font-display text-xl text-foreground">{provider.business_name}</h3>
                   {categoryName && (
-                    <p className="mt-0.5 font-sans text-[13px] text-text-soft">{categoryName}</p>
+                    <p className="mt-0.5 font-sans text-[13px] text-muted-foreground">{categoryName}</p>
                   )}
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                   <Hallmark tier={provider.tier} />
                   {provider.city && (
-                    <span className="flex items-center gap-1 font-mono text-[11px] text-text-soft">
+                    <span className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
                       <MapPin className="h-3 w-3 shrink-0" strokeWidth={1.5} />
                       {provider.city}
                     </span>
                   )}
                 </div>
 
-                <div className="pt-3 border-t border-hairline space-y-2">
-                  <p className="font-mono text-[11px] text-text-soft">
+                <div className="pt-3 border-t border-border space-y-2">
+                  <p className="font-mono text-[11px] text-muted-foreground">
                     Typically responds within{" "}
-                    <strong className="text-text">a day</strong>
-                    <span className="text-text-soft/60"> — final rate agreed directly</span>
+                    <strong className="text-foreground">a day</strong>
+                    <span className="text-muted-foreground/60"> — final rate agreed directly</span>
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="border border-forest/20 bg-forest/5 rounded-[6px] p-4">
-              <p className="font-sans text-[12px] text-forest leading-relaxed">
+            <div className="border border-primary/20 bg-primary/10 rounded-[6px] p-4">
+              <p className="font-sans text-[12px] text-primary leading-relaxed">
                 <strong>You pay the provider directly.</strong> NexusZim never holds money or charges
                 a commission. The final amount is whatever you and the provider agree.
               </p>
@@ -359,7 +359,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="mb-1.5 block font-mono text-[9px] font-bold uppercase tracking-widest text-text-soft/70"
+        className="mb-1.5 block font-mono text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70"
       >
         {label}
       </label>

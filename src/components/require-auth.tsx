@@ -15,10 +15,10 @@ export function RequireAuth({
 
   if (loading) {
     return (
-      <div className="bg-cream min-h-[60vh] grid place-items-center">
+      <div className="bg-background min-h-[60vh] grid place-items-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-6 w-6 border-2 border-hairline border-t-forest rounded-full animate-spin" />
-          <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft/60">
+          <div className="h-6 w-6 border-2 border-border border-t-forest rounded-full animate-spin" />
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
             Checking access...
           </p>
         </div>
@@ -39,20 +39,20 @@ export function RequireAuth({
   if (roles && roles.length > 0 && !hasAnyRole(roles)) {
     const dashTo = dashboardPathForRoles(userRoles, onboardingCompleted);
     return (
-      <div className="bg-cream min-h-[70vh] grid place-items-center px-5">
+      <div className="bg-background min-h-[70vh] grid place-items-center px-5">
         <div className="w-full max-w-sm text-center space-y-5">
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-gold/10 border border-gold/20 mx-auto">
             <span className="font-mono text-lg text-gold">✗</span>
           </div>
           <div>
-            <p className="eyebrow text-text-soft mb-2">
+            <p className="eyebrow text-muted-foreground mb-2">
               <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
               Restricted area
             </p>
-            <h1 className="font-display text-2xl text-text">
+            <h1 className="font-display text-2xl text-foreground">
               This page isn't for you — <em className="italic text-gold">yet.</em>
             </h1>
-            <p className="mt-3 font-sans text-sm text-text-soft leading-relaxed">
+            <p className="mt-3 font-sans text-sm text-muted-foreground leading-relaxed">
               Your account doesn't have the right access level for this section.
               Head back to your dashboard.
             </p>
@@ -65,7 +65,7 @@ export function RequireAuth({
           </Link>
           <Link
             to="/"
-            className="block w-full border border-hairline py-3 text-center rounded-[3px] font-sans text-sm text-text-soft hover:border-forest hover:text-forest transition-colors"
+            className="block w-full border border-border py-3 text-center rounded-[3px] font-sans text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
           >
             Go to homepage
           </Link>

@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { NexusZimLogo } from "./registry/logo";
+import { ThemeToggle } from "./theme-toggle";
+import { useTheme } from "@/hooks/use-theme";
 
 const NAV = [
   { to: "/", label: "Home", exact: true },
@@ -20,6 +22,7 @@ export function SiteHeader() {
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   // Pending provider count — only fetched for admins
   const { data: pendingCount = 0 } = useQuery({
@@ -54,22 +57,22 @@ export function SiteHeader() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${
           scrolled
-            ? "bg-cream-raised/95 backdrop-blur-md border-hairline shadow-[0_1px_12px_rgba(15,51,35,0.08)]"
-            : "bg-cream-raised border-hairline"
+            ? "bg-card/95 backdrop-blur-md border-border shadow-[0_1px_12px_rgba(15,51,35,0.08)]"
+            : "bg-card border-border"
         }`}
       >
         <div className="container-page flex h-16 items-center justify-between gap-6">
-          <NexusZimLogo variant="color" size="sm" />
+          <NexusZimLogo variant={resolvedTheme === "dark" ? "reversed" : "color"} size="sm" />
 
           <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
-                className="font-sans text-[13px] font-medium text-text-soft transition-colors hover:text-forest h-16 flex items-center border-b-2 border-transparent hover:border-forest/40"
+                className="font-sans text-[13px] font-medium text-muted-foreground transition-colors hover:text-primary h-16 flex items-center border-b-2 border-transparent hover:border-primary/40"
                 activeProps={{
                   className:
-                    "font-sans text-[13px] font-medium text-forest h-16 flex items-center border-b-2 border-forest",
+                    "font-sans text-[13px] font-medium text-primary h-16 flex items-center border-b-2 border-primary",
                 }}
                 activeOptions={{ exact: n.exact }}
               >
@@ -80,10 +83,10 @@ export function SiteHeader() {
               <>
                 <Link
                   to="/admin"
-                  className="relative font-sans text-[13px] font-medium text-gold transition-colors hover:text-gold-deep h-16 flex items-center border-b-2 border-transparent"
+                  className="relative font-sans text-[13px] font-medium text-primary transition-colors hover:opacity-70 h-16 flex items-center border-b-2 border-transparent"
                   activeProps={{
                     className:
-                      "relative font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center",
+                      "relative font-sans text-[13px] font-medium text-gold-deep dark:text-gold border-b-2 border-gold h-16 flex items-center",
                   }}
                   activeOptions={{ exact: true }}
                 >
@@ -96,10 +99,10 @@ export function SiteHeader() {
                 </Link>
                 <Link
                   to="/admin/concierge"
-                  className="font-sans text-[13px] font-medium text-gold transition-colors hover:text-gold-deep h-16 flex items-center border-b-2 border-transparent"
+                  className="font-sans text-[13px] font-medium text-primary transition-colors hover:opacity-70 h-16 flex items-center border-b-2 border-transparent"
                   activeProps={{
                     className:
-                      "font-sans text-[13px] font-medium text-gold border-b-2 border-gold h-16 flex items-center",
+                      "font-sans text-[13px] font-medium text-gold-deep dark:text-gold border-b-2 border-gold h-16 flex items-center",
                   }}
                 >
                   Premium
@@ -109,6 +112,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             {user ? (
               <div className="hidden lg:flex items-center gap-3">
                 <UserMenu onSignOut={handleSignOut} />
@@ -117,7 +121,7 @@ export function SiteHeader() {
               <div className="hidden lg:flex items-center gap-3">
                 <Link
                   to="/login"
-                  className="font-sans text-[13px] font-medium text-text-soft transition-colors hover:text-forest"
+                  className="font-sans text-[13px] font-medium text-muted-foreground transition-colors hover:text-primary"
                 >
                   Log In
                 </Link>
@@ -131,7 +135,7 @@ export function SiteHeader() {
             )}
 
             <button
-              className="lg:hidden p-2 text-text-soft hover:text-forest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest rounded-sm"
+              className="lg:hidden p-2 text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
@@ -143,17 +147,17 @@ export function SiteHeader() {
       </header>
 
       {mobileOpen && (
-        <div className="lg:hidden fixed top-16 inset-x-0 bottom-0 z-40 bg-cream-raised overflow-y-auto border-t border-hairline">
+        <div className="lg:hidden fixed top-16 inset-x-0 bottom-0 z-40 bg-card overflow-y-auto border-t border-border">
           <nav className="container-page py-6 flex flex-col gap-1" aria-label="Mobile navigation">
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-text-soft hover:text-forest transition-colors"
+                className="flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-muted-foreground hover:text-primary transition-colors"
                 activeProps={{
                   className:
-                    "flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-forest",
+                    "flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-primary",
                 }}
                 activeOptions={{ exact: n.exact }}
               >
@@ -166,7 +170,7 @@ export function SiteHeader() {
                 <Link
                   to="/admin"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-gold hover:text-gold-deep transition-colors"
+                  className="flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-gold-deep dark:text-gold hover:text-primary transition-colors"
                   activeOptions={{ exact: true }}
                 >
                   <span className="flex items-center gap-2">
@@ -182,7 +186,7 @@ export function SiteHeader() {
                 <Link
                   to="/admin/concierge"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-between border-b border-hairline py-4 font-sans text-base font-medium text-gold hover:text-gold-deep transition-colors"
+                  className="flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-gold-deep dark:text-gold hover:text-primary transition-colors"
                 >
                   Premium
                   <span className="text-hairline">→</span>
@@ -210,7 +214,7 @@ export function SiteHeader() {
                   <Link
                     to="/login"
                     onClick={() => setMobileOpen(false)}
-                    className="w-full text-center border border-hairline py-3.5 rounded-[3px] font-sans text-base font-medium text-text-soft hover:border-forest hover:text-forest transition-colors"
+                    className="w-full text-center border border-border py-3.5 rounded-[3px] font-sans text-base font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                   >
                     Log In
                   </Link>
@@ -285,7 +289,7 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 border border-hairline pl-1 pr-3 py-1 rounded-[3px] hover:border-forest transition-colors"
+        className="flex items-center gap-2 border border-border pl-1 pr-3 py-1 rounded-[3px] hover:border-primary transition-colors"
         aria-expanded={open}
         aria-label="Account menu"
       >
@@ -293,33 +297,33 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
           {initials}
         </span>
         <div className="text-left hidden xl:block">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-text leading-none">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-foreground leading-none">
             {ROLE_LABELS[primaryRole]}
           </p>
-          <p className="font-sans text-[11px] text-text-soft/60 leading-tight truncate max-w-[120px]">
+          <p className="font-sans text-[11px] text-muted-foreground/60 leading-tight truncate max-w-[120px]">
             {email}
           </p>
         </div>
         <ChevronDown
-          className={`h-3.5 w-3.5 text-text-soft/40 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-3.5 w-3.5 text-muted-foreground/40 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 bg-cream-raised border border-hairline rounded-[6px] shadow-[0_4px_24px_rgba(15,51,35,0.12)] z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-[6px] shadow-[0_4px_24px_rgba(15,51,35,0.12)] z-50 overflow-hidden">
           {/* Identity */}
-          <div className="px-4 py-4 border-b border-hairline">
+          <div className="px-4 py-4 border-b border-border">
             <div className="flex items-center gap-3">
               <span className="h-9 w-9 rounded-[3px] bg-forest flex items-center justify-center font-mono text-[13px] font-bold text-gold shrink-0">
                 {initials}
               </span>
               <div className="min-w-0">
-                <p className="font-sans text-[13px] text-text font-medium truncate">{email}</p>
+                <p className="font-sans text-[13px] text-foreground font-medium truncate">{email}</p>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {roles.map((r) => (
                     <span
                       key={r}
-                      className="font-mono text-[8px] uppercase tracking-widest text-forest border border-forest/20 bg-forest/5 px-1.5 py-0.5 rounded-[2px]"
+                      className="font-mono text-[8px] uppercase tracking-widest text-primary border border-primary/20 bg-primary/10 px-1.5 py-0.5 rounded-[2px]"
                     >
                       {ROLE_LABELS[r]}
                     </span>
@@ -331,7 +335,7 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
 
           {/* Dashboard links */}
           <div className="py-1">
-            <p className="px-4 pt-2 pb-1 font-mono text-[9px] uppercase tracking-widest text-text-soft/40">
+            <p className="px-4 pt-2 pb-1 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/40">
               My Dashboards
             </p>
             {dashboards.map((d) => {
@@ -344,10 +348,10 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
                   className="flex items-center gap-3 px-4 py-2.5 hover:bg-forest hover:text-cream transition-colors group"
                 >
                   <Icon
-                    className="h-3.5 w-3.5 text-text-soft/50 group-hover:text-cream/70 shrink-0 transition-colors"
+                    className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-cream/70 shrink-0 transition-colors"
                     strokeWidth={1.5}
                   />
-                  <span className="font-sans text-[13px] text-text group-hover:text-cream transition-colors">
+                  <span className="font-sans text-[13px] text-foreground group-hover:text-cream transition-colors">
                     {d.label}
                   </span>
                 </Link>
@@ -356,19 +360,19 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
           </div>
 
           {/* Sign out */}
-          <div className="border-t border-hairline py-1">
+          <div className="border-t border-border py-1">
             <button
               onClick={() => {
                 setOpen(false);
                 onSignOut();
               }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-rose-50 transition-colors group"
+              className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-rose-500/10 transition-colors group"
             >
               <X
-                className="h-3.5 w-3.5 text-text-soft/50 group-hover:text-rose-500 shrink-0 transition-colors"
+                className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-rose-500 shrink-0 transition-colors"
                 strokeWidth={1.5}
               />
-              <span className="font-sans text-[13px] text-text-soft group-hover:text-rose-600 transition-colors">
+              <span className="font-sans text-[13px] text-muted-foreground group-hover:text-rose-600 transition-colors">
                 Sign out
               </span>
             </button>
@@ -392,16 +396,16 @@ function MobileDashboardLinks({
 
   return (
     <>
-      <div className="border border-hairline rounded-[6px] px-4 py-3 mb-1">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft/50">
+      <div className="border border-border rounded-[6px] px-4 py-3 mb-1">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
           Signed in as
         </p>
-        <p className="font-sans text-[13px] text-text mt-0.5 truncate">{email}</p>
+        <p className="font-sans text-[13px] text-foreground mt-0.5 truncate">{email}</p>
         <div className="flex flex-wrap gap-1 mt-1.5">
           {roles.map((r) => (
             <span
               key={r}
-              className="font-mono text-[8px] uppercase tracking-widest text-forest border border-forest/20 bg-forest/5 px-1.5 py-0.5 rounded-[2px]"
+              className="font-mono text-[8px] uppercase tracking-widest text-primary border border-primary/20 bg-primary/10 px-1.5 py-0.5 rounded-[2px]"
             >
               {ROLE_LABELS[r]}
             </span>
@@ -415,7 +419,7 @@ function MobileDashboardLinks({
             key={d.to}
             to={d.to}
             onClick={onClose}
-            className="w-full flex items-center gap-3 border border-forest py-3.5 px-5 rounded-[3px] font-sans text-base font-semibold text-forest hover:bg-forest hover:text-cream transition-colors"
+            className="w-full flex items-center gap-3 border border-primary py-3.5 px-5 rounded-[3px] font-sans text-base font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
           >
             <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
             {d.label}
@@ -424,7 +428,7 @@ function MobileDashboardLinks({
       })}
       <button
         onClick={onSignOut}
-        className="w-full border border-hairline py-3.5 rounded-[3px] font-sans text-base font-medium text-text-soft hover:border-rose-300 hover:text-rose-600 transition-colors"
+        className="w-full border border-border py-3.5 rounded-[3px] font-sans text-base font-medium text-muted-foreground hover:border-rose-500/40 hover:text-rose-600 transition-colors"
       >
         Sign out
       </button>
@@ -463,13 +467,13 @@ export function SiteFooter() {
             </Link>
             <Link
               to="/onboarding/provider"
-              className="border border-cream/20 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-cream/5 transition-colors"
+              className="border border-cream/20 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-background/5 transition-colors"
             >
               Apply as a Provider
             </Link>
             <Link
               to="/about"
-              className="border border-cream/20 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-cream/5 transition-colors"
+              className="border border-cream/20 px-7 py-3 rounded-[3px] font-sans text-sm font-semibold text-cream hover:border-cream/60 hover:bg-background/5 transition-colors"
             >
               About NexusZim
             </Link>
