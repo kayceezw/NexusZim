@@ -129,10 +129,11 @@ function LandingPage() {
         />
         <div
           aria-hidden
-          className="absolute inset-x-0 top-0 h-px pointer-events-none"
+          className="absolute inset-x-0 top-0 h-px pointer-events-none animate-shimmer-gold"
           style={{
             background:
-              "linear-gradient(90deg, transparent, rgba(212,166,60,0.5), transparent)",
+              "linear-gradient(90deg, transparent, rgba(212,166,60,0.2), rgba(240,205,122,0.7), rgba(212,166,60,0.2), transparent)",
+            backgroundSize: "200% 100%",
           }}
         />
 
@@ -317,14 +318,22 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
     ? [categoryName, "Verified Business", "Trust Record"]
     : ["Verified Providers", "Business Records", "Trust Certificates"];
 
+  const linkProps = provider
+    ? ({ to: "/providers/$providerId", params: { providerId: provider.user_id } } as const)
+    : ({ to: "/search" } as const);
+
   return (
-    <div className="relative bg-forest-ink border border-cream/10 rounded-[8px] p-6 shadow-[var(--elev-xl)] animate-fade-up delay-200 overflow-hidden">
+    <Link
+      {...linkProps}
+      className="group relative block cursor-pointer bg-forest-ink border border-cream/10 rounded-[8px] p-6 shadow-[var(--elev-xl)] hover:border-primary hover:shadow-[var(--elev-xl),var(--glow-gold)] hover:-translate-y-1 transition-all duration-300 animate-fade-up delay-200 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    >
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 h-px"
+        className="absolute inset-x-0 top-0 h-px animate-shimmer-gold"
         style={{
           background:
-            "linear-gradient(90deg, transparent, rgba(240,205,122,0.55), transparent)",
+            "linear-gradient(90deg, transparent, rgba(240,205,122,0.25), rgba(240,205,122,0.75), rgba(240,205,122,0.25), transparent)",
+          backgroundSize: "200% 100%",
         }}
       />
       <div className="flex items-start justify-between gap-3 pb-4 border-b border-cream/10">
@@ -341,7 +350,9 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
       </div>
 
       <div className="py-4 border-b border-cream/10">
-        <p className="font-display text-2xl text-cream leading-tight">{name}</p>
+        <p className="font-display text-2xl leading-tight bg-gradient-to-r from-gold-hi via-gold to-gold-deep bg-clip-text text-transparent transition-[filter] duration-300 group-hover:brightness-110">
+          {name}
+        </p>
         <p className="font-sans text-[13px] text-cream/60 mt-1">
           {provider ? `${city}` : "Zimbabwe's Verified Service Registry · Harare"}
         </p>
@@ -369,14 +380,11 @@ function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
         <span className="font-mono text-[11px] text-cream/40 uppercase tracking-[0.08em]">
           {provider ? `Tier ${tier} · Verified` : "NexusZim Platform · Est. 2024"}
         </span>
-        <Link
-          to="/search"
-          className="font-sans text-[12px] font-semibold text-gold hover:text-gold-deep transition-colors flex items-center gap-1 group"
-        >
-          Browse all records
+        <span className="font-sans text-[12px] font-semibold text-gold group-hover:text-gold-hi transition-colors flex items-center gap-1">
+          {provider ? "View full record" : "Browse all records"}
           <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
-        </Link>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }

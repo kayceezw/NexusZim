@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { Info, BarChart3, ArrowRight } from "lucide-react";
+import { IntelTicker } from "@/components/intel-ticker";
 
 export const Route = createFileRoute("/intel")({
   component: IntelLayout,
@@ -34,6 +35,9 @@ function IntelLayout() {
         </div>
       </div>
 
+      {/* Live market wire — spans all intel tabs */}
+      <IntelTicker />
+
       <div className="container-page py-10">
         <Outlet />
       </div>
@@ -46,7 +50,7 @@ function IntelTab({ to, label, icon }: { to: string; label: string; icon: React.
     <Link
       to={to}
       activeProps={{ className: "bg-gold text-forest-ink" }}
-      inactiveProps={{ className: "text-cream/60 hover:text-cream hover:bg-background/10" }}
+      inactiveProps={{ className: "text-cream/60 hover:text-cream hover:bg-cream/10" }}
       className="flex items-center gap-2 px-4 py-2 rounded-[3px] font-mono text-[10px] font-bold uppercase tracking-widest transition-all"
     >
       {icon}

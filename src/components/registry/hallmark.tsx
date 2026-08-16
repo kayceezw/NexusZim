@@ -36,7 +36,9 @@ function normalizeTier(tier: number): TierLevel {
 }
 
 export function Hallmark({ tier, className }: HallmarkProps) {
-  const config = TIER_CONFIG[normalizeTier(tier)];
+  const level = normalizeTier(tier);
+  const config = TIER_CONFIG[level];
+  const isCertified = level >= 3;
 
   return (
     <span
@@ -49,7 +51,10 @@ export function Hallmark({ tier, className }: HallmarkProps) {
       )}
     >
       <span
-        className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0"
+        className={cn(
+          "inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0",
+          isCertified && "animate-pulse-soft",
+        )}
         aria-hidden
       />
       {config.label}

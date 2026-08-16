@@ -40,6 +40,80 @@ export type ReviewRow = {
   created_at: string;
 };
 
+/** A live-computed market rate row: price range for a category, derived from the
+ *  actual priced services in that category plus the count of verified providers. */
+export type MarketRate = {
+  categoryId: string;
+  category: string;
+  slug: string;
+  rateLow: number;
+  rateHigh: number;
+  rateAvg: number;
+  serviceCount: number;
+  providerCount: number;
+};
+
+/**
+ * Market Rate Index computed from real data — NOT seed/mock values.
+ * Prices come from `services.base_price` grouped by category; provider counts
+ * come from verified `provider_profiles`. Only categories that actually have
+ * priced services are returned, sorted by provider presence then price.
+ */
+export async function fetchMarketRates(): Promise<MarketRate[]> {
+  const [catsRes, svcsRes, provsRes] = await Promise.all([
+    supabase.from("categories").select("id, name, slug"),
+    supabase.from("services").select("category_id, base_price").eq("active", true),
+    supabase.from("provider_profiles").select("category_id").eq("verified", true),
+  ]);
+
+  const cats = catsRes.data ?? [];
+  const svcs = svcsRes.data ?? [];
+  const provs = provsRes.data ?? [];
+
+  const catById = new Map(cats.map((c) => [c.id, c]));
+
+  const providerCount = new Map<string, number>();
+  for (const p of provs) {
+    if (!p.category_id) continue;
+    providerCount.set(p.category_id, (providerCount.get(p.category_id) ?? 0) + 1);
+  }
+
+  const pricesByCat = new Map<string, number[]>();
+  for (const s of svcs) {
+    if (!s.category_id || s.base_price == null) continue;
+    const arr = pricesByCat.get(s.category_id) ?? [];
+    arr.push(Number(s.base_price));
+    pricesByCat.set(s.category_id, arr);
+  }
+
+  const rows: MarketRate[] = [];
+  for (const [categoryId, prices] of pricesByCat) {
+    const cat = catById.get(categoryId);
+    if (!cat || prices.length === 0) continue;
+    const rateLow = Math.min(...prices);
+    const rateHigh = Math.max(...prices);
+    const rateAvg = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+    rows.push({
+      categoryId,
+      category: cat.name,
+      slug: cat.slug,
+      rateLow,
+      rateHigh,
+      rateAvg,
+      serviceCount: prices.length,
+      providerCount: providerCount.get(categoryId) ?? 0,
+    });
+  }
+
+  rows.sort(
+    (a, b) =>
+      b.providerCount - a.providerCount ||
+      b.serviceCount - a.serviceCount ||
+      a.category.localeCompare(b.category),
+  );
+  return rows;
+}
+
 const AVATAR_COLORS = [
   "bg-forest text-cream",
   "bg-gold text-forest-ink",
