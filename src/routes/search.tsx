@@ -3,13 +3,21 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LiveProviderCard } from "@/components/provider-card";
 import { ProviderCardSkeleton } from "@/components/skeletons";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X, Loader2, SlidersHorizontal } from "lucide-react";
 import {
   fetchProviders,
   fetchCitiesWithCounts,
   fetchCategories,
   fetchRatingsForProviders,
 } from "@/lib/queries";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerClose,
+  DrawerFooter,
+} from "@/components/ui/drawer";
 
 interface SearchParams {
   q?: string;
@@ -58,6 +66,8 @@ function SearchPage() {
   const [minTier, setMinTier] = useState<number>(1);
   const [sortBy, setSortBy] = useState<SortKey>("tier");
   const [page, setPage] = useState(0);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
 
   // Auto-focus search on mount
@@ -132,6 +142,13 @@ function SearchPage() {
 
   const activeCities = citiesData ?? [];
   const activeCategories = dbCategories ?? [];
+
+  // Filtered categories for the drawer's search input
+  const filteredDrawerCategories = categorySearch
+    ? activeCategories.filter((c) =>
+        c.name.toLowerCase().includes(categorySearch.toLowerCase()),
+      )
+    : activeCategories;
 
   const hasMore = (results?.length ?? 0) === PAGE_SIZE;
   // Show spinner when debouncing OR when a new fetch is in flight
@@ -211,9 +228,229 @@ function SearchPage() {
       </div>
 
       <div className="container-page py-6">
+        {/* ─── MOBILE FILTER BAR (hidden on lg+) ─── */}
+        <div className="lg:hidden mb-4 flex items-center gap-3 overflow-x-auto pb-2">
+          {/* Filters button */}
+          <button
+            type="button"
+            onClick={() => setFilterDrawerOpen(true)}
+            className="border border-gold/60 text-gold-deep dark:text-gold bg-forest-soft hover:border-gold transition-colors px-4 h-9 rounded-[3px] font-mono text-[11px] uppercase tracking-[0.08em] flex items-center gap-2 shrink-0"
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="font-mono text-[10px] text-gold">
+                ({activeFilterCount})
+              </span>
+            )}
+          </button>
+
+          {/* Active filter chips — horizontally scrollable */}
+          {city !== "all" && <FilterChip label={city} onRemove={() => setCity("all")} />}
+          {categorySlug !== "all" && (
+            <FilterChip
+              label={
+                activeCategories.find((c) => c.slug === categorySlug)?.name ?? categorySlug
+              }
+              onRemove={() => setCategorySlug("all")}
+            />
+          )}
+          {minTier > 1 && (
+            <FilterChip
+              label={`Min: ${TIER_OPTIONS.find((t) => t.value === minTier)?.label}`}
+              onRemove={() => setMinTier(1)}
+            />
+          )}
+
+          {/* Sort select */}
+          <div className="flex items-center gap-2 shrink-0 ml-auto">
+            <label
+              htmlFor="sort-select-mobile"
+              className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground shrink-0"
+            >
+              Sort:
+            </label>
+            <select
+              id="sort-select-mobile"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortKey)}
+              className="bg-card border border-border rounded-[3px] px-3 py-1.5 font-sans text-[13px] text-foreground outline-none focus:border-primary transition-colors cursor-pointer"
+            >
+              {SORT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* ─── MOBILE FILTER DRAWER ─── */}
+        <Drawer open={filterDrawerOpen} onOpenChange={setFilterDrawerOpen}>
+          <DrawerContent className="max-h-[85vh]">
+            <DrawerHeader className="flex items-center justify-between px-5 py-4 border-b border-border">
+              <DrawerTitle className="font-display text-base text-foreground">
+                Refine Results
+              </DrawerTitle>
+              <DrawerClose asChild>
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Close filters"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </DrawerClose>
+            </DrawerHeader>
+
+            <div className="overflow-y-auto divide-y divide-border">
+              {/* Verification tier */}
+              <div className="px-5 py-4 space-y-2">
+                <p className="eyebrow text-muted-foreground/60 mb-3">Verification tier</p>
+                {TIER_OPTIONS.map((t) => (
+                  <label
+                    key={t.value}
+                    className="flex items-center justify-between cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="radio"
+                        name="drawer-tier"
+                        checked={minTier === t.value}
+                        onChange={() => setMinTier(t.value)}
+                        className="accent-forest"
+                      />
+                      <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
+                        {t.label}+
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              {/* City */}
+              <div className="px-5 py-4 space-y-2">
+                <p className="eyebrow text-muted-foreground/60 mb-3">City</p>
+                <label className="flex items-center justify-between cursor-pointer group">
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="drawer-city"
+                      checked={city === "all"}
+                      onChange={() => setCity("all")}
+                      className="accent-forest"
+                    />
+                    <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
+                      All cities
+                    </span>
+                  </div>
+                </label>
+                {activeCities.length === 0 ? (
+                  <p className="font-sans text-[12px] text-muted-foreground/50 italic">No cities yet</p>
+                ) : (
+                  activeCities.slice(0, 10).map((c) => (
+                    <label
+                      key={c.city}
+                      className="flex items-center justify-between cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <input
+                          type="radio"
+                          name="drawer-city"
+                          checked={city === c.city}
+                          onChange={() => setCity(c.city)}
+                          className="accent-forest"
+                        />
+                        <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
+                          {c.city}
+                        </span>
+                      </div>
+                      {c.count > 0 && (
+                        <span className="font-mono text-[10px] text-muted-foreground/50">{c.count}</span>
+                      )}
+                    </label>
+                  ))
+                )}
+              </div>
+
+              {/* Category / Specialty */}
+              <div className="px-5 py-4 space-y-2">
+                <p className="eyebrow text-muted-foreground/60 mb-3">Specialty</p>
+                <input
+                  type="text"
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                  placeholder="Search specialties..."
+                  className="w-full h-9 px-3 bg-background border border-border rounded-[3px] font-sans text-[13px] text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors mb-3"
+                />
+                <label className="flex items-center justify-between cursor-pointer group">
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="drawer-category"
+                      checked={categorySlug === "all"}
+                      onChange={() => setCategorySlug("all")}
+                      className="accent-forest"
+                    />
+                    <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
+                      All specialties
+                    </span>
+                  </div>
+                </label>
+                {filteredDrawerCategories.map((c) => (
+                  <label
+                    key={c.slug}
+                    className="flex items-center justify-between cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="radio"
+                        name="drawer-category"
+                        checked={categorySlug === c.slug}
+                        onChange={() => setCategorySlug(c.slug)}
+                        className="accent-forest"
+                      />
+                      <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
+                        {c.name}
+                      </span>
+                    </div>
+                    {c.provider_count > 0 && (
+                      <span className="font-mono text-[10px] text-muted-foreground/50">
+                        {c.provider_count}
+                      </span>
+                    )}
+                  </label>
+                ))}
+                {filteredDrawerCategories.length === 0 && categorySearch && (
+                  <p className="font-sans text-[12px] text-muted-foreground/50 italic">
+                    No specialties match "{categorySearch}"
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <DrawerFooter className="px-5 py-4 border-t border-border gap-2">
+              <button
+                type="button"
+                onClick={() => setFilterDrawerOpen(false)}
+                className="w-full bg-gold text-forest-ink font-sans text-sm font-semibold py-3 rounded-[3px] hover:bg-gold-deep transition-colors"
+              >
+                Apply Filters
+              </button>
+              <button
+                type="button"
+                onClick={() => { resetFilters(); setFilterDrawerOpen(false); }}
+                className="w-full border border-border text-muted-foreground font-sans text-sm py-2.5 rounded-[3px] hover:border-primary hover:text-primary transition-colors"
+              >
+                Clear all
+              </button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
-          {/* ─── FILTER RAIL ─── */}
-          <aside className="space-y-0 lg:sticky lg:top-[calc(4rem+6.5rem)] lg:self-start">
+          {/* ─── FILTER RAIL (desktop only) ─── */}
+          <aside className="hidden lg:block space-y-0 lg:sticky lg:top-[calc(4rem+6.5rem)] lg:self-start">
             <div className="bg-card border border-border rounded-[6px] divide-y divide-hairline">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4">
@@ -360,8 +597,8 @@ function SearchPage() {
 
           {/* ─── RESULTS ─── */}
           <section className="space-y-4">
-            {/* Sort row */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Sort row (desktop) */}
+            <div className="hidden lg:flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
                 {isLoading ? (
                   <span className="animate-pulse">Searching...</span>
@@ -396,9 +633,23 @@ function SearchPage() {
               </div>
             </div>
 
-            {/* Active filter chips */}
+            {/* Result count on mobile (below the filter bar) */}
+            <p className="lg:hidden font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+              {isLoading ? (
+                <span className="animate-pulse">Searching...</span>
+              ) : (
+                <>
+                  {(results?.length ?? 0) === PAGE_SIZE
+                    ? `${PAGE_SIZE}+`
+                    : results?.length ?? 0}{" "}
+                  result{(results?.length ?? 0) !== 1 ? "s" : ""}
+                </>
+              )}
+            </p>
+
+            {/* Active filter chips (desktop only — mobile shows these in the scrollable bar) */}
             {activeFilterCount > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="hidden lg:flex flex-wrap gap-2">
                 {city !== "all" && <FilterChip label={city} onRemove={() => setCity("all")} />}
                 {categorySlug !== "all" && (
                   <FilterChip
