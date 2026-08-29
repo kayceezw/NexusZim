@@ -6,7 +6,7 @@
 
 @theme inline {
   /* Registry fonts */
-  --font-display: "Instrument Serif", Georgia, serif;
+  --font-display: "Montserrat", system-ui, sans-serif;
   --font-sans: "Archivo", system-ui, sans-serif;
   --font-mono: "Spline Sans Mono", ui-monospace, monospace;
   --font-body: "Archivo", system-ui, sans-serif;
@@ -237,9 +237,9 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.05;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
 
   h4,

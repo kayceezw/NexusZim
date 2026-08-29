@@ -186,7 +186,7 @@ export function CertificateOfAccreditation({ registryId }: { registryId: string 
         </div>
 
         {/* Gold seal badge */}
-        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/[0.08] px-3 py-1.5">
+        <div className="mt-6 inline-flex items-center gap-2 rounded-[3px] border border-gold/40 bg-gold/[0.08] px-3 py-1.5">
           <BadgeCheck className="h-4 w-4 text-gold" strokeWidth={2} aria-hidden />
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep">
             Official Seal

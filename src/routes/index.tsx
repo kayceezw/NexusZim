@@ -2,26 +2,11 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Search, ShieldCheck } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  DiamondField,
-  RegistryChip,
-  SectionHeading,
-} from "@/components/registry";
-import {
-  VerificationStandard,
-  CertificateOfAccreditation,
-  CategoryExcellenceGrid,
-} from "@/components/registry/home-sections";
-import { HeroImageUpload, CategoryBgUpload } from "@/components/registry/photo-upload";
-import { StatSkeleton } from "@/components/skeletons";
+import { DiamondField } from "@/components/registry";
+import { HeroImageUpload } from "@/components/registry/photo-upload";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  fetchPlatformStats,
-  fetchCategories,
-  providerRegistryId,
-  type ProviderListing,
-} from "@/lib/queries";
+import { fetchPlatformStats } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,8 +28,6 @@ const REGISTRY_DISCLAIMER =
 function LandingPage() {
   const [q, setQ] = useState("");
   const [heroBg, setHeroBg] = useState<string | null>(null);
-  const [categoryBg, setCategoryBg] = useState<string | null>(null);
-  const [heroProviderId, setHeroProviderId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { roles } = useAuth();
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
@@ -52,34 +35,7 @@ function LandingPage() {
   useEffect(() => {
     const { data: bgData } = supabase.storage.from("site-assets").getPublicUrl("hero-bg.jpg");
     setHeroBg(bgData.publicUrl);
-
-    const { data: catBgData } = supabase.storage
-      .from("site-assets")
-      .getPublicUrl("category-bg.jpg");
-    setCategoryBg(catBgData.publicUrl);
-
-    const { data: cfgData } = supabase.storage.from("site-assets").getPublicUrl("config.json");
-    fetch(`${cfgData.publicUrl}?t=${Date.now()}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((cfg) => {
-        if (cfg?.featuredProviderId) setHeroProviderId(cfg.featuredProviderId);
-      })
-      .catch(() => {});
   }, []);
-
-  const { data: heroProvider } = useQuery({
-    queryKey: ["hero-provider", heroProviderId],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("provider_profiles")
-        .select("*, categories(id, name, slug)")
-        .eq("user_id", heroProviderId!)
-        .maybeSingle();
-      return data as ProviderListing | null;
-    },
-    enabled: !!heroProviderId,
-    staleTime: 5 * 60 * 1000,
-  });
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["platform-stats"],
@@ -87,27 +43,16 @@ function LandingPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: dbCategories = [] } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-    staleTime: 10 * 60 * 1000,
-  });
 
   const STATS =
     statsLoading || !stats
       ? null
       : [
-          { value: String(stats.totalProviders), label: "Providers on register" },
-          { value: String(stats.totalCategories), label: "Service categories" },
-          { value: String(stats.trustCertified), label: "Trust Certified" },
-          { value: String(stats.citiesCount), label: "Cities covered" },
+          { value: String(stats.totalProviders), label: "Providers on register", to: "/search" },
+          { value: String(stats.totalCategories), label: "Service categories", to: "/categories" },
+          { value: String(stats.trustCertified), label: "Trust Certified", to: "/search" },
+          { value: String(stats.citiesCount), label: "Cities covered", to: "/search" },
         ];
-
-  // Registry identifier used in the Certificate-of-Accreditation specimen. Derived
-  // from the featured provider when configured; otherwise a stable house record.
-  const certificateRegistryId = heroProvider
-    ? providerRegistryId(heroProvider.user_id)
-    : "NX-2024-8492A";
 
   function handleSearch(e?: React.FormEvent) {
     e?.preventDefault();
@@ -157,7 +102,7 @@ function LandingPage() {
         <div className="container-page relative z-10">
           <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
             {/* Eyebrow chip */}
-            <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/[0.06] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold-deep animate-fade-up">
+            <span className="inline-flex items-center gap-2 rounded-[3px] border border-gold/40 bg-gold/[0.06] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold-deep animate-fade-up">
               <span aria-hidden className="inline-block h-1.5 w-1.5 rotate-45 bg-gold" />
               Official Registry
             </span>
@@ -218,120 +163,106 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ─── PROOF STRIP (real platform stats) ─── */}
-      <section className="border-b border-forest-ink/20 bg-forest-ink">
-        <div className="container-page">
-          <div className="grid grid-cols-2 lg:grid-cols-4">
-            {statsLoading || !STATS
-              ? [0, 1, 2, 3].map((i) => (
-                  <div key={i} className={i < 3 ? "border-r border-cream/10" : ""}>
-                    <StatSkeleton />
-                  </div>
-                ))
-              : STATS.map((s, i) => (
-                  <div
-                    key={s.label}
-                    className={`animate-fade-in px-4 py-10 text-center ${i < STATS.length - 1 ? "border-r border-cream/10" : ""}`}
-                  >
-                    <p
-                      className="font-display text-cream"
-                      style={{ fontSize: "clamp(40px, 5vw, 64px)", lineHeight: "1.0" }}
-                    >
-                      {s.value}
-                    </p>
-                    <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/40">
-                      {s.label}
-                    </p>
-                  </div>
-                ))}
+      {/* ─── REGISTER WIRE (live platform stats, breaking-news ticker) ─── */}
+      <section
+        className="relative overflow-hidden border-y border-cream/10 bg-forest-ink"
+        aria-label="Live registry statistics"
+      >
+        {statsLoading || !STATS ? (
+          <div className="container-page flex items-center gap-3 py-3.5">
+            <RegisterWireTag />
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cream/50">
+              Register initializing…
+            </span>
           </div>
-        </div>
-      </section>
-
-      {/* ─── 2. THE VERIFICATION STANDARD ─── */}
-      <section className="border-b border-border py-20 lg:py-24">
-        <div className="container-page">
-          <SectionHeading
-            align="center"
-            eyebrow="Accreditation Tiers"
-            title="The Verification Standard"
-            subcopy="Every provider on the register holds one of three verification tiers. Each tier reflects the depth of checks completed against their record."
-            className="mx-auto mb-12"
-          />
-          <VerificationStandard />
-        </div>
-      </section>
-
-      {/* ─── 3. TRACEABLE TRUST ─── */}
-      <section className="relative overflow-hidden border-b border-border py-20 lg:py-24">
-        <DiamondField tone="forest" className="opacity-[0.4]" />
-        <div className="container-page relative z-10">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            {/* Left: copy + verification example */}
-            <div>
-              <SectionHeading
-                eyebrow="Traceable Trust"
-                title="One number. A complete, permanent record."
-                subcopy="Every accredited provider is issued a unique NX registry number. It never changes, it cannot be reassigned, and it links directly to the provider's verification history on the official register."
-              />
-
-              <div className="mt-8 rounded-[var(--radius)] border border-border bg-card p-6 shadow-[var(--elev-sm)]">
-                <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                  Verification Example
-                </p>
-                <div className="mt-4">
-                  <RegistryChip value="NX-2024-8492A" copyable tone="default" size="md" />
-                </div>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-muted-foreground">
-                  Copy any NX number and check it in the Verification Center to confirm a provider's
-                  current tier, status, and accreditation history.
-                </p>
+        ) : (
+          <div className="flex items-stretch">
+            {/* Wire tag pinned left */}
+            <div className="relative z-10 hidden shrink-0 items-center border-r border-cream/10 bg-forest-ink py-3.5 pl-6 pr-4 sm:flex">
+              <RegisterWireTag />
+            </div>
+            {/* Fade edge where segments emerge behind the tag */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 w-12"
+              style={{ background: "linear-gradient(90deg, transparent, var(--color-forest-ink))" }}
+            />
+            {/* Scrolling clickable track - pauses on hover so segments can be clicked */}
+            <div className="group flex-1 overflow-hidden py-3.5">
+              <div className="flex w-max animate-ticker group-hover:[animation-play-state:paused]">
+                <StatWireRun stats={STATS} interactive />
+                <StatWireRun stats={STATS} interactive={false} />
               </div>
             </div>
-
-            {/* Right: decorative certificate */}
-            <CertificateOfAccreditation registryId={certificateRegistryId} />
           </div>
-        </div>
+        )}
       </section>
 
-      {/* ─── 4. CATEGORIES OF EXCELLENCE ─── */}
-      <section className="relative overflow-hidden py-20 lg:py-24">
-        {categoryBg && (
-          <img
-            src={categoryBg}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 h-full w-full select-none object-cover opacity-20 pointer-events-none"
-            onError={() => setCategoryBg(null)}
-          />
-        )}
-        {isAdmin && (
-          <div className="absolute bottom-4 left-4 z-20">
-            <CategoryBgUpload currentUrl={categoryBg} onUpload={(url) => setCategoryBg(url)} />
-          </div>
-        )}
-        <div className="container-page relative z-10">
-          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <SectionHeading
-              eyebrow="Service Categories"
-              title="Categories of Excellence"
-              subcopy="Browse the register by discipline. Each category lists only providers whose credentials have been recorded."
-            />
+    </div>
+  );
+}
+
+type StatItem = { value: string; label: string; to: string };
+
+/** Live-wire tag with a pulsing gold dot, echoing the market wire. */
+function RegisterWireTag() {
+  return (
+    <span className="flex items-center gap-2 whitespace-nowrap font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-gold">
+      <span className="relative flex h-2 w-2 shrink-0">
+        <span className="absolute inline-flex h-full w-full rounded-full bg-gold/60 animate-ping-slow" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-gold" />
+      </span>
+      The Register
+    </span>
+  );
+}
+
+function WireDiamond() {
+  return (
+    <span
+      aria-hidden
+      className="mx-5 inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0 align-middle"
+    />
+  );
+}
+
+/**
+ * One run of the stats wire. Rendered twice by the caller for a seamless -50%
+ * loop: the first run is interactive (clickable links), the second is an
+ * aria-hidden, non-focusable visual duplicate. The small stat set is repeated so
+ * the wire reads as continuous rather than sparse.
+ */
+function StatWireRun({ stats, interactive }: { stats: StatItem[]; interactive: boolean }) {
+  const items = [...stats, ...stats, ...stats];
+  return (
+    <div className="flex shrink-0 items-center" aria-hidden={!interactive}>
+      {items.map((s, i) => (
+        <span key={`${s.label}-${i}`} className="flex items-center">
+          {interactive ? (
             <Link
-              to="/categories"
-              className="group flex shrink-0 items-center gap-1 font-sans text-sm font-semibold text-primary transition-colors hover:text-gold-deep"
+              to={s.to}
+              className="group/seg inline-flex items-baseline gap-2 whitespace-nowrap rounded-[3px] px-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
             >
-              All categories
-              <span className="transition-transform duration-150 group-hover:translate-x-[3px]">
-                →
+              <span className="font-display text-xl font-semibold text-cream transition-colors group-hover/seg:text-gold sm:text-2xl">
+                {s.value}
+              </span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-cream/70 transition-colors group-hover/seg:text-gold-hi">
+                {s.label}
               </span>
             </Link>
-          </div>
-
-          <CategoryExcellenceGrid categories={dbCategories} />
-        </div>
-      </section>
+          ) : (
+            <span className="inline-flex items-baseline gap-2 whitespace-nowrap px-1" tabIndex={-1}>
+              <span className="font-display text-xl font-semibold text-cream sm:text-2xl">
+                {s.value}
+              </span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-cream/70">
+                {s.label}
+              </span>
+            </span>
+          )}
+          <WireDiamond />
+        </span>
+      ))}
     </div>
   );
 }
