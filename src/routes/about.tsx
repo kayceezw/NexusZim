@@ -4,11 +4,11 @@ import { CheckCircle2 } from "lucide-react";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About NexusZim — Zimbabwe's Verified Service Directory" },
+      { title: "About NexusZim - Zimbabwe's Verified Service Directory" },
       {
         name: "description",
         content:
-          "NexusZim is Zimbabwe's verified service marketplace — connecting clients with vetted providers across events, transport, business services and more.",
+          "NexusZim is Zimbabwe's verified service marketplace, connecting clients with vetted providers across events, transport, business services and more.",
       },
     ],
   }),
@@ -67,7 +67,7 @@ function AboutPage() {
             style={{ fontSize: "clamp(40px, 5.5vw, 72px)", lineHeight: "1.06", letterSpacing: "-0.025em" }}
           >
             Zimbabwe's service economy,{" "}
-            <em className="italic text-gold">organized.</em>
+            <span className="text-gold">organized.</span>
           </h1>
           <p className="mt-6 max-w-xl font-sans text-base text-cream/60 leading-relaxed">
             NexusZim is a public register of verified service providers across Zimbabwe. Clients find
@@ -108,11 +108,11 @@ function AboutPage() {
             <div className="space-y-5">
               <p className="font-sans text-base text-muted-foreground leading-relaxed">
                 Zimbabwe's service economy is largely informal. Most clients find providers through word
-                of mouth, WhatsApp groups, or Facebook — with no way to verify credentials, check past
+                of mouth, WhatsApp groups, or Facebook, with no way to verify credentials, check past
                 work, or confirm the person they're dealing with is legitimate.
               </p>
               <p className="font-sans text-base text-muted-foreground leading-relaxed">
-                This creates friction, drives risk, and leaves excellent providers invisible — while
+                This creates friction, drives risk, and leaves excellent providers invisible while
                 unverified operators collect deposits and disappear.
               </p>
               <p className="font-sans text-base text-muted-foreground leading-relaxed">
@@ -169,7 +169,7 @@ function AboutPage() {
           </h2>
           <p className="font-sans text-base text-muted-foreground mb-10 max-w-xl leading-relaxed">
             Not every provider passes every check. The Hallmark badge shows which tier a provider
-            has reached — and exactly what that means.
+            has reached, and exactly what that means.
           </p>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -210,7 +210,7 @@ function AboutPage() {
                     {ok ? (
                       <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">✓</span>
                     ) : (
-                      <span className="font-mono text-[11px] text-muted-foreground/30">—</span>
+                      <span className="font-mono text-[11px] text-muted-foreground/30">-</span>
                     )}
                   </div>
                 ))}
@@ -237,7 +237,7 @@ function AboutPage() {
           </p>
           <p className="font-sans text-base text-muted-foreground leading-relaxed">
             Verification is handled by the NexusZim concierge desk. We check, we record, we
-            publish — and we hold ourselves accountable to the same standard.
+            publish, and we hold ourselves accountable to the same standard.
           </p>
         </div>
       </section>

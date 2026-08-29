@@ -18,7 +18,7 @@ export const Route = createFileRoute("/book/$providerId")({
   },
   head: ({ loaderData }) => ({
     meta: loaderData
-      ? [{ title: `Enquire — ${loaderData.provider.business_name} — NexusZim` }]
+      ? [{ title: `Enquire - ${loaderData.provider.business_name} - NexusZim` }]
       : [],
   }),
   component: EnquiryPage,
@@ -157,11 +157,11 @@ function EnquiryPage() {
               style={{ fontSize: "clamp(28px, 4vw, 44px)", lineHeight: "1.08", letterSpacing: "-0.02em" }}
             >
               Send enquiry to{" "}
-              <em className="italic text-primary">{provider.business_name}</em>
+              <span className="text-primary">{provider.business_name}</span>
             </h1>
             <p className="font-sans text-[14px] text-muted-foreground mb-8 max-w-lg">
               Share your requirements. The provider will contact you directly to discuss scope and
-              agree on a fee — no payment goes through NexusZim.
+              agree on a fee. No payment goes through NexusZim.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -200,13 +200,13 @@ function EnquiryPage() {
                     rows={4}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Describe your requirements — guest count, event type, scope, timeline, anything the provider should know..."
+                    placeholder="Describe your requirements: guest count, event type, scope, timeline, and anything else the provider should know..."
                     className="field-input resize-none"
                   />
                 </Field>
 
                 <Field
-                  label="Budget range — optional, helps the provider respond accurately"
+                  label="Budget range (optional, helps the provider respond accurately)"
                   id="eq-budget"
                 >
                   <div className="relative">
@@ -327,7 +327,7 @@ function EnquiryPage() {
                   <p className="font-mono text-[11px] text-muted-foreground">
                     Typically responds within{" "}
                     <strong className="text-foreground">a day</strong>
-                    <span className="text-muted-foreground/60"> — final rate agreed directly</span>
+                    <span className="text-muted-foreground/60">, with the final rate agreed directly</span>
                   </p>
                 </div>
               </div>

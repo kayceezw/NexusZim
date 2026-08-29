@@ -39,7 +39,7 @@ export const createProviderFn = createServerFn({ method: "POST" })
       .insert({ user_id: userId, role: "service_provider" as const });
     if (roleError) throw new Error(roleError.message);
 
-    // Admin-created providers are always verified — KC has physically checked them
+    // Admin-created providers are always verified - KC has physically checked them
     const { error: profileError } = await supabaseAdmin.from("provider_profiles").insert({
       user_id: userId,
       business_name: data.businessName,

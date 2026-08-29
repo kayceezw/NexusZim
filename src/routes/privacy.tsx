@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/privacy")({
-  head: () => ({ meta: [{ title: "Privacy policy — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Privacy policy - NexusZim" }] }),
   component: PrivacyPage,
 });
 
@@ -16,7 +16,7 @@ function PrivacyPage() {
           </p>
         </div>
         <h1 className="mt-6 font-display text-5xl font-bold text-foreground md:text-6xl">
-          Privacy <span className="italic text-gold">Policy.</span>
+          Privacy <span className="text-gold">Policy.</span>
         </h1>
         <p className="mt-4 font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
           Effective: June 2026

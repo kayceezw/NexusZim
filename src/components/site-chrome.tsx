@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, X, ChevronDown, LayoutDashboard, Shield, Building2, User } from "lucide-react";
+import { X, ChevronDown, LayoutDashboard, Shield, Building2, User } from "lucide-react";
 import { useAuth, dashboardPathForRoles, type AppRole } from "@/hooks/use-auth";
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ import { useTheme } from "@/hooks/use-theme";
 const NAV = [
   { to: "/", label: "Home", exact: true },
   { to: "/search", label: "Service Providers", exact: false },
+  { to: "/verify", label: "Verify", exact: false },
   { to: "/intel", label: "Intelligence", exact: false },
   { to: "/request", label: "Request a Quote", exact: false },
 ] as const;
@@ -20,11 +21,10 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const dashboardTo = dashboardPathForRoles(roles, onboardingCompleted);
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { resolvedTheme } = useTheme();
 
-  // Pending provider count — only fetched for admins
+  // Pending provider count - only fetched for admins
   const { data: pendingCount = 0 } = useQuery({
     queryKey: ["admin", "pending-count"],
     queryFn: async () => {
@@ -48,7 +48,6 @@ export function SiteHeader() {
 
   async function handleSignOut() {
     await signOut();
-    setMobileOpen(false);
     navigate({ to: "/" });
   }
 
@@ -61,18 +60,23 @@ export function SiteHeader() {
             : "bg-card border-border"
         }`}
       >
-        <div className="container-page flex h-16 items-center justify-between gap-6">
+        <div className="container-page flex h-16 items-center justify-between gap-3 lg:gap-6">
           <NexusZimLogo variant={resolvedTheme === "dark" ? "reversed" : "color"} size="sm" />
 
-          <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
+          {/* Primary nav - always visible; scrolls horizontally on small screens so
+              the mobile layout mirrors desktop rather than collapsing to a drawer. */}
+          <nav
+            className="flex flex-1 min-w-0 items-center gap-3 sm:gap-4 lg:gap-6 overflow-x-auto no-scrollbar lg:flex-none lg:justify-start"
+            aria-label="Primary"
+          >
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
-                className="font-sans text-[13px] font-medium text-muted-foreground transition-colors hover:text-primary h-16 flex items-center border-b-2 border-transparent hover:border-primary/40"
+                className="shrink-0 font-sans text-[11px] sm:text-[12px] lg:text-[13px] font-medium text-muted-foreground transition-colors hover:text-primary h-16 flex items-center border-b-2 border-transparent hover:border-primary/40"
                 activeProps={{
                   className:
-                    "font-sans text-[13px] font-medium text-primary h-16 flex items-center border-b-2 border-primary",
+                    "shrink-0 font-sans text-[11px] sm:text-[12px] lg:text-[13px] font-medium text-primary h-16 flex items-center border-b-2 border-primary",
                 }}
                 activeOptions={{ exact: n.exact }}
               >
@@ -83,10 +87,10 @@ export function SiteHeader() {
               <>
                 <Link
                   to="/admin"
-                  className="relative font-sans text-[13px] font-medium text-primary transition-colors hover:opacity-70 h-16 flex items-center border-b-2 border-transparent"
+                  className="relative shrink-0 font-sans text-[11px] sm:text-[12px] lg:text-[13px] font-medium text-primary transition-colors hover:opacity-70 h-16 flex items-center border-b-2 border-transparent"
                   activeProps={{
                     className:
-                      "relative font-sans text-[13px] font-medium text-gold-deep dark:text-gold border-b-2 border-gold h-16 flex items-center",
+                      "relative shrink-0 font-sans text-[11px] sm:text-[12px] lg:text-[13px] font-medium text-gold-deep dark:text-gold border-b-2 border-gold h-16 flex items-center",
                   }}
                   activeOptions={{ exact: true }}
                 >
@@ -99,10 +103,10 @@ export function SiteHeader() {
                 </Link>
                 <Link
                   to="/admin/concierge"
-                  className="font-sans text-[13px] font-medium text-primary transition-colors hover:opacity-70 h-16 flex items-center border-b-2 border-transparent"
+                  className="shrink-0 font-sans text-[11px] sm:text-[12px] lg:text-[13px] font-medium text-primary transition-colors hover:opacity-70 h-16 flex items-center border-b-2 border-transparent"
                   activeProps={{
                     className:
-                      "font-sans text-[13px] font-medium text-gold-deep dark:text-gold border-b-2 border-gold h-16 flex items-center",
+                      "shrink-0 font-sans text-[11px] sm:text-[12px] lg:text-[13px] font-medium text-gold-deep dark:text-gold border-b-2 border-gold h-16 flex items-center",
                   }}
                 >
                   Premium
@@ -111,119 +115,30 @@ export function SiteHeader() {
             )}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 lg:gap-3">
             <ThemeToggle />
             {user ? (
-              <div className="hidden lg:flex items-center gap-3">
-                <UserMenu onSignOut={handleSignOut} />
-              </div>
+              <UserMenu onSignOut={handleSignOut} />
             ) : (
-              <div className="hidden lg:flex items-center gap-3">
+              <>
                 <Link
                   to="/login"
-                  className="font-sans text-[13px] font-medium text-muted-foreground transition-colors hover:text-primary"
+                  className="hidden sm:inline font-sans text-[12px] lg:text-[13px] font-medium text-muted-foreground transition-colors hover:text-primary"
                 >
                   Log In
                 </Link>
                 <Link
                   to="/signup"
-                  className="bg-gold px-5 py-2 rounded-[3px] font-sans text-[13px] font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
+                  className="bg-gold px-3 py-1.5 lg:px-5 lg:py-2 rounded-[3px] font-sans text-[11px] lg:text-[13px] font-semibold text-forest-ink hover:bg-gold-deep transition-colors whitespace-nowrap"
                 >
-                  List Your Business
-                </Link>
-              </div>
-            )}
-
-            <button
-              className="lg:hidden p-2 text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
-              onClick={() => setMobileOpen((o) => !o)}
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              aria-expanded={mobileOpen}
-            >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {mobileOpen && (
-        <div className="lg:hidden fixed top-16 inset-x-0 bottom-0 z-40 bg-card overflow-y-auto border-t border-border">
-          <nav className="container-page py-6 flex flex-col gap-1" aria-label="Mobile navigation">
-            {NAV.map((n) => (
-              <Link
-                key={n.to}
-                to={n.to}
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-muted-foreground hover:text-primary transition-colors"
-                activeProps={{
-                  className:
-                    "flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-primary",
-                }}
-                activeOptions={{ exact: n.exact }}
-              >
-                {n.label}
-                <span className="text-hairline">→</span>
-              </Link>
-            ))}
-            {isAdmin && (
-              <>
-                <Link
-                  to="/admin"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-gold-deep dark:text-gold hover:text-primary transition-colors"
-                  activeOptions={{ exact: true }}
-                >
-                  <span className="flex items-center gap-2">
-                    Admin Panel
-                    {pendingCount > 0 && (
-                      <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1 rounded-full bg-amber-500 text-white font-mono text-[9px] font-bold">
-                        {pendingCount > 9 ? "9+" : pendingCount}
-                      </span>
-                    )}
-                  </span>
-                  <span className="text-hairline">→</span>
-                </Link>
-                <Link
-                  to="/admin/concierge"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-between border-b border-border py-4 font-sans text-base font-medium text-gold-deep dark:text-gold hover:text-primary transition-colors"
-                >
-                  Premium
-                  <span className="text-hairline">→</span>
+                  <span className="sm:hidden">List Business</span>
+                  <span className="hidden sm:inline">List Your Business</span>
                 </Link>
               </>
             )}
-
-            <div className="mt-6 flex flex-col gap-3">
-              {user ? (
-                <>
-                  <MobileDashboardLinks
-                    onClose={() => setMobileOpen(false)}
-                    onSignOut={handleSignOut}
-                  />
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/signup"
-                    onClick={() => setMobileOpen(false)}
-                    className="w-full text-center bg-gold py-3.5 rounded-[3px] font-sans text-base font-semibold text-forest-ink hover:bg-gold-deep transition-colors"
-                  >
-                    List Your Business
-                  </Link>
-                  <Link
-                    to="/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="w-full text-center border border-border py-3.5 rounded-[3px] font-sans text-base font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                  >
-                    Log In
-                  </Link>
-                </>
-              )}
-            </div>
-          </nav>
+          </div>
         </div>
-      )}
+      </header>
     </>
   );
 }
@@ -383,59 +298,6 @@ function UserMenu({ onSignOut }: { onSignOut: () => void }) {
   );
 }
 
-function MobileDashboardLinks({
-  onClose,
-  onSignOut,
-}: {
-  onClose: () => void;
-  onSignOut: () => void;
-}) {
-  const { user, roles, onboardingCompleted } = useAuth();
-  const email = user?.email ?? "";
-  const dashboards = dashboardsForRoles(roles, onboardingCompleted);
-
-  return (
-    <>
-      <div className="border border-border rounded-[6px] px-4 py-3 mb-1">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">
-          Signed in as
-        </p>
-        <p className="font-sans text-[13px] text-foreground mt-0.5 truncate">{email}</p>
-        <div className="flex flex-wrap gap-1 mt-1.5">
-          {roles.map((r) => (
-            <span
-              key={r}
-              className="font-mono text-[8px] uppercase tracking-widest text-primary border border-primary/20 bg-primary/10 px-1.5 py-0.5 rounded-[2px]"
-            >
-              {ROLE_LABELS[r]}
-            </span>
-          ))}
-        </div>
-      </div>
-      {dashboards.map((d) => {
-        const Icon = d.icon;
-        return (
-          <Link
-            key={d.to}
-            to={d.to}
-            onClick={onClose}
-            className="w-full flex items-center gap-3 border border-primary py-3.5 px-5 rounded-[3px] font-sans text-base font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
-          >
-            <Icon className="h-4 w-4 shrink-0" strokeWidth={1.5} />
-            {d.label}
-          </Link>
-        );
-      })}
-      <button
-        onClick={onSignOut}
-        className="w-full border border-border py-3.5 rounded-[3px] font-sans text-base font-medium text-muted-foreground hover:border-rose-500/40 hover:text-rose-600 transition-colors"
-      >
-        Sign out
-      </button>
-    </>
-  );
-}
-
 export function SiteFooter() {
   const [zdpLogo, setZdpLogo] = useState<string | null>(null);
 
@@ -455,7 +317,7 @@ export function SiteFooter() {
               Ready to find a provider?
             </p>
             <p className="font-display text-3xl text-cream">
-              Excellence, <em className="italic text-gold">Delivered.</em>
+              Excellence, <span className="text-gold">Delivered.</span>
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -486,7 +348,7 @@ export function SiteFooter() {
         <div>
           <NexusZimLogo variant="reversed" size="sm" asLink={false} />
           <p className="mt-5 max-w-xs font-sans text-sm leading-relaxed text-cream/50">
-            Zimbabwe's marketplace for trusted services — find, compare, and brief verified
+            Zimbabwe's marketplace for trusted services. Find, compare, and brief verified
             providers on a single register.
           </p>
           <div className="mt-6 flex items-center gap-3">

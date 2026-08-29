@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SearchRouteImport } from './routes/search'
@@ -41,6 +42,11 @@ import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
 import { Route as AdminIntelRouteImport } from './routes/admin.intel'
 import { Route as AdminConciergeRouteImport } from './routes/admin.concierge'
 
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
@@ -245,6 +252,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
@@ -279,6 +287,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/admin/concierge': typeof AdminConciergeRoute
   '/admin/intel': typeof AdminIntelRoute
   '/admin/revenue': typeof AdminRevenueRoute
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/signup'
     | '/terms'
+    | '/verify'
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/signup'
     | '/terms'
+    | '/verify'
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
@@ -379,6 +390,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/signup'
     | '/terms'
+    | '/verify'
     | '/admin/concierge'
     | '/admin/intel'
     | '/admin/revenue'
@@ -413,6 +425,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
+  VerifyRoute: typeof VerifyRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   BookProviderIdRoute: typeof BookProviderIdRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
@@ -427,6 +440,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -691,6 +711,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
+  VerifyRoute: VerifyRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   BookProviderIdRoute: BookProviderIdRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,

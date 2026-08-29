@@ -1,4 +1,4 @@
--- Scraper lead queue — holds raw results before admin review
+-- Scraper lead queue - holds raw results before admin review
 CREATE TABLE IF NOT EXISTS public.scraper_queue (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   business_name TEXT NOT NULL,

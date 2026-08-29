@@ -165,7 +165,7 @@ export function PhotoUpload({
   );
 }
 
-/* Hero image upload — admin only, stores to site-assets bucket */
+/* Hero image upload - admin only, stores to site-assets bucket */
 interface HeroImageUploadProps {
   currentUrl: string | null;
   onUpload: (url: string) => void;
@@ -212,7 +212,7 @@ export function HeroImageUpload({ currentUrl, onUpload }: HeroImageUploadProps) 
   );
 }
 
-/* Category background upload — admin only, stores to site-assets bucket */
+/* Category background upload - admin only, stores to site-assets bucket */
 interface CategoryBgUploadProps {
   currentUrl: string | null;
   onUpload: (url: string) => void;

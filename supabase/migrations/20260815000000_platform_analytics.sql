@@ -1,5 +1,5 @@
 -- ============================================================================
--- Platform analytics — privacy-friendly visitor counting.
+-- Platform analytics - privacy-friendly visitor counting.
 -- Tracks page views + unique (anonymous) visitors so admins can see how many
 -- people are visiting. visitor_id is a random client-generated id (no PII).
 -- ============================================================================
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.page_views (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- One row per unique anonymous visitor (upserted) — lets us count unique
+-- One row per unique anonymous visitor (upserted) - lets us count unique
 -- visitors with a cheap COUNT(*) instead of DISTINCT over every page view.
 CREATE TABLE IF NOT EXISTS public.visitors (
   visitor_id TEXT PRIMARY KEY,

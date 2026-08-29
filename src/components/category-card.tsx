@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import type { CategoryWithCount } from "@/lib/queries";
 
 /**
- * Per-slug accent palette — each category gets a distinct colour.
+ * Per-slug accent palette - each category gets a distinct colour.
  * Values are raw Tailwind / inline-style values to avoid purging issues.
  * border-left colour uses inline style; icon bg + text use utility classes.
  */
@@ -141,7 +141,7 @@ export function CategoryCard({
     <Link
       to="/categories/$slug"
       params={{ slug: category.slug }}
-      className="group flex flex-col gap-4 bg-card border border-border p-6 rounded-[8px] relative overflow-hidden shadow-[var(--elev-sm)] hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary animate-fade-up"
+      className="group flex flex-col gap-3 sm:gap-4 bg-card border border-border p-4 sm:p-6 rounded-[8px] relative overflow-hidden shadow-[var(--elev-sm)] hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary animate-fade-up"
       style={{
         animationDelay: `${animationDelay}ms`,
         transition: "transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease",
@@ -154,15 +154,15 @@ export function CategoryCard({
         style={{ backgroundColor: accent.borderColor }}
       />
 
-      {/* Hover lift — applied via a wrapper trick using group-hover on the Link */}
-      <div className="flex flex-col gap-4 h-full transition-transform duration-200 group-hover:-translate-y-1">
+      {/* Hover lift - applied via a wrapper trick using group-hover on the Link */}
+      <div className="flex flex-col gap-3 sm:gap-4 h-full transition-transform duration-200 group-hover:-translate-y-1">
         {/* Name + tagline */}
         <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/50 block mb-1.5">
+          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.1em] text-muted-foreground/50 block mb-1.5">
             {count} on register
           </span>
           <h3
-            className="font-display text-xl text-foreground leading-tight transition-colors duration-200"
+            className="font-display text-base sm:text-xl text-foreground leading-tight transition-colors duration-200"
             style={{ ["--tw-text-opacity" as string]: "1" }}
           >
             <span className="group-hover:text-primary transition-colors duration-200">
@@ -170,7 +170,7 @@ export function CategoryCard({
             </span>
           </h3>
           {category.description && (
-            <p className="mt-1.5 font-sans text-[13px] text-muted-foreground leading-relaxed line-clamp-2">
+            <p className="mt-1.5 font-sans text-[12px] sm:text-[13px] text-muted-foreground leading-relaxed line-clamp-2">
               {category.description}
             </p>
           )}
@@ -192,7 +192,7 @@ export function CategoryCard({
         </div>
       </div>
 
-      {/* Shadow lift on hover — overlaid element for box-shadow since Tailwind group-hover shadow needs inline style */}
+      {/* Shadow lift on hover - overlaid element for box-shadow since Tailwind group-hover shadow needs inline style */}
       <div
         className="absolute inset-0 rounded-[8px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         style={{ boxShadow: "var(--elev-lg)" }}

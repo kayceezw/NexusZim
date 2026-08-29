@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact NexusZim — Get in Touch" },
+      { title: "Contact NexusZim - Get in Touch" },
       {
         name: "description",
         content:
@@ -47,7 +47,7 @@ function ContactPage() {
         created_at: new Date().toISOString(),
       } as never);
     } catch {
-      // table may not exist yet — still show success
+      // table may not exist yet - still show success
     } finally {
       setSent(true);
       setSending(false);
@@ -67,10 +67,10 @@ function ContactPage() {
             className="font-display text-cream"
             style={{ fontSize: "clamp(36px, 5vw, 64px)", lineHeight: "1.06", letterSpacing: "-0.02em" }}
           >
-            Contact the <em className="italic text-gold">operator.</em>
+            Contact the <span className="text-gold">operator.</span>
           </h1>
           <p className="mt-4 max-w-xl font-sans text-sm text-cream/60 leading-relaxed">
-            For provider verification enquiries, brokered packages, or general support — reach the
+            For provider verification enquiries, brokered packages, or general support, reach the
             NexusZim concierge desk.
           </p>
         </div>

@@ -47,7 +47,7 @@ function AlertsSection() {
         created_at: new Date().toISOString(),
       } as never);
     } catch {
-      // table may not exist yet — still show success
+      // table may not exist yet - still show success
     } finally {
       setSubscribed(true);
       setLoading(false);

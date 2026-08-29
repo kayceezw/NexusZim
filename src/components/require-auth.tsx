@@ -50,7 +50,7 @@ export function RequireAuth({
               Restricted area
             </p>
             <h1 className="font-display text-2xl text-foreground">
-              This page isn't for you — <em className="italic text-gold">yet.</em>
+              This page isn't for you. <span className="text-gold">Not yet, anyway.</span>
             </h1>
             <p className="mt-3 font-sans text-sm text-muted-foreground leading-relaxed">
               Your account doesn't have the right access level for this section.

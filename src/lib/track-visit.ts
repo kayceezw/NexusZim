@@ -30,6 +30,6 @@ export async function trackVisit(path: string): Promise<void> {
       p_user_agent: navigator.userAgent || "",
     });
   } catch {
-    /* ignore — never surface analytics errors to users */
+    /* ignore - never surface analytics errors to users */
   }
 }

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/request")({
   }),
   head: () => ({
     meta: [
-      { title: "Post a service brief — NexusZim" },
+      { title: "Post a service brief - NexusZim" },
       {
         name: "description",
         content:
@@ -341,7 +341,7 @@ function RequestPage() {
               </Field>
             </div>
 
-            <Field label="Budget (USD)" hint="Optional — enter your approx. budget">
+            <Field label="Budget (USD)" hint="Optional. Enter your approximate budget.">
               <input
                 type="number"
                 min={0}
@@ -361,8 +361,8 @@ function RequestPage() {
                 Your contact details
               </p>
               <p className="font-sans text-[12px] text-muted-foreground">
-                Providers will use these to send you quotes. Pre-filled from your profile — edit if
-                needed.
+                Providers will use these to send you quotes. These are pre-filled from your profile, so edit them
+                if needed.
               </p>
             </div>
 

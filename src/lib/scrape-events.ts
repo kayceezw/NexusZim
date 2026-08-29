@@ -4,7 +4,7 @@
  * TanStack Start server function that scrapes real Zimbabwe events from the
  * internet and upserts them into events_radar.
  *
- * Runtime: Cloudflare Workers — fetch() only, HTMLRewriter available as global.
+ * Runtime: Cloudflare Workers - fetch() only, HTMLRewriter available as global.
  * No Node.js built-ins (no http, no fs, no Buffer).
  */
 import { createServerFn } from "@tanstack/react-start";
@@ -35,7 +35,7 @@ export interface ScrapeResult {
   errors: string[];
 }
 
-// ─── Seed data — verified Zimbabwe events 2026 ────────────────────────────────
+// ─── Seed data - verified Zimbabwe events 2026 ────────────────────────────────
 // Used as fallback when live scraping returns < 3 events.
 
 export async function seedRealZimbabweEvents(): Promise<void> {
@@ -56,7 +56,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
       organizer_name: "Magamba Network",
       image_url: null,
       description:
-        "Southern Africa's premier urban culture festival — hip hop, comedy, spoken word, and digital creativity. Three days across Harare Gardens and the Hub conference space.",
+        "Southern Africa's premier urban culture festival - hip hop, comedy, spoken word, and digital creativity. Three days across Harare Gardens and the Hub conference space.",
       status: "upcoming",
       tags: ["hip-hop", "comedy", "spoken-word", "festival", "harare"],
       scraped_at: now,
@@ -74,7 +74,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
       organizer_name: "Vic Falls Carnival Co.",
       image_url: null,
       description:
-        "Three nights in the bush at the edge of the Zambezi — three stages, a glamping village, and a legendary midnight New Year countdown. Southern Africa's most iconic destination festival.",
+        "Three nights in the bush at the edge of the Zambezi - three stages, a glamping village, and a legendary midnight New Year countdown. Southern Africa's most iconic destination festival.",
       status: "upcoming",
       tags: ["new-year", "camping", "safari", "electronic", "festival"],
       scraped_at: now,
@@ -82,7 +82,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
     {
       title: "Harare International Jazz Festival 2026",
       date: "2026-08-07",
-      venue: "HICC — Rainbow Towers",
+      venue: "HICC - Rainbow Towers",
       city: "Harare",
       genre: "music",
       estimated_attendance: "3,000+",
@@ -128,7 +128,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
       organizer_name: "ZimFest Association",
       image_url: null,
       description:
-        "The largest Zimbabwean cultural festival in the UK diaspora — three days of marimba, mbira, dance, food, and community at Malvern Showground in Worcestershire.",
+        "The largest Zimbabwean cultural festival in the UK diaspora - three days of marimba, mbira, dance, food, and community at Malvern Showground in Worcestershire.",
       status: "upcoming",
       tags: ["diaspora", "cultural", "marimba", "mbira", "uk"],
       scraped_at: now,
@@ -136,7 +136,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
     {
       title: "Bulawayo Arts Festival 2026",
       date: "2026-08-15",
-      venue: "National Gallery of Zimbabwe — Bulawayo",
+      venue: "National Gallery of Zimbabwe - Bulawayo",
       city: "Bulawayo",
       genre: "arts-theatre",
       estimated_attendance: "1,500+",
@@ -172,7 +172,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
     {
       title: "Zimpraise Music Festival 2026",
       date: "2026-09-05",
-      venue: "HICC — Rainbow Towers",
+      venue: "HICC - Rainbow Towers",
       city: "Harare",
       genre: "music",
       estimated_attendance: "5,000+",
@@ -226,7 +226,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
     {
       title: "ZNCC National Business Summit 2026",
       date: "2026-10-07",
-      venue: "HICC — Rainbow Towers",
+      venue: "HICC - Rainbow Towers",
       city: "Harare",
       genre: "business",
       estimated_attendance: "1,200+",
@@ -254,7 +254,7 @@ export async function seedRealZimbabweEvents(): Promise<void> {
       organizer_name: "Athletics Zimbabwe",
       image_url: null,
       description:
-        "The annual Harare Marathon routes runners through the capital's streets — full marathon, half marathon, and a 10 km fun run open to all fitness levels.",
+        "The annual Harare Marathon routes runners through the capital's streets - full marathon, half marathon, and a 10 km fun run open to all fitness levels.",
       status: "upcoming",
       tags: ["marathon", "running", "sports", "harare", "fitness"],
       scraped_at: now,
@@ -513,7 +513,7 @@ async function scrapeEventbrite(): Promise<ScrapedEvent[]> {
         });
       }
     } catch {
-      // malformed JSON block — skip
+      // malformed JSON block - skip
     }
   }
 
@@ -640,7 +640,7 @@ export const scrapeZimbabweEvents = createServerFn({ method: "POST" })
     const usingSeed = limited.length < 3;
     if (usingSeed) {
       errors.push(
-        `Live scraping returned ${limited.length} event(s) — falling back to seed data.`,
+        `Live scraping returned ${limited.length} event(s) - falling back to seed data.`,
       );
       try {
         await seedRealZimbabweEvents();

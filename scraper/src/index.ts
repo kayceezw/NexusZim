@@ -124,7 +124,7 @@ async function scrapeTarget(target: ScrapeTarget): Promise<Lead[]> {
     });
     html = res.body as string;
   } catch (err) {
-    console.warn(`  SKIP — fetch failed: ${(err as Error).message}`);
+    console.warn(`  SKIP - fetch failed: ${(err as Error).message}`);
     return leads;
   }
 
@@ -194,7 +194,7 @@ async function upsertLeads(leads: Lead[]): Promise<{ inserted: number; skipped: 
       if (error.code === "23505") {
         skipped++;
       } else {
-        console.warn(`  WARN: ${lead.business_name} — ${error.message}`);
+        console.warn(`  WARN: ${lead.business_name} - ${error.message}`);
         skipped++;
       }
     } else {
@@ -214,7 +214,7 @@ async function main() {
   const socialTargets = TARGETS.filter((t) => t.name.startsWith("bing-"));
 
   console.log(`\n========================================`);
-  console.log(`NexusZim Scraper — ${new Date().toISOString()}`);
+  console.log(`NexusZim Scraper - ${new Date().toISOString()}`);
   console.log(`Mode: ${DRY_RUN ? "DRY RUN (no writes)" : "LIVE"}`);
   console.log(`Directory targets: ${directoryTargets.length} | Bing social: ${socialTargets.length} | Browser: ${BROWSER_TARGETS.length}`);
   console.log(`========================================`);
@@ -256,7 +256,7 @@ async function main() {
   }
 
   console.log(`\n========================================`);
-  console.log(`Done — ${totalInserted} new leads, ${totalSkipped} duplicates skipped`);
+  console.log(`Done - ${totalInserted} new leads, ${totalSkipped} duplicates skipped`);
   console.log(`========================================\n`);
 }
 

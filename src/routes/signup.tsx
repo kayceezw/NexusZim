@@ -3,7 +3,7 @@ import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({ meta: [{ title: "Create account — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Create account - NexusZim" }] }),
   component: SignupPage,
 });
 
@@ -54,7 +54,7 @@ function SignupPage() {
       return;
     }
 
-    // If Supabase returned a live session, email confirmation is disabled — go straight to onboarding
+    // If Supabase returned a live session, email confirmation is disabled - go straight to onboarding
     if (data.session) {
       navigate({ to: "/onboarding" });
       return;
@@ -82,7 +82,7 @@ function SignupPage() {
                 Almost there
               </p>
               <h1 className="font-display text-2xl text-foreground">
-                Check your <em className="italic text-gold">email.</em>
+                Check your <span className="text-gold">email.</span>
               </h1>
             </div>
 
@@ -161,7 +161,7 @@ function SignupPage() {
             </span>
           </div>
           <h1 className="font-display text-3xl text-foreground">
-            Join the <em className="italic text-gold">register.</em>
+            Join the <span className="text-gold">register.</span>
           </h1>
           <p className="mt-2 font-sans text-sm text-muted-foreground">
             Create your account to post briefs or list your business.

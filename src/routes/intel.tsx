@@ -20,10 +20,10 @@ function IntelLayout() {
             className="font-display text-cream"
             style={{ fontSize: "clamp(36px, 5vw, 64px)", lineHeight: "1.06", letterSpacing: "-0.02em" }}
           >
-            Market <em className="italic text-gold">Intelligence</em>
+            Market <span className="text-gold">Intelligence</span>
           </h1>
           <p className="mt-4 max-w-2xl font-sans text-sm text-cream/60 leading-relaxed">
-            The authoritative data layer for Zimbabwe's service economy — fair-price indices and
+            The authoritative data layer for Zimbabwe's service economy, with fair-price indices and
             market rate intelligence across key categories.
           </p>
 
@@ -35,7 +35,7 @@ function IntelLayout() {
         </div>
       </div>
 
-      {/* Live market wire — spans all intel tabs */}
+      {/* Live market wire - spans all intel tabs */}
       <IntelTicker />
 
       <div className="container-page py-10">

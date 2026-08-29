@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/scraper")({
-  head: () => ({ meta: [{ title: "Scraper Queue — NexusZim Admin" }] }),
+  head: () => ({ meta: [{ title: "Scraper Queue - NexusZim Admin" }] }),
   component: () => (
     <RequireAuth roles={["admin", "super_admin"]}>
       <ScraperQueuePage />
@@ -137,7 +137,7 @@ function ScraperQueuePage() {
 
   // Approve: mark the lead approved so it moves out of the review queue.
   //
-  // NOTE: a scraped lead cannot be written directly into `provider_profiles` —
+  // NOTE: a scraped lead cannot be written directly into `provider_profiles` -
   // that table requires a `user_id` (FK to auth.users), and a scraped business
   // has no account yet. Converting an approved lead into a live provider must go
   // through the admin "Create Provider" flow (createProviderFn), which mints the
@@ -152,7 +152,7 @@ function ScraperQueuePage() {
       if (qErr) throw qErr;
     },
     onSuccess: (_, item) => {
-      toast.success(`${item.business_name} approved — ready to onboard`);
+      toast.success(`${item.business_name} approved, ready to onboard`);
       qc.invalidateQueries({ queryKey: ["scraper-queue"] });
       qc.invalidateQueries({ queryKey: ["scraper-stats"] });
     },
@@ -173,7 +173,7 @@ function ScraperQueuePage() {
                 Admin · Intelligence
               </p>
               <h1 className="font-display text-3xl text-cream">
-                Scraper <em className="italic text-gold">Queue.</em>
+                Scraper <span className="text-gold">Queue.</span>
               </h1>
               <p className="mt-2 font-sans text-[13px] text-cream/50 max-w-md">
                 Daily-scraped Zimbabwe service providers awaiting your review. Approve to add to the
@@ -205,10 +205,10 @@ function ScraperQueuePage() {
         {/* Stats strip */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: "Total scraped", value: stats?.total ?? "—" },
+            { label: "Total scraped", value: stats?.total ?? "-" },
             { label: "Pending review", value: pendingCount, highlight: pendingCount > 0 },
-            { label: "Approved", value: stats?.approved ?? "—" },
-            { label: "Rejected", value: stats?.rejected ?? "—" },
+            { label: "Approved", value: stats?.approved ?? "-" },
+            { label: "Rejected", value: stats?.rejected ?? "-" },
           ].map((s) => (
             <div
               key={s.label}
@@ -431,7 +431,7 @@ function QueueCard({
         </p>
       </div>
 
-      {/* Actions — only for pending */}
+      {/* Actions - only for pending */}
       {item.status === "pending" && (
         <div className="flex flex-wrap gap-2 shrink-0">
           <button

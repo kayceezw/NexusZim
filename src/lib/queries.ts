@@ -54,7 +54,7 @@ export type MarketRate = {
 };
 
 /**
- * Market Rate Index computed from real data — NOT seed/mock values.
+ * Market Rate Index computed from real data - NOT seed/mock values.
  * Prices come from `services.base_price` grouped by category; provider counts
  * come from verified `provider_profiles`. Only categories that actually have
  * priced services are returned, sorted by provider presence then price.
@@ -310,7 +310,7 @@ export async function fetchCitiesWithCounts(): Promise<{ city: string; count: nu
 }
 
 // ============================================================================
-// Reputation — the trust flywheel. Reviews are earned: a review can only exist
+// Reputation - the trust flywheel. Reviews are earned: a review can only exist
 // for a `completed` booking (enforced by RLS), so these aggregates cannot be
 // gamed by fake accounts. Public read.
 // ============================================================================
@@ -347,7 +347,7 @@ export async function fetchProviderRating(providerId: string): Promise<ProviderR
 }
 
 // ============================================================================
-// Client bookings — the job records that power the direct-pay loop. A booking
+// Client bookings - the job records that power the direct-pay loop. A booking
 // is NOT a payment (NexusZim never holds money); it's the record that a job was
 // agreed, so completion can unlock a review.
 // ============================================================================

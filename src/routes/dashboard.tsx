@@ -10,7 +10,7 @@ import { MessageSquare, Phone, CheckCircle2, Star } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Your dashboard — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Your dashboard - NexusZim" }] }),
   component: () => (
     <RequireAuth roles={["client", "admin", "super_admin"]}>
       <DashboardPage />
@@ -115,7 +115,7 @@ function DashboardPage() {
     qc.invalidateQueries({ queryKey: ["client-quotes"] });
   }
 
-  // Accepting a quote records a booking — a job record, NOT a payment. NexusZim
+  // Accepting a quote records a booking - a job record, NOT a payment. NexusZim
   // never holds money; the client still pays the provider directly. The booking
   // exists so that, once completed, a review can be left.
   const acceptQuote = useMutation({
@@ -138,7 +138,7 @@ function DashboardPage() {
       await supabase.from("requests").update({ status: "awarded" }).eq("id", request.id);
     },
     onSuccess: () => {
-      toast.success("Quote accepted — job recorded. You pay the provider directly.");
+      toast.success("Quote accepted and job recorded. You pay the provider directly.");
       refreshLoop();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -185,7 +185,7 @@ function DashboardPage() {
             className="font-display text-cream"
             style={{ fontSize: "clamp(32px, 4.5vw, 56px)", lineHeight: "1.06", letterSpacing: "-0.02em" }}
           >
-            Your <em className="italic text-gold">Briefs.</em>
+            Your <span className="text-gold">Briefs.</span>
           </h1>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
@@ -265,7 +265,7 @@ function DashboardPage() {
                           {r.service_name ?? r.title}
                         </h3>
                         <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                          <span>{r.city ?? "—"}</span>
+                          <span>{r.city ?? "-"}</span>
                           {r.budget && (
                             <span className="text-gold-deep dark:text-gold">Budget: ${Number(r.budget).toFixed(0)}</span>
                           )}
@@ -367,7 +367,7 @@ function DashboardPage() {
           )}
         </section>
 
-        {/* Jobs & Reviews — the direct-pay trust loop */}
+        {/* Jobs & Reviews - the direct-pay trust loop */}
         <JobsSection
           bookings={bookings}
           onMarkComplete={(b) => markComplete.mutate(b)}
@@ -417,7 +417,7 @@ function JobsSection({
     <section className="space-y-4">
       <div className="flex items-center gap-3 border-b border-border pb-3">
         <h2 className="font-display text-2xl text-foreground">
-          Your <em className="italic text-gold-deep dark:text-gold">Jobs.</em>
+          Your <span className="text-gold-deep dark:text-gold">Jobs.</span>
         </h2>
         <div className="h-px flex-1 bg-hairline" />
         <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -510,7 +510,7 @@ function ReviewModal({
     }
     setSubmitting(true);
     // RLS only permits this insert when the booking is `completed` and owned by
-    // the client — reviews are earned, not fakeable.
+    // the client - reviews are earned, not fakeable.
     const { error } = await supabase.from("reviews").insert({
       booking_id: booking.id,
       client_id: clientId,
@@ -523,7 +523,7 @@ function ReviewModal({
       toast.error(error.message);
       return;
     }
-    toast.success("Thank you — your review is now part of this provider's record.");
+    toast.success("Thank you. Your review is now part of this provider's record.");
     onDone();
   }
 

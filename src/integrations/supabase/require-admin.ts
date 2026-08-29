@@ -7,7 +7,7 @@ import { requireSupabaseAuth } from "./auth-middleware";
 // caller's role against `user_roles` using the service-role client.
 //
 // Use on any server function that touches the service-role client
-// (`supabaseAdmin`) — those calls bypass RLS and MUST NOT be reachable by an
+// (`supabaseAdmin`) - those calls bypass RLS and MUST NOT be reachable by an
 // unauthenticated or non-admin caller.
 export const requireAdmin = createMiddleware({ type: "function" })
   .middleware([requireSupabaseAuth])

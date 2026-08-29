@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { LiveProviderCard } from "@/components/provider-card";
 import { ProviderCardSkeleton } from "@/components/skeletons";
 import { Search, X, Loader2, SlidersHorizontal } from "lucide-react";
+import { SearchProviderCard } from "@/components/registry/search-provider-card";
+import { TierMarker } from "@/components/registry";
 import {
   fetchProviders,
   fetchCitiesWithCounts,
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/search")({
   }),
   head: () => ({
     meta: [
-      { title: "Service Directory — NexusZim" },
+      { title: "Service Directory - NexusZim" },
       {
         name: "description",
         content:
@@ -55,6 +56,14 @@ const TIER_OPTIONS = [
   { value: 3, label: "Trust Certified" },
 ];
 
+// Registry sidebar exposes the two elevated tiers as checkboxes (highest first).
+// Each maps onto the existing single-value `minTier` query param, preserving the
+// server-side "minimum tier" filter semantics.
+const TIER_FILTERS = [
+  { value: 3, label: "Trust Certified" },
+  { value: 2, label: "Verified" },
+];
+
 const PAGE_SIZE = 20;
 
 function SearchPage() {
@@ -75,7 +84,7 @@ function SearchPage() {
     searchRef.current?.focus();
   }, []);
 
-  // Debounce search query — 300ms, results filter immediately
+  // Debounce search query - 300ms, results filter immediately
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQ(q);
@@ -119,7 +128,7 @@ function SearchPage() {
     placeholderData: (prev) => prev,
   });
 
-  // Reputation for the visible providers — earned review aggregates, shown on cards.
+  // Reputation for the visible providers - earned review aggregates, shown on cards.
   const resultIds = (results ?? []).map((p) => p.user_id);
   const { data: ratings } = useQuery({
     queryKey: ["provider-ratings", resultIds],
@@ -204,7 +213,7 @@ function SearchPage() {
               </form>
             </div>
 
-            {/* Record count — visible in sticky bar */}
+            {/* Record count - visible in sticky bar */}
             <div className="shrink-0">
               {!isLoading && !showSpinner && results !== undefined ? (
                 <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/50 animate-fade-in">
@@ -245,7 +254,7 @@ function SearchPage() {
             )}
           </button>
 
-          {/* Active filter chips — horizontally scrollable */}
+          {/* Active filter chips - horizontally scrollable */}
           {city !== "all" && <FilterChip label={city} onRemove={() => setCity("all")} />}
           {categorySlug !== "all" && (
             <FilterChip
@@ -448,146 +457,106 @@ function SearchPage() {
           </DrawerContent>
         </Drawer>
 
-        <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
-          {/* ─── FILTER RAIL (desktop only) ─── */}
-          <aside className="hidden lg:block space-y-0 lg:sticky lg:top-[calc(4rem+6.5rem)] lg:self-start">
-            <div className="bg-card border border-border rounded-[6px] divide-y divide-hairline">
+        <div className="grid gap-8 lg:grid-cols-[16rem_1fr]">
+          {/* ─── FILTER SIDEBAR (desktop only) — registry layout ─── */}
+          <aside className="hidden lg:block lg:w-64 lg:sticky lg:top-[calc(4rem+6.5rem)] lg:self-start">
+            <div className="bg-card border border-border rounded-[var(--radius)] p-5 space-y-6">
               {/* Header */}
-              <div className="flex items-center justify-between px-5 py-4">
-                <span className="eyebrow text-muted-foreground">
-                  <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
-                  Filters
-                  {activeFilterCount > 0 && (
-                    <span className="ml-1.5 font-mono text-[10px] text-gold">
-                      ({activeFilterCount})
-                    </span>
-                  )}
+              <div className="flex items-center justify-between border-b border-hairline pb-3">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-foreground">
+                  Refine Registry
                 </span>
                 {activeFilterCount > 0 && (
-                  <button
-                    onClick={resetFilters}
-                    className="font-sans text-[12px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
-                  >
-                    <X className="h-3 w-3" />
-                    Clear
-                  </button>
+                  <span className="font-mono text-[10px] text-gold">
+                    ({activeFilterCount})
+                  </span>
                 )}
               </div>
 
-              {/* Verification tier */}
-              <div className="px-5 py-4 space-y-2">
-                <p className="eyebrow text-muted-foreground/60 mb-3">Verification tier</p>
-                {TIER_OPTIONS.map((t) => (
+              {/* Category select */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="filter-category"
+                  className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+                >
+                  Category
+                </label>
+                <select
+                  id="filter-category"
+                  value={categorySlug}
+                  onChange={(e) => setCategorySlug(e.target.value)}
+                  className="w-full h-9 bg-transparent border-0 border-b-2 border-border px-0 font-sans text-[13px] text-foreground outline-none focus:border-primary transition-colors cursor-pointer"
+                >
+                  <option value="all">All Categories</option>
+                  {activeCategories.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.name}
+                      {c.provider_count > 0 ? ` (${c.provider_count})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Verification Tier checkboxes */}
+              <fieldset className="space-y-2.5">
+                <legend className="mb-1 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Verification Tier
+                </legend>
+                {TIER_FILTERS.map((t) => (
                   <label
                     key={t.value}
-                    className="flex items-center justify-between cursor-pointer group"
+                    className="flex items-center gap-2.5 cursor-pointer group"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="tier"
-                        checked={minTier === t.value}
-                        onChange={() => setMinTier(t.value)}
-                        className="accent-forest"
-                      />
-                      <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
-                        {t.label}+
-                      </span>
-                    </div>
+                    <input
+                      type="checkbox"
+                      checked={minTier === t.value}
+                      onChange={(e) =>
+                        setMinTier(e.target.checked ? t.value : 1)
+                      }
+                      className="accent-forest h-3.5 w-3.5"
+                    />
+                    <TierMarker tier={t.value} variant="compact" />
                   </label>
                 ))}
+              </fieldset>
+
+              {/* Region select */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="filter-region"
+                  className="block font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+                >
+                  Region
+                </label>
+                <select
+                  id="filter-region"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full h-9 bg-transparent border-0 border-b-2 border-border px-0 font-sans text-[13px] text-foreground outline-none focus:border-primary transition-colors cursor-pointer"
+                >
+                  <option value="all">All Regions</option>
+                  {activeCities.map((c) => (
+                    <option key={c.city} value={c.city}>
+                      {c.city}
+                      {c.count > 0 ? ` (${c.count})` : ""}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {/* City */}
-              <div className="px-5 py-4 space-y-2">
-                <p className="eyebrow text-muted-foreground/60 mb-3">City</p>
-                <label className="flex items-center justify-between cursor-pointer group">
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="radio"
-                      name="city"
-                      checked={city === "all"}
-                      onChange={() => setCity("all")}
-                      className="accent-forest"
-                    />
-                    <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
-                      All cities
-                    </span>
-                  </div>
-                </label>
-                {activeCities.length === 0 ? (
-                  <p className="font-sans text-[12px] text-muted-foreground/50 italic">No cities yet</p>
-                ) : (
-                  activeCities.slice(0, 10).map((c) => (
-                    <label
-                      key={c.city}
-                      className="flex items-center justify-between cursor-pointer group"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <input
-                          type="radio"
-                          name="city"
-                          checked={city === c.city}
-                          onChange={() => setCity(c.city)}
-                          className="accent-forest"
-                        />
-                        <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
-                          {c.city}
-                        </span>
-                      </div>
-                      {c.count > 0 && (
-                        <span className="font-mono text-[10px] text-muted-foreground/50">{c.count}</span>
-                      )}
-                    </label>
-                  ))
-                )}
-              </div>
-
-              {/* Category */}
-              <div className="px-5 py-4 space-y-2">
-                <p className="eyebrow text-muted-foreground/60 mb-3">Specialty</p>
-                <label className="flex items-center justify-between cursor-pointer group">
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="radio"
-                      name="category"
-                      checked={categorySlug === "all"}
-                      onChange={() => setCategorySlug("all")}
-                      className="accent-forest"
-                    />
-                    <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
-                      All specialties
-                    </span>
-                  </div>
-                </label>
-                {activeCategories.map((c) => (
-                  <label
-                    key={c.slug}
-                    className="flex items-center justify-between cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="radio"
-                        name="category"
-                        checked={categorySlug === c.slug}
-                        onChange={() => setCategorySlug(c.slug)}
-                        className="accent-forest"
-                      />
-                      <span className="font-sans text-[13px] text-muted-foreground group-hover:text-foreground transition-colors">
-                        {c.name}
-                      </span>
-                    </div>
-                    {c.provider_count > 0 && (
-                      <span className="font-mono text-[10px] text-muted-foreground/50">
-                        {c.provider_count}
-                      </span>
-                    )}
-                  </label>
-                ))}
-              </div>
+              {/* Reset Filters — outline button */}
+              <button
+                type="button"
+                onClick={resetFilters}
+                disabled={activeFilterCount === 0 && !debouncedQ}
+                className="w-full border border-primary px-4 py-2.5 rounded-[var(--radius-sm)] font-sans text-[13px] font-semibold text-primary hover:bg-forest hover:text-cream transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center justify-center gap-1.5"
+              >
+                <X className="h-3.5 w-3.5" strokeWidth={2} />
+                Reset Filters
+              </button>
             </div>
 
-            <div className="mt-4 border border-border rounded-[6px] p-4">
+            <div className="mt-4 border border-border rounded-[var(--radius)] p-4">
               <p className="font-sans text-[12px] text-muted-foreground leading-relaxed">
                 All NexusZim providers have completed identity verification. Trust Certified
                 providers have passed an on-site audit by the NexusZim desk.
@@ -597,17 +566,18 @@ function SearchPage() {
 
           {/* ─── RESULTS ─── */}
           <section className="space-y-4">
-            {/* Sort row (desktop) */}
-            <div className="hidden lg:flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+            {/* Results header row (desktop): official record count + Sort */}
+            <div className="hidden lg:flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-hairline pb-4">
+              <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-foreground">
                 {isLoading ? (
-                  <span className="animate-pulse">Searching...</span>
+                  <span className="animate-pulse text-muted-foreground">Searching...</span>
                 ) : (
                   <>
+                    Showing{" "}
                     {(results?.length ?? 0) === PAGE_SIZE
                       ? `${PAGE_SIZE}+`
                       : results?.length ?? 0}{" "}
-                    result{(results?.length ?? 0) !== 1 ? "s" : ""}
+                    Official Record{(results?.length ?? 0) !== 1 ? "s" : ""}
                   </>
                 )}
               </p>
@@ -622,7 +592,7 @@ function SearchPage() {
                   id="sort-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortKey)}
-                  className="bg-card border border-border rounded-[3px] px-3 py-1.5 font-sans text-[13px] text-foreground outline-none focus:border-primary transition-colors cursor-pointer"
+                  className="bg-card border border-border rounded-[var(--radius-sm)] px-3 py-1.5 font-sans text-[13px] text-foreground outline-none focus:border-primary transition-colors cursor-pointer"
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -634,20 +604,21 @@ function SearchPage() {
             </div>
 
             {/* Result count on mobile (below the filter bar) */}
-            <p className="lg:hidden font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+            <p className="lg:hidden font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
               {isLoading ? (
                 <span className="animate-pulse">Searching...</span>
               ) : (
                 <>
+                  Showing{" "}
                   {(results?.length ?? 0) === PAGE_SIZE
                     ? `${PAGE_SIZE}+`
                     : results?.length ?? 0}{" "}
-                  result{(results?.length ?? 0) !== 1 ? "s" : ""}
+                  Official Record{(results?.length ?? 0) !== 1 ? "s" : ""}
                 </>
               )}
             </p>
 
-            {/* Active filter chips (desktop only — mobile shows these in the scrollable bar) */}
+            {/* Active filter chips (desktop only - mobile shows these in the scrollable bar) */}
             {activeFilterCount > 0 && (
               <div className="hidden lg:flex flex-wrap gap-2">
                 {city !== "all" && <FilterChip label={city} onRemove={() => setCity("all")} />}
@@ -668,10 +639,10 @@ function SearchPage() {
               </div>
             )}
 
-            {/* Results grid — skeletons while loading initial fetch */}
-            <div className="space-y-3">
+            {/* Registry card grid - skeletons while loading initial fetch */}
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
               {isLoading ? (
-                [0, 1, 2, 3, 4].map((i) => <ProviderCardSkeleton key={i} />)
+                [0, 1, 2, 3, 4, 5].map((i) => <ProviderCardSkeleton key={i} />)
               ) : results && results.length > 0 ? (
                 results.map((p, i) => (
                   <div
@@ -679,7 +650,7 @@ function SearchPage() {
                     className="animate-slide-up"
                     style={{ animationDelay: `${i * 40}ms` }}
                   >
-                    <LiveProviderCard provider={p} rating={ratings?.[p.user_id]} />
+                    <SearchProviderCard provider={p} rating={ratings?.[p.user_id]} />
                   </div>
                 ))
               ) : null}
@@ -713,9 +684,9 @@ function SearchPage() {
               <div className="pt-2 flex justify-center">
                 <button
                   onClick={() => setPage((n) => n + 1)}
-                  className="border border-primary px-8 py-2.5 rounded-[3px] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
+                  className="border border-primary px-8 py-2.5 rounded-[var(--radius-sm)] font-sans text-sm font-semibold text-primary hover:bg-forest hover:text-cream transition-colors"
                 >
-                  Load more providers
+                  Load More Records
                 </button>
               </div>
             )}

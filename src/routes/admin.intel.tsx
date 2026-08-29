@@ -8,7 +8,7 @@ import { Plus, Trash2, Calendar, MapPin, BarChart3, Download, Archive, Search, H
 import { scrapeZimbabweEvents } from "@/lib/scrape-events";
 
 export const Route = createFileRoute("/admin/intel")({
-  head: () => ({ meta: [{ title: "Admin Intel — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Admin Intel - NexusZim" }] }),
   component: () => (
     <RequireAuth roles={["admin", "super_admin"]}>
       <AdminIntelPage />
@@ -31,7 +31,7 @@ function AdminIntelPage() {
           </span>
         </div>
         <h1 className="mt-4 font-display text-5xl font-bold text-foreground">
-          Manage <span className="italic text-gold">Intelligence.</span>
+          Manage <span className="text-gold">Intelligence.</span>
         </h1>
         <p className="mt-4 font-body text-sm text-foreground/50">
           Add, edit, and remove content that appears in the public Intel Hub.
@@ -180,7 +180,7 @@ function EventsTab() {
         toast.error(`Scrape failed: ${result.errors[0]}`);
       } else {
         toast.success(
-          `Scraped ${result.inserted} event${result.inserted === 1 ? "" : "s"} into the database.${result.errors.length ? " (some sources failed — check console)" : ""}`,
+          `Scraped ${result.inserted} event${result.inserted === 1 ? "" : "s"} into the database.${result.errors.length ? " (some sources failed; check the console)" : ""}`,
         );
         if (result.errors.length) console.warn("Scrape errors:", result.errors);
       }
@@ -296,7 +296,7 @@ function EventsTab() {
           }`}
         >
           <Calendar className="h-3 w-3" />
-          Upcoming ({upcomingEvents?.length ?? "—"})
+          Upcoming ({upcomingEvents?.length ?? "-"})
         </button>
         <button
           onClick={() => { setInnerTab("past"); setSearchQuery(""); }}
@@ -305,7 +305,7 @@ function EventsTab() {
           }`}
         >
           <History className="h-3 w-3" />
-          Past Events ({pastEvents?.length ?? "—"})
+          Past Events ({pastEvents?.length ?? "-"})
         </button>
       </div>
 
@@ -343,13 +343,13 @@ function EventsTab() {
               <div className="space-y-1.5 min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-mono text-[10px] text-gold uppercase tracking-widest">
-                    {e.genre ?? "—"} · {e.city ?? "—"}
+                    {e.genre ?? "-"} · {e.city ?? "-"}
                   </p>
                   <StatusBadge status={e.status} />
                 </div>
                 <p className="font-display text-xl font-bold text-foreground">{e.title}</p>
                 <p className="font-mono text-[10px] text-foreground/40">
-                  {e.date} · {e.venue ?? "—"}
+                  {e.date} · {e.venue ?? "-"}
                   {e.estimated_attendance ? ` · ${e.estimated_attendance} attendees` : ""}
                   {e.ticket_price_range ? ` · ${e.ticket_price_range}` : ""}
                 </p>
@@ -554,7 +554,7 @@ function VenuesTab() {
           >
             <div className="space-y-1">
               <p className="font-mono text-[10px] text-gold uppercase tracking-widest">
-                {v.city ?? "—"}
+                {v.city ?? "-"}
               </p>
               <p className="font-display text-xl font-bold text-foreground">{v.venue_name}</p>
               <p className="font-mono text-[10px] text-foreground/40">
@@ -562,7 +562,7 @@ function VenuesTab() {
                 {v.available_from && v.available_to
                   ? `${v.available_from} → ${v.available_to}`
                   : v.available_from || "Available now"}{" "}
-                · {v.contact ?? "—"}
+                · {v.contact ?? "-"}
               </p>
             </div>
             <button
@@ -723,7 +723,7 @@ function RatesTab() {
             <div className="space-y-1">
               <p className="font-display text-xl font-bold text-foreground">{r.category}</p>
               <p className="font-mono text-[10px] text-foreground/40">
-                ${r.rate_low ?? "?"} – ${r.rate_high ?? "?"} · {r.unit ?? "—"}
+                ${r.rate_low ?? "?"} – ${r.rate_high ?? "?"} · {r.unit ?? "-"}
                 {r.notes && ` · ${r.notes}`}
               </p>
               <p className="font-mono text-[9px] text-foreground/20">

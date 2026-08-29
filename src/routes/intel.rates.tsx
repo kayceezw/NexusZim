@@ -39,7 +39,7 @@ function CustomTooltip({
         provider{rate.providerCount === 1 ? "" : "s"}
       </p>
       <p className="mt-2 text-foreground font-bold">
-        ${rate.rateLow.toLocaleString()} — ${rate.rateHigh.toLocaleString()}
+        ${rate.rateLow.toLocaleString()} - ${rate.rateHigh.toLocaleString()}
       </p>
     </div>
   );
@@ -70,7 +70,7 @@ function MarketRates() {
           <h2 className="font-display text-3xl font-bold text-foreground">Market Rate Index</h2>
           <p className="mt-2 font-body text-sm text-foreground/70 max-w-xl">
             Live price ranges computed from the actual priced services and verified providers in the
-            NexusZim registry — updated automatically as the market grows.
+            NexusZim registry, updated automatically as the market grows.
           </p>
         </div>
         <div className="flex items-center gap-3 bg-gold/5 border border-gold/20 px-4 py-2">
@@ -82,7 +82,7 @@ function MarketRates() {
         </div>
       </div>
 
-      {/* Loading / empty / error states — no fabricated numbers */}
+      {/* Loading / empty / error states - no fabricated numbers */}
       {isLoading ? (
         <div className="border border-gold/10 bg-card p-12 text-center font-mono text-[11px] uppercase tracking-widest text-foreground/40">
           Loading live market data…
@@ -164,7 +164,7 @@ function MarketRates() {
                       Market Range
                     </p>
                     <p className="mt-1 font-display text-2xl font-bold text-foreground">
-                      ${rate.rateLow.toLocaleString()} — ${rate.rateHigh.toLocaleString()}
+                      ${rate.rateLow.toLocaleString()} - ${rate.rateHigh.toLocaleString()}
                     </p>
                     <p className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-foreground/40">
                       avg ${rate.rateAvg.toLocaleString()}
@@ -196,7 +196,7 @@ function MarketRates() {
             <p className="mt-4 font-body text-sm text-foreground/70 leading-relaxed">
               Ranges are computed directly from the listed base prices of services in each category
               and the count of verified providers operating in it. Figures update automatically as
-              providers and priced services are added — there are no manual estimates or placeholder
+              providers and priced services are added. There are no manual estimates or placeholder
               values. Categories without priced services are omitted until data exists.
             </p>
           </div>

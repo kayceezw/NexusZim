@@ -1,5 +1,5 @@
 /**
- * Minimal QR code encoder — byte mode, EC level M, versions 1–5.
+ * Minimal QR code encoder - byte mode, EC level M, versions 1–5.
  * Enough capacity for ticket codes and short URLs (up to 84 chars).
  * Returns a boolean module matrix; rendering is left to the caller.
  */

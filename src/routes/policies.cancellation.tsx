@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/policies/cancellation")({
   head: () => ({
     meta: [
-      { title: "Cancellation & Refund Policy — NexusZim" },
+      { title: "Cancellation & Refund Policy - NexusZim" },
       {
         name: "description",
         content:
@@ -70,7 +70,7 @@ function CancellationPolicyPage() {
             </p>
           </div>
           <h1 className="mt-6 font-display text-5xl font-bold text-foreground md:text-6xl">
-            Cancellation <span className="italic text-gold">Protocol.</span>
+            Cancellation <span className="text-gold">Protocol.</span>
           </h1>
           <p className="mt-8 text-lg font-light leading-relaxed text-foreground/70">
             NexusZim manages all commitment authorizations through a secure escrow layer. If mission

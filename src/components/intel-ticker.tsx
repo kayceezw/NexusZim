@@ -93,7 +93,7 @@ export function IntelTicker() {
           }}
         />
 
-        {/* Scrolling track — group enables pause-on-hover */}
+        {/* Scrolling track - group enables pause-on-hover */}
         <div className="group flex-1 overflow-hidden py-2.5">
           <div className="flex w-max animate-ticker font-mono text-[11px] uppercase tracking-[0.08em] group-hover:[animation-play-state:paused]">
             <TickerRun rates={rates} />

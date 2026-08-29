@@ -8,7 +8,7 @@
 --      so existing services can be tagged to a sub-category without a FK constraint.
 --   3. Inserts the 14 new parent categories with stable slugs.
 --   4. Inserts sub-categories as child rows referencing their parent.
---   5. Does NOT delete old category rows — existing listings keep their FK intact.
+--   5. Does NOT delete old category rows - existing listings keep their FK intact.
 --   6. Adds a `legacy` boolean flag to old rows so the UI can filter them out.
 
 -- Step 1: Add parent_id + legacy flag + active flag to categories
@@ -49,7 +49,7 @@ VALUES
 ON CONFLICT (slug) DO NOTHING;
 
 -- Step 4: Insert sub-categories as child rows
--- Requires parent UUIDs — run this block AFTER Step 3 inserts complete.
+-- Requires parent UUIDs - run this block AFTER Step 3 inserts complete.
 -- Sub-categories are inserted referencing parent by slug lookup.
 
 INSERT INTO public.categories (id, name, slug, description, active, parent_id)

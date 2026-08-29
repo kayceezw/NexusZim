@@ -22,7 +22,7 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/provider/dashboard")({
-  head: () => ({ meta: [{ title: "Provider dashboard — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Provider dashboard - NexusZim" }] }),
   component: () => (
     <RequireAuth roles={["service_provider", "admin", "super_admin"]}>
       <ProviderDashboard />
@@ -248,7 +248,7 @@ function ProviderDashboard() {
           <VisibilityStat
             icon={<Star className="h-4 w-4 text-gold" />}
             label="Rating"
-            value={myRating && myRating.count > 0 ? myRating.average.toFixed(1) : "—"}
+            value={myRating && myRating.count > 0 ? myRating.average.toFixed(1) : "-"}
             trend={
               myRating && myRating.count > 0
                 ? `${myRating.count} review${myRating.count !== 1 ? "s" : ""}`
@@ -332,7 +332,7 @@ function ProviderDashboard() {
           </div>
         )}
 
-        {/* Your Jobs — the delivery + reputation side of the loop */}
+        {/* Your Jobs - the delivery + reputation side of the loop */}
         {myBookings.length > 0 && (
           <section className="bg-card border border-border rounded-[6px] p-7 md:p-10">
             <div className="flex items-center justify-between border-b border-border pb-5 mb-8">
@@ -412,7 +412,7 @@ function ProviderDashboard() {
                             {r.service_name ?? r.title}
                           </h3>
                           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                            <span>{r.city ?? "—"}</span>
+                            <span>{r.city ?? "-"}</span>
                             {r.budget && (
                               <span className="text-gold">Budget: ${Number(r.budget).toFixed(0)}</span>
                             )}

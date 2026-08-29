@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusZim | Excellence, Delivered</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   NEXUSZIM DESIGN TOKENS: "The Registry"
+   Brand locked: forest / gold / cream. Everything else derived.
+   ============================================================ */
+:root{
+  --forest:#0F3323;        /* brand primary */
+  --forest-ink:#081F14;    /* deepest surface */
+  --forest-soft:#1A4630;   /* raised dark surface */
+  --gold:#E7A020;          /* brand accent, spend sparingly */
+  --gold-deep:#B87F1A;     /* hover / pressed */
+  --cream:#F6F5F0;         /* brand ground */
+  --cream-raised:#FDFCF9;  /* cards on cream */
+  --hairline:#DEDACB;      /* rules on cream */
+  --hairline-dark:rgba(246,245,240,.14);
+  --text:#14251C;          /* body on cream */
+  --text-soft:#5C6B60;     /* secondary on cream */
+  --text-inverse:#F6F5F0;
+  --text-inverse-soft:#A8B8AC;
+
+  --font-display:"Instrument Serif",Georgia,serif;
+  --font-ui:"Archivo",system-ui,sans-serif;
+  --font-data:"Spline Sans Mono",ui-monospace,monospace;
+
+  --max:1200px;
+  --r-sm:3px;              /* registry aesthetic: near-square corners */
+  --r-md:6px;
+  --ease:cubic-bezier(.22,.8,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-ui);background:var(--cream);color:var(--text);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--forest);color:var(--cream);padding:10px 16px;z-index:100}
+.skip:focus{left:12px;top:12px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 20px}}
+
+/* ---- shared vocabulary ---- */
+.eyebrow{font-family:var(--font-data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-soft)}
+.eyebrow.on-dark{color:var(--gold)}
+.diamond-dot{display:inline-block;width:7px;height:7px;background:var(--gold);transform:rotate(45deg);margin-right:10px;vertical-align:1px}
+h1,h2,h3{font-weight:400}
+.display{font-family:var(--font-display);line-height:1.04;letter-spacing:-.01em}
+.mono{font-family:var(--font-data)}
+
+/* Tier hallmark: diamond-derived stamp. Motif only; official mark geometry untouched. */
+.hallmark{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-data);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px 5px 8px;border:1px solid;border-radius:var(--r-sm);white-space:nowrap}
+.hallmark::before{content:"";width:8px;height:8px;transform:rotate(45deg);flex:none}
+.hallmark.t3{color:var(--gold-deep);border-color:var(--gold)}
+.hallmark.t3::before{background:var(--gold)}
+.hallmark.t2{color:var(--forest);border-color:var(--forest)}
+.hallmark.t2::before{background:var(--forest)}
+.hallmark.t1{color:var(--text-soft);border-color:var(--hairline)}
+.hallmark.t1::before{background:transparent;border:1.5px solid var(--text-soft)}
+.on-dark .hallmark.t2,.hallmark.t2.inv{color:var(--text-inverse);border-color:var(--hairline-dark)}
+.on-dark .hallmark.t2::before,.hallmark.t2.inv::before{background:var(--text-inverse)}
+
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-ui);font-weight:600;font-size:15px;padding:14px 26px;border-radius:var(--r-sm);transition:background .2s var(--ease),transform .2s var(--ease)}
+.btn.primary{background:var(--gold);color:var(--forest-ink)}
+.btn.primary:hover{background:var(--gold-deep)}
+.btn.ghost{border:1px solid var(--forest);color:var(--forest)}
+.btn.ghost:hover{background:var(--forest);color:var(--cream)}
+.btn.ghost.on-dark{border-color:var(--hairline-dark);color:var(--cream)}
+.btn.ghost.on-dark:hover{background:var(--cream);color:var(--forest)}
+.btn .arrow{transition:transform .2s var(--ease)}
+.btn:hover .arrow{transform:translateX(3px)}
+
+/* Image slot: replace each with a real photo. Keep object-fit:cover and the same aspect ratio. */
+.imgslot{position:relative;background:var(--forest-soft);border-radius:var(--r-md);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.imgslot::before{content:"";position:absolute;width:44px;height:44px;border:1px solid rgba(231,160,32,.4);transform:rotate(45deg)}
+.imgslot .imglabel{position:relative;font-family:var(--font-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-inverse-soft);border:1px dashed rgba(246,245,240,.35);padding:6px 12px;border-radius:2px;background:var(--forest-soft)}
+.imgslot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header{position:sticky;top:0;z-index:50;background:rgba(246,245,240,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--hairline)}
+.header-in{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .name{font-family:var(--font-display);font-size:22px;color:var(--forest)}
+.brand .tag{font-family:var(--font-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-soft);border-left:1px solid var(--hairline);padding-left:12px;margin-left:2px}
+nav.main{display:flex;gap:6px}
+nav.main button{font-size:14px;font-weight:500;padding:8px 14px;border-radius:var(--r-sm);color:var(--text-soft);transition:color .15s}
+nav.main button:hover{color:var(--forest)}
+nav.main button[aria-current="page"]{color:var(--forest);box-shadow:inset 0 -2px 0 var(--gold)}
+.header-cta{display:flex;gap:10px;align-items:center}
+.header-cta .signin{font-size:14px;font-weight:500;color:var(--forest);padding:8px 12px}
+.header-cta .btn{padding:10px 18px;font-size:14px}
+@media(max-width:860px){.brand .tag{display:none}.header-cta .signin{display:none}}
+@media(max-width:640px){nav.main{display:none}}
+
+/* screen switching */
+.screen{display:none}
+.screen.active{display:block}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <div class="wrap header-in">
+    <a class="brand" href="#" onclick="show('home');return false" aria-label="NexusZim home">
+      <!-- Placeholder mark: replace with official two-tone interlocking diamond SVG asset. Geometry of the real mark must not be altered. -->
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <rect x="9.5" y="2" width="15" height="15" transform="rotate(45 17 9.5)" fill="#0F3323"/>
+        <rect x="9.5" y="17" width="15" height="15" transform="rotate(45 17 24.5)" fill="#E7A020"/>
+      </svg>
+      <span class="name">NexusZim</span>
+      <span class="tag">Excellence, Delivered</span>
+    </a>
+    <nav class="main" aria-label="Primary">
+      <button id="nav-home" aria-current="page" onclick="show('home')">Home</button>
+      <button id="nav-directory" onclick="show('directory')">Directory</button>
+      <button id="nav-profile" onclick="show('profile')">Provider profile</button>
+    </nav>
+    <div class="header-cta">
+      <a class="signin" href="#">Sign in</a>
+      <a class="btn primary" href="#">List your business</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================================================
+     SCREEN: HOME
+     ============================================================ -->
+<section class="screen active" id="screen-home">
+  <style>
+    /* ---- hero ---- */
+    .hero{padding:84px 0 72px;border-bottom:1px solid var(--hairline)}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+    .hero h1{font-size:clamp(42px,5.6vw,68px);color:var(--forest);margin:20px 0 22px}
+    .hero h1 em{font-style:italic;color:var(--gold-deep)}
+    .hero p.lede{font-size:18px;color:var(--text-soft);max-width:46ch;margin-bottom:34px}
+    .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+    .hero-note{margin-top:26px;font-family:var(--font-data);font-size:12px;color:var(--text-soft)}
+    .hero-note strong{color:var(--forest);font-weight:500}
+
+    /* specimen registry card */
+    .specimen{background:var(--cream-raised);border:1px solid var(--hairline);border-radius:var(--r-md);box-shadow:0 1px 0 var(--hairline),0 24px 48px -32px rgba(15,51,35,.35);overflow:hidden;animation:rise .7s var(--ease) both .15s}
+    @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .specimen-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--forest);color:var(--text-inverse)}
+    .specimen-head .reg{font-family:var(--font-data);font-size:12px;letter-spacing:.08em;color:var(--text-inverse-soft)}
+    .specimen-body{padding:22px 20px 8px}
+    .specimen-body .pname{font-family:var(--font-display);font-size:26px;color:var(--forest)}
+    .specimen-body .pmeta{font-size:13.5px;color:var(--text-soft);margin:4px 0 18px}
+    .ledger{border-top:1px solid var(--hairline)}
+    .ledger-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--hairline);font-size:13px}
+    .ledger-row:last-child{border-bottom:none}
+    .ledger-row .k{color:var(--text-soft)}
+    .ledger-row .v{font-family:var(--font-data);font-size:12px;color:var(--forest);text-align:right}
+    .ledger-row .v.ok::before{content:"✓";color:var(--gold-deep);margin-right:7px;font-family:var(--font-ui);font-weight:700}
+    .specimen-foot{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:var(--cream);border-top:1px solid var(--hairline);font-family:var(--font-data);font-size:11px;color:var(--text-soft)}
+    @media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:44px}.hero{padding:56px 0}}
+
+    /* ---- proof strip ---- */
+    .proof{border-bottom:1px solid var(--hairline);background:var(--cream-raised)}
+    .proof-in{display:grid;grid-template-columns:repeat(4,1fr);padding:26px 0}
+    .proof-item{padding:0 28px;border-left:1px solid var(--hairline)}
+    .proof-item:first-child{border-left:none;padding-left:0}
+    .proof-item .n{font-family:var(--font-display);font-size:30px;color:var(--forest)}
+    .proof-item .l{font-size:13px;color:var(--text-soft);margin-top:2px}
+    @media(max-width:860px){.proof-in{grid-template-columns:repeat(2,1fr);gap:22px 0}.proof-item:nth-child(3){border-left:none;padding-left:0}}
+
+    /* ---- tiers ---- */
+    .tiers{background:var(--forest-ink);color:var(--text-inverse);padding:88px 0}
+    .tiers .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:56px;flex-wrap:wrap}
+    .tiers h2{font-size:clamp(30px,3.6vw,44px);max-width:18ch}
+    .tiers .sec-head p{color:var(--text-inverse-soft);max-width:40ch;font-size:15.5px}
+    .tier-list{display:grid;grid-template-columns:1fr;border-top:1px solid var(--hairline-dark)}
+    .tier{display:grid;grid-template-columns:110px 1fr 1.2fr auto;gap:36px;align-items:center;padding:34px 0;border-bottom:1px solid var(--hairline-dark);transition:background .25s var(--ease)}
+    .tier:hover{background:rgba(246,245,240,.03)}
+    .tier .num{font-family:var(--font-data);font-size:13px;color:var(--text-inverse-soft);letter-spacing:.1em}
+    .tier .tname{font-family:var(--font-display);font-size:27px}
+    .tier .tname small{display:block;font-family:var(--font-data);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-inverse-soft);margin-top:7px}
+    .tier .tdesc{font-size:14.5px;color:var(--text-inverse-soft);line-height:1.6}
+    .tier .tdesc b{color:var(--text-inverse);font-weight:500}
+    .tier-mark{width:52px;height:52px;position:relative;flex:none;justify-self:end}
+    .tier-mark span{position:absolute;inset:0;margin:auto;transform:rotate(45deg)}
+    .tier-mark .d1{width:34px;height:34px;border:1.5px solid var(--text-inverse-soft)}
+    .tier.v2 .d1{border-color:var(--cream);background:rgba(246,245,240,.08)}
+    .tier.v3 .d1{border-color:var(--gold);background:var(--gold)}
+    .tier.v3 .d2{width:48px;height:48px;border:1px solid rgba(231,160,32,.45)}
+    @media(max-width:920px){.tier{grid-template-columns:1fr;gap:14px}.tier-mark{justify-self:start;order:-1}}
+
+    /* ---- on the ground: photo band ---- */
+    .field{padding:88px 0;border-bottom:1px solid var(--hairline)}
+    .field-grid{display:grid;grid-template-columns:1.5fr .9fr;gap:20px;margin-top:36px}
+    .field .f-wide{aspect-ratio:16/10}
+    .field .f-tall{aspect-ratio:4/3}
+    .field-side{display:flex;flex-direction:column;gap:20px}
+    .field-cap{font-size:15px;color:var(--text-soft);line-height:1.65;max-width:38ch;padding-left:18px;border-left:2px solid var(--gold)}
+    @media(max-width:860px){.field-grid{grid-template-columns:1fr}}
+
+    /* ---- category index ---- */
+    .cats{padding:88px 0;border-bottom:1px solid var(--hairline)}
+    .cats h2{font-size:clamp(30px,3.6vw,44px);color:var(--forest);margin:14px 0 46px;max-width:22ch}
+    .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--hairline);border-left:1px solid var(--hairline)}
+    .cat{display:flex;flex-direction:column;justify-content:space-between;gap:34px;min-height:168px;padding:22px;border-right:1px solid var(--hairline);border-bottom:1px solid var(--hairline);transition:background .2s var(--ease)}
+    .cat:hover{background:var(--cream-raised)}
+    .cat:hover .go{transform:translateX(4px);color:var(--gold-deep)}
+    .cat .cname{font-family:var(--font-display);font-size:21px;color:var(--forest)}
+    .cat .cfoot{display:flex;justify-content:space-between;align-items:center}
+    .cat .count{font-family:var(--font-data);font-size:12px;color:var(--text-soft)}
+    .cat .go{font-size:18px;color:var(--forest);transition:transform .2s var(--ease),color .2s}
+    @media(max-width:860px){.cat-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.cat-grid{grid-template-columns:1fr}}
+
+    /* ---- how it works ---- */
+    .how{padding:88px 0;border-bottom:1px solid var(--hairline)}
+    .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:56px;margin-top:52px}
+    .how-step .sn{font-family:var(--font-data);font-size:12px;color:var(--gold-deep);letter-spacing:.1em}
+    .how-step h3{font-family:var(--font-display);font-size:23px;color:var(--forest);margin:14px 0 10px}
+    .how-step p{font-size:14.5px;color:var(--text-soft)}
+    @media(max-width:860px){.how-grid{grid-template-columns:1fr;gap:36px}}
+
+    /* ---- CTA ---- */
+    .cta{background:var(--forest);color:var(--text-inverse);padding:92px 0}
+    .cta-in{display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:center}
+    .cta h2{font-size:clamp(32px,4vw,50px)}
+    .cta h2 em{font-style:italic;color:var(--gold)}
+    .cta p{color:var(--text-inverse-soft);margin:18px 0 0;max-width:46ch}
+    .cta-actions{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+    @media(max-width:860px){.cta-in{grid-template-columns:1fr}}
+
+    footer{background:var(--forest-ink);color:var(--text-inverse-soft);padding:56px 0 40px;font-size:13.5px}
+    .foot-in{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;border-bottom:1px solid var(--hairline-dark);padding-bottom:36px;margin-bottom:24px}
+    .foot-in nav{display:flex;gap:26px;flex-wrap:wrap}
+    .foot-in a:hover{color:var(--cream)}
+    .foot-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--font-data);font-size:11px}
+  </style>
+
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="diamond-dot"></span>Zimbabwe's verified services registry</span>
+        <h1 class="display">Every provider here is a <em>matter of record.</em></h1>
+        <p class="lede">NexusZim checks the paperwork before you ever make the call: company registration, tax standing, physical premises, real client references. You see exactly what was verified, and when.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#" onclick="show('directory');return false">Search the registry <span class="arrow">→</span></a>
+          <a class="btn ghost" href="#">How verification works</a>
+        </div>
+        <p class="hero-note"><strong>NexusZim connects and verifies.</strong> Payments happen directly between you and the provider. We never hold your money.</p>
+      </div>
+
+      <div class="specimen" aria-label="Example registry entry">
+        <div class="specimen-head">
+          <span class="reg">REGISTRY № NX-2026-00184</span>
+          <span class="hallmark t3">Trust Certified</span>
+        </div>
+        <div class="specimen-body">
+          <p class="pname">Mashonaland Corporate Services</p>
+          <p class="pmeta">Company registration &amp; secretarial · Harare CBD · Est. 2014</p>
+          <div class="ledger">
+            <div class="ledger-row"><span class="k">Company registration (CR14 / CR6)</span><span class="v ok">Verified 03 Jun 2026</span></div>
+            <div class="ledger-row"><span class="k">Tax clearance (ITF 263)</span><span class="v ok">Current · FY2026</span></div>
+            <div class="ledger-row"><span class="k">Physical premises inspection</span><span class="v ok">Kwame Nkrumah Ave</span></div>
+            <div class="ledger-row"><span class="k">Client references contacted</span><span class="v ok">5 of 5 confirmed</span></div>
+          </div>
+        </div>
+        <div class="specimen-foot">
+          <span>Next review · Dec 2026</span>
+          <span>NexusZim verification desk</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proof">
+    <div class="wrap proof-in">
+      <div class="proof-item"><p class="n">640+</p><p class="l">Providers on the registry</p></div>
+      <div class="proof-item"><p class="n">14</p><p class="l">Service categories, Harare to Bulawayo</p></div>
+      <div class="proof-item"><p class="n">4</p><p class="l">Documents checked per verified provider</p></div>
+      <div class="proof-item"><p class="n">6 mo</p><p class="l">Re-verification cycle, no exceptions</p></div>
+    </div>
+  </div>
+
+  <div class="tiers on-dark">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow on-dark"><span class="diamond-dot"></span>The three tiers</span>
+          <h2 class="display" style="margin-top:14px">Trust you can read like a ledger.</h2>
+        </div>
+        <p>Every provider sits at exactly one tier. The tier tells you what we checked, not what they claim.</p>
+      </div>
+      <div class="tier-list">
+        <div class="tier v1">
+          <span class="num">TIER 01</span>
+          <div><p class="tname display">Listed<small>Identity confirmed</small></p></div>
+          <p class="tdesc">The provider is who they say they are. <b>National ID and contact details confirmed.</b> A starting point, clearly labelled as one.</p>
+          <div class="tier-mark"><span class="d1"></span></div>
+        </div>
+        <div class="tier v2">
+          <span class="num">TIER 02</span>
+          <div><p class="tname display">Verified<small>Documents on file</small></p></div>
+          <p class="tdesc"><b>Company registration and tax clearance sighted and dated.</b> The paperwork exists, it's current, and we've recorded when we checked it.</p>
+          <div class="tier-mark"><span class="d1"></span></div>
+        </div>
+        <div class="tier v3">
+          <span class="num">TIER 03</span>
+          <div><p class="tname display">Trust Certified<small>Premises &amp; references</small></p></div>
+          <p class="tdesc">Everything in Verified, plus <b>a physical premises inspection and confirmed client references.</b> Re-checked every six months to keep the hallmark.</p>
+          <div class="tier-mark"><span class="d2"></span><span class="d1"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="wrap">
+      <span class="eyebrow"><span class="diamond-dot"></span>On the ground</span>
+      <div class="field-grid">
+        <figure class="imgslot f-wide"><span class="imglabel">Photo: verification desk visiting provider premises</span></figure>
+        <div class="field-side">
+          <figure class="imgslot f-tall"><span class="imglabel">Photo: Harare CBD street scene</span></figure>
+          <p class="field-cap">Trust Certified means someone from NexusZim stood in the provider's office, sighted the documents, and called the references. Not a form. A visit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cats">
+    <div class="wrap">
+      <span class="eyebrow"><span class="diamond-dot"></span>The index</span>
+      <h2 class="display">Fourteen categories. One standard.</h2>
+      <div class="cat-grid">
+        <a class="cat" href="#" onclick="show('directory');return false"><span class="cname">Visa &amp; immigration consultancy</span><span class="cfoot"><span class="count">86 providers</span><span class="go">→</span></span></a>
+        <a class="cat" href="#" onclick="show('directory');return false"><span class="cname">Company registration</span><span class="cfoot"><span class="count">54 providers</span><span class="go">→</span></span></a>
+        <a class="cat" href="#" onclick="show('directory');return false"><span class="cname">Accounting &amp; tax</span><span class="cfoot"><span class="count">73 providers</span><span class="go">→</span></span></a>
+        <a class="cat" href="#" onclick="show('directory');return false"><span class="cname">Legal services</span><span class="cfoot"><span class="count">41 providers</span><span class="go">→</span></span></a>
+        <a class="cat" href="#" onclick="show('directory');return false"><span class="cname">Construction &amp; trades</span><span class="cfoot"><span class="count">112 providers</span><span class="go">→</span></span></a>
+        <a class="cat" href="#" onclick="show('directory');return false"><span class="cname">IT &amp; software</span><span class="cfoot"><span class="count">67 providers</span><span class="go">→</span></span></a>
+      </div>
+      <p style="margin-top:22px;font-size:14px;color:var(--text-soft)">Also: events, logistics, real estate, security, cleaning, catering, marketing, training. <a href="#" onclick="show('directory');return false" style="color:var(--gold-deep);font-weight:500">Browse all →</a></p>
+    </div>
+  </div>
+
+  <div class="how">
+    <div class="wrap">
+      <span class="eyebrow"><span class="diamond-dot"></span>How it works</span>
+      <div class="how-grid">
+        <div class="how-step">
+          <span class="sn">STEP 01</span>
+          <h3>Search the registry</h3>
+          <p>Filter by category, city, and verification tier. Every result shows its registry number and what's on file.</p>
+        </div>
+        <div class="how-step">
+          <span class="sn">STEP 02</span>
+          <h3>Read the record</h3>
+          <p>Open a provider's page and see the full verification ledger. Each check is dated, with the next review scheduled.</p>
+        </div>
+        <div class="how-step">
+          <span class="sn">STEP 03</span>
+          <h3>Request an introduction</h3>
+          <p>We connect you directly. You agree terms and pay the provider yourselves. NexusZim never handles the money.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <div class="wrap cta-in">
+      <div>
+        <span class="eyebrow on-dark"><span class="diamond-dot"></span>For providers</span>
+        <h2 class="display" style="margin-top:14px">Your reputation, <em>on the record.</em></h2>
+        <p>Serious clients check the registry first. Get listed, get verified, and let the ledger speak for the quality of your work.</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn primary" href="#">List your business <span class="arrow">→</span></a>
+        <a class="btn ghost on-dark" href="#">See verification requirements</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-in">
+        <div>
+          <p style="font-family:var(--font-display);font-size:20px;color:var(--cream)">NexusZim</p>
+          <p style="margin-top:6px;max-width:34ch">Zimbabwe's verified services registry. Excellence, Delivered.</p>
+        </div>
+        <nav aria-label="Footer">
+          <a href="#">Directory</a><a href="#">Verification</a><a href="#">For providers</a><a href="#">Contact</a>
+        </nav>
+      </div>
+      <div class="foot-base">
+        <span>© 2026 NexusZim. A ZimDataPulse company.</span>
+        <span>Harare · Bulawayo</span>
+      </div>
+    </div>
+  </footer>
+</section>
+
+<!-- ============================================================
+     SCREEN: DIRECTORY
+     ============================================================ -->
+<section class="screen" id="screen-directory">
+  <style>
+    .dir-head{background:var(--forest);color:var(--text-inverse);padding:44px 0 40px}
+    .dir-head h1{font-size:clamp(28px,3.4vw,40px);margin:12px 0 24px}
+    .searchbar{display:flex;background:var(--cream-raised);border-radius:var(--r-sm);overflow:hidden;max-width:760px;border:1px solid transparent}
+    .searchbar:focus-within{border-color:var(--gold)}
+    .searchbar input{flex:1;border:none;background:none;padding:16px 18px;font:500 15px var(--font-ui);color:var(--text);outline:none}
+    .searchbar input::placeholder{color:var(--text-soft)}
+    .searchbar button{background:var(--gold);color:var(--forest-ink);font-weight:600;padding:0 26px}
+    .searchbar button:hover{background:var(--gold-deep)}
+
+    .dir-body{display:grid;grid-template-columns:250px 1fr;gap:52px;padding:44px 0 80px}
+    @media(max-width:860px){.dir-body{grid-template-columns:1fr;gap:28px}}
+
+    .filters .fgroup{border-top:1px solid var(--hairline);padding:20px 0}
+    .filters .fgroup:first-child{border-top:none;padding-top:0}
+    .filters h3{font-family:var(--font-data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-soft);margin-bottom:14px;font-weight:500}
+    .fopt{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:14px;cursor:pointer;color:var(--text)}
+    .fopt input{accent-color:var(--forest);width:15px;height:15px}
+    .fopt .fc{margin-left:auto;font-family:var(--font-data);font-size:11px;color:var(--text-soft)}
+
+    .results-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+    .results-head .rc{font-family:var(--font-data);font-size:12.5px;color:var(--text-soft)}
+    .results-head select{font:500 13.5px var(--font-ui);color:var(--forest);border:1px solid var(--hairline);background:var(--cream-raised);border-radius:var(--r-sm);padding:7px 10px}
+
+    .rrow{display:grid;grid-template-columns:64px 1fr auto;gap:8px 22px;padding:24px 22px;background:var(--cream-raised);border:1px solid var(--hairline);border-radius:var(--r-md);margin-bottom:12px;position:relative;transition:border-color .2s var(--ease),transform .2s var(--ease);cursor:pointer}
+    .rrow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:transparent;transition:background .2s}
+    .rrow:hover{border-color:var(--forest);transform:translateY(-1px)}
+    .rrow:hover::before{background:var(--gold)}
+    .rrow .rtop{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .rrow .rname{font-family:var(--font-display);font-size:22px;color:var(--forest)}
+    .rrow .rmeta{font-size:13.5px;color:var(--text-soft)}
+    .rrow .rchecks{font-family:var(--font-data);font-size:11.5px;color:var(--text-soft);margin-top:8px}
+    .rrow .rchecks b{color:var(--forest);font-weight:500}
+    .rrow .rside{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:10px}
+    .rrow .regno{font-family:var(--font-data);font-size:11px;color:var(--text-soft);letter-spacing:.06em}
+    .rrow .open{font-size:13.5px;font-weight:600;color:var(--forest)}
+    .rrow:hover .open{color:var(--gold-deep)}
+    .rrow .rlogo{width:64px;height:64px;border-radius:var(--r-sm);align-self:start}
+    .rrow .rlogo::before{width:24px;height:24px}
+    .rrow .rlogo .imglabel{display:none}
+    @media(max-width:640px){.rrow{grid-template-columns:64px 1fr}.rrow .rside{grid-column:1/-1;flex-direction:row;align-items:center}}
+  </style>
+
+  <div class="dir-head">
+    <div class="wrap">
+      <span class="eyebrow on-dark"><span class="diamond-dot"></span>The registry · 86 providers in Visa &amp; immigration</span>
+      <h1 class="display">Visa &amp; immigration consultancy</h1>
+      <div class="searchbar" role="search">
+        <input type="search" placeholder="Search by name, service, or registry number…" aria-label="Search the registry">
+        <button type="button">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap dir-body">
+    <aside class="filters" aria-label="Filters">
+      <div class="fgroup">
+        <h3>Verification tier</h3>
+        <label class="fopt"><input type="checkbox" checked> Trust Certified <span class="fc">12</span></label>
+        <label class="fopt"><input type="checkbox" checked> Verified <span class="fc">38</span></label>
+        <label class="fopt"><input type="checkbox"> Listed <span class="fc">36</span></label>
+      </div>
+      <div class="fgroup">
+        <h3>City</h3>
+        <label class="fopt"><input type="checkbox" checked> Harare <span class="fc">51</span></label>
+        <label class="fopt"><input type="checkbox"> Bulawayo <span class="fc">19</span></label>
+        <label class="fopt"><input type="checkbox"> Mutare <span class="fc">9</span></label>
+        <label class="fopt"><input type="checkbox"> Gweru <span class="fc">7</span></label>
+      </div>
+      <div class="fgroup">
+        <h3>Destination expertise</h3>
+        <label class="fopt"><input type="checkbox"> United Kingdom</label>
+        <label class="fopt"><input type="checkbox"> South Africa</label>
+        <label class="fopt"><input type="checkbox"> Canada</label>
+        <label class="fopt"><input type="checkbox"> Australia</label>
+      </div>
+    </aside>
+
+    <div>
+      <div class="results-head">
+        <span class="rc">Showing 50 of 86 · filtered by tier and city</span>
+        <label>Sort <select><option>Tier, highest first</option><option>Most recently verified</option><option>Name A–Z</option></select></label>
+      </div>
+
+      <article class="rrow" onclick="show('profile')" tabindex="0" role="link" aria-label="Open Chiedza Migration Partners">
+        <figure class="imgslot rlogo" aria-hidden="true"><span class="imglabel">Logo</span></figure>
+        <div>
+          <div class="rtop"><span class="rname">Chiedza Migration Partners</span><span class="hallmark t3">Trust Certified</span></div>
+          <p class="rmeta">UK &amp; Canada visa applications, appeals, sponsorship compliance · Harare CBD</p>
+          <p class="rchecks">On file: <b>CR14 · ITF 263 · premises inspected · 5 references</b> · verified 03 Jun 2026</p>
+        </div>
+        <div class="rside"><span class="regno">NX-2026-00121</span><span class="open">Open record →</span></div>
+      </article>
+
+      <article class="rrow" onclick="show('profile')" tabindex="0" role="link" aria-label="Open Matabeleland Visa House">
+        <figure class="imgslot rlogo" aria-hidden="true"><span class="imglabel">Logo</span></figure>
+        <div>
+          <div class="rtop"><span class="rname">Matabeleland Visa House</span><span class="hallmark t3">Trust Certified</span></div>
+          <p class="rmeta">South Africa work permits, critical skills visas · Bulawayo, Fife Street</p>
+          <p class="rchecks">On file: <b>CR14 · ITF 263 · premises inspected · 4 references</b> · verified 21 May 2026</p>
+        </div>
+        <div class="rside"><span class="regno">NX-2026-00097</span><span class="open">Open record →</span></div>
+      </article>
+
+      <article class="rrow" onclick="show('profile')" tabindex="0" role="link" aria-label="Open Nyasha Immigration Desk">
+        <figure class="imgslot rlogo" aria-hidden="true"><span class="imglabel">Logo</span></figure>
+        <div>
+          <div class="rtop"><span class="rname">Nyasha Immigration Desk</span><span class="hallmark t2">Verified</span></div>
+          <p class="rmeta">Student visas for the UK and Australia · Harare, Avondale</p>
+          <p class="rchecks">On file: <b>CR14 · ITF 263</b> · verified 14 Apr 2026 · premises review scheduled</p>
+        </div>
+        <div class="rside"><span class="regno">NX-2026-00203</span><span class="open">Open record →</span></div>
+      </article>
+
+      <article class="rrow" onclick="show('profile')" tabindex="0" role="link" aria-label="Open Great Dyke Mobility">
+        <figure class="imgslot rlogo" aria-hidden="true"><span class="imglabel">Logo</span></figure>
+        <div>
+          <div class="rtop"><span class="rname">Great Dyke Mobility</span><span class="hallmark t2">Verified</span></div>
+          <p class="rmeta">Corporate relocation, work permit renewals · Harare, Msasa</p>
+          <p class="rchecks">On file: <b>CR14 · ITF 263</b> · verified 02 Mar 2026</p>
+        </div>
+        <div class="rside"><span class="regno">NX-2026-00158</span><span class="open">Open record →</span></div>
+      </article>
+
+      <article class="rrow" onclick="show('profile')" tabindex="0" role="link" aria-label="Open Pamberi Pathways">
+        <figure class="imgslot rlogo" aria-hidden="true"><span class="imglabel">Logo</span></figure>
+        <div>
+          <div class="rtop"><span class="rname">Pamberi Pathways</span><span class="hallmark t1">Listed</span></div>
+          <p class="rmeta">Canada study permits · Gweru</p>
+          <p class="rchecks">On file: <b>identity confirmed</b> · document verification in progress</p>
+        </div>
+        <div class="rside"><span class="regno">NX-2026-00311</span><span class="open">Open record →</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCREEN: PROVIDER PROFILE
+     ============================================================ -->
+<section class="screen" id="screen-profile">
+  <style>
+    .pbanner{aspect-ratio:21/6;margin-top:34px;border-radius:var(--r-md)}
+    .pgallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .pgallery .imgslot{aspect-ratio:4/3}
+    .pgallery .imgslot .imglabel{font-size:9px;padding:5px 8px}
+    .pgallery-cap{font-family:var(--font-data);font-size:11px;color:var(--text-soft);margin-top:12px;letter-spacing:.04em}
+    @media(max-width:640px){.pgallery{grid-template-columns:1fr 1fr}}
+    .crumb{font-family:var(--font-data);font-size:11.5px;color:var(--text-soft);padding:20px 0 0}
+    .crumb a:hover{color:var(--forest)}
+    .phead{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;padding:26px 0 34px;border-bottom:1px solid var(--hairline);flex-wrap:wrap}
+    .phead h1{font-size:clamp(30px,4vw,48px);color:var(--forest)}
+    .phead .psub{font-size:15px;color:var(--text-soft);margin-top:8px}
+    .phead .pbadges{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+    .phead .regno{font-family:var(--font-data);font-size:12px;color:var(--text-soft);letter-spacing:.06em}
+    .phead .pcta{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+    .phead .pcta small{font-family:var(--font-data);font-size:11px;color:var(--text-soft)}
+    @media(max-width:720px){.phead .pcta{align-items:flex-start}}
+
+    .pgrid{display:grid;grid-template-columns:1fr 380px;gap:56px;padding:44px 0 84px}
+    @media(max-width:920px){.pgrid{grid-template-columns:1fr;gap:40px}}
+    .psec{margin-bottom:44px}
+    .psec h2{font-family:var(--font-display);font-size:26px;color:var(--forest);margin-bottom:16px}
+    .psec p{color:var(--text);font-size:15px;max-width:62ch}
+    .psec p+p{margin-top:12px}
+
+    .svc{display:flex;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid var(--hairline);font-size:14.5px}
+    .svc:first-of-type{border-top:1px solid var(--hairline)}
+    .svc .sd{color:var(--text-soft);font-size:13.5px;margin-top:3px}
+    .svc .sp{font-family:var(--font-data);font-size:12.5px;color:var(--forest);white-space:nowrap}
+
+    .review{border-left:2px solid var(--gold);padding:4px 0 4px 20px;margin-bottom:26px}
+    .review blockquote{font-family:var(--font-display);font-size:19px;color:var(--forest);line-height:1.4}
+    .review .who{font-family:var(--font-data);font-size:11.5px;color:var(--text-soft);margin-top:10px;letter-spacing:.05em}
+    .review .who b{color:var(--forest);font-weight:500}
+
+    /* verification record panel */
+    .vrecord{position:sticky;top:92px;background:var(--forest-ink);color:var(--text-inverse);border-radius:var(--r-md);overflow:hidden}
+    .vrecord-head{padding:22px 24px;border-bottom:1px solid var(--hairline-dark);display:flex;justify-content:space-between;align-items:center}
+    .vrecord-head h2{font-family:var(--font-display);font-size:21px}
+    .vrecord-body{padding:8px 24px 20px}
+    .vitem{display:grid;grid-template-columns:22px 1fr;gap:12px;padding:15px 0;border-bottom:1px solid var(--hairline-dark)}
+    .vitem:last-child{border-bottom:none}
+    .vitem .vd{width:11px;height:11px;background:var(--gold);transform:rotate(45deg);margin-top:4px}
+    .vitem .vt{font-size:13.5px;font-weight:500}
+    .vitem .vs{font-family:var(--font-data);font-size:11.5px;color:var(--text-inverse-soft);margin-top:4px}
+    .vrecord-foot{padding:16px 24px;background:rgba(246,245,240,.04);font-family:var(--font-data);font-size:11px;color:var(--text-inverse-soft);display:flex;justify-content:space-between;gap:12px}
+    .vnote{margin-top:16px;font-size:12.5px;color:var(--text-soft);line-height:1.6;padding:14px 16px;border:1px solid var(--hairline);border-radius:var(--r-sm);background:var(--cream-raised)}
+    .vnote b{color:var(--forest);font-weight:600}
+  </style>
+
+  <div class="wrap">
+    <p class="crumb"><a href="#" onclick="show('directory');return false">Registry</a> / <a href="#" onclick="show('directory');return false">Visa &amp; immigration</a> / Chiedza Migration Partners</p>
+    <div class="phead">
+      <div>
+        <h1 class="display">Chiedza Migration Partners</h1>
+        <p class="psub">UK &amp; Canada visa applications, appeals, and sponsorship compliance · Harare CBD · Est. 2016</p>
+        <div class="pbadges">
+          <span class="hallmark t3">Trust Certified</span>
+          <span class="regno">REGISTRY № NX-2026-00121</span>
+        </div>
+      </div>
+      <div class="pcta">
+        <a class="btn primary" href="#">Request an introduction <span class="arrow">→</span></a>
+        <small>Typically responds within one business day</small>
+      </div>
+    </div>
+
+    <figure class="imgslot pbanner"><span class="imglabel">Photo: team or office banner, provider supplied</span></figure>
+
+    <div class="pgrid">
+      <div>
+        <div class="psec">
+          <h2>About</h2>
+          <p>Chiedza Migration Partners has handled UK and Canadian visa work from Harare for a decade: skilled worker routes, student visas, family reunification, and refusals taken to appeal. The firm is run by two OISC-trained consultants and keeps its caseload deliberately small.</p>
+          <p>Clients get a named consultant, a written case plan before any fee is agreed, and a document checklist matched to the current Home Office or IRCC requirements.</p>
+        </div>
+
+        <div class="psec">
+          <h2>Premises</h2>
+          <div class="pgallery">
+            <figure class="imgslot"><span class="imglabel">Photo: office exterior</span></figure>
+            <figure class="imgslot"><span class="imglabel">Photo: reception</span></figure>
+            <figure class="imgslot"><span class="imglabel">Photo: consultation room</span></figure>
+          </div>
+          <p class="pgallery-cap">Photographed by the NexusZim verification desk during the premises inspection, 03 Jun 2026.</p>
+        </div>
+
+        <div class="psec">
+          <h2>Services</h2>
+          <div class="svc"><div><div>UK Skilled Worker visa, full application</div><p class="sd">Eligibility review, sponsorship checks, submission, and tracking</p></div><span class="sp">From $450</span></div>
+          <div class="svc"><div><div>Canada study permit</div><p class="sd">Institution shortlist, SOP review, biometrics booking</p></div><span class="sp">From $380</span></div>
+          <div class="svc"><div><div>Visa refusal review &amp; appeal</div><p class="sd">Refusal analysis and re-application or appeal strategy</p></div><span class="sp">From $200</span></div>
+          <div class="svc"><div><div>Sponsor licence compliance (employers)</div><p class="sd">Audit preparation and ongoing compliance support</p></div><span class="sp">Quoted</span></div>
+        </div>
+
+        <div class="psec">
+          <h2>What clients say</h2>
+          <div class="review">
+            <blockquote>“They told me upfront my first application would fail and why. We fixed the gaps, applied once, and it went through.”</blockquote>
+            <p class="who"><b>T. Moyo</b> · UK Skilled Worker visa · reference confirmed by NexusZim, May 2026</p>
+          </div>
+          <div class="review">
+            <blockquote>“Clear fees, a written plan, and they answered the phone every single time. Rare.”</blockquote>
+            <p class="who"><b>R. Ncube</b> · Canada study permit · reference confirmed by NexusZim, Apr 2026</p>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="vrecord" aria-label="Verification record">
+          <div class="vrecord-head">
+            <h2>Verification record</h2>
+            <span class="eyebrow on-dark">TIER 03</span>
+          </div>
+          <div class="vrecord-body">
+            <div class="vitem"><span class="vd"></span><div><p class="vt">Company registration</p><p class="vs">CR14 &amp; CR6 sighted · 03 Jun 2026</p></div></div>
+            <div class="vitem"><span class="vd"></span><div><p class="vt">Tax clearance</p><p class="vs">ITF 263 current · FY2026</p></div></div>
+            <div class="vitem"><span class="vd"></span><div><p class="vt">Premises inspection</p><p class="vs">Kwame Nkrumah Ave, Harare · 03 Jun 2026</p></div></div>
+            <div class="vitem"><span class="vd"></span><div><p class="vt">Client references</p><p class="vs">5 of 5 contacted and confirmed</p></div></div>
+            <div class="vitem"><span class="vd"></span><div><p class="vt">Consultant credentials</p><p class="vs">OISC Level 1 certificates on file</p></div></div>
+          </div>
+          <div class="vrecord-foot">
+            <span>Verified by NexusZim desk</span>
+            <span>Next review · Dec 2026</span>
+          </div>
+        </div>
+        <p class="vnote"><b>How payment works:</b> you agree fees and pay Chiedza Migration Partners directly. NexusZim verifies and introduces. We never hold client funds.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('nav.main button').forEach(b=>b.removeAttribute('aria-current'));
+  document.getElementById('nav-'+id).setAttribute('aria-current','page');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+</script>
+</body>
+</html>

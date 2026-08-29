@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Plus, Copy, CheckCircle2, X, Mail, AlertTriangle, CheckCheck, XCircle } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Admin - NexusZim" }] }),
   component: () => (
     <RequireAuth roles={["admin", "super_admin"]}>
       <AdminPage />
@@ -65,7 +65,7 @@ function AdminPage() {
     },
   });
 
-  // Platform traffic — how many people are visiting (admin-only aggregate).
+  // Platform traffic - how many people are visiting (admin-only aggregate).
   const { data: traffic } = useQuery({
     queryKey: ["admin", "visit-stats"],
     queryFn: async () => {
@@ -152,7 +152,7 @@ function AdminPage() {
             Admin control
           </p>
           <h1 className="font-display text-3xl text-cream">
-            Platform <em className="italic text-gold">Overview.</em>
+            Platform <span className="text-gold">Overview.</span>
           </h1>
 
           {/* Nav links */}
@@ -188,17 +188,17 @@ function AdminPage() {
       <div className="container-page py-8 space-y-8">
         {/* Stats */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Tile label="Active Clients" value={String(clients?.length ?? "—")} />
-          <Tile label="Total Providers" value={String(providers?.length ?? "—")} />
+          <Tile label="Active Clients" value={String(clients?.length ?? "-")} />
+          <Tile label="Total Providers" value={String(providers?.length ?? "-")} />
           <Tile
             label="Pending Review"
             value={String(pendingCount)}
             highlight={pendingCount > 0}
           />
-          <Tile label="Recent Enquiries" value={String(requests?.length ?? "—")} />
+          <Tile label="Recent Enquiries" value={String(requests?.length ?? "-")} />
         </div>
 
-        {/* Platform traffic — visitor analytics */}
+        {/* Platform traffic - visitor analytics */}
         <div>
           <p className="eyebrow text-muted-foreground mb-3">
             <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
@@ -207,12 +207,12 @@ function AdminPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Tile
               label="Unique Visitors"
-              value={traffic ? String(traffic.unique_visitors) : "—"}
+              value={traffic ? String(traffic.unique_visitors) : "-"}
               highlight
             />
-            <Tile label="Visitors Today" value={traffic ? String(traffic.visitors_today) : "—"} />
-            <Tile label="Total Page Views" value={traffic ? String(traffic.total_views) : "—"} />
-            <Tile label="Views · Last 7 Days" value={traffic ? String(traffic.views_7d) : "—"} />
+            <Tile label="Visitors Today" value={traffic ? String(traffic.visitors_today) : "-"} />
+            <Tile label="Total Page Views" value={traffic ? String(traffic.total_views) : "-"} />
+            <Tile label="Views · Last 7 Days" value={traffic ? String(traffic.views_7d) : "-"} />
           </div>
         </div>
 
@@ -299,7 +299,7 @@ function AdminPage() {
                         </div>
                         <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                           {(p.categories as { name: string } | null)?.name ?? "No category"} ·{" "}
-                          {p.city ?? "—"}
+                          {p.city ?? "-"}
                         </p>
                         {email && (
                           <p className="mt-1 font-mono text-[9px] text-muted-foreground/60">{email}</p>
@@ -404,7 +404,7 @@ function AdminPage() {
                         </span>
                       </div>
                       <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-                        Tier {p.tier} · {p.city ?? "—"}
+                        Tier {p.tier} · {p.city ?? "-"}
                         {email && ` · ${email}`}
                       </p>
                     </div>
@@ -498,11 +498,11 @@ function AdminPage() {
                         {r.title}
                       </td>
                       <td className="py-3 pr-6">
-                        <p className="font-sans text-[13px] text-muted-foreground">{r.client_name ?? "—"}</p>
+                        <p className="font-sans text-[13px] text-muted-foreground">{r.client_name ?? "-"}</p>
                         <p className="font-mono text-[9px] text-muted-foreground/60">{r.client_email}</p>
                       </td>
                       <td className="py-3 pr-6 font-mono text-xs text-muted-foreground">
-                        {r.budget ? `$${r.budget}` : "—"}
+                        {r.budget ? `$${r.budget}` : "-"}
                       </td>
                       <td className="py-3 text-right">
                         <span className="border border-border px-2 py-1 rounded-[3px] font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
@@ -527,10 +527,10 @@ function AdminPage() {
 /* ─── ADD PROVIDER ─── */
 
 const TIER_OPTIONS = [
-  { value: 1, label: "T1 — Listed" },
-  { value: 2, label: "T2 — Checked" },
-  { value: 3, label: "T3 — Trusted" },
-  { value: 4, label: "T4 — Elite" },
+  { value: 1, label: "T1 - Listed" },
+  { value: 2, label: "T2 - Checked" },
+  { value: 3, label: "T3 - Trusted" },
+  { value: 4, label: "T4 - Elite" },
 ];
 
 const EMPTY_FORM = {
@@ -612,7 +612,7 @@ function AddProviderSection() {
             </span>
           </div>
           <p className="font-sans text-[12px] text-muted-foreground">
-            Providers you add here are automatically verified — you've checked them in person.
+            Providers you add here are automatically verified, since you've checked them in person.
           </p>
         </div>
         <button
@@ -697,7 +697,7 @@ function AddProviderSection() {
                 onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
                 className="field-input"
               >
-                <option value="">— Select category —</option>
+                <option value="">- Select category -</option>
                 {(categories ?? []).map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -862,7 +862,7 @@ function HeroFeatureSection() {
       toast.error(error.message);
     } else {
       setCurrentId(selectedId);
-      toast.success("Hero provider updated — refresh the homepage to see it.");
+      toast.success("Hero provider updated. Refresh the homepage to see it.");
     }
   }
 
@@ -876,7 +876,7 @@ function HeroFeatureSection() {
     setSaving(false);
     setCurrentId(null);
     setSelectedId("");
-    toast.success("Cleared — hero card will show NexusZim default.");
+    toast.success("Cleared. The hero card will show the NexusZim default.");
   }
 
   return (
@@ -897,7 +897,7 @@ function HeroFeatureSection() {
           <p className="font-display text-sm text-foreground flex-1">
             {currentProvider.business_name}
             <span className="font-sans font-normal text-muted-foreground ml-2 text-[12px]">
-              · {currentProvider.city ?? "—"} · Tier {currentProvider.tier}
+              · {currentProvider.city ?? "-"} · Tier {currentProvider.tier}
             </span>
           </p>
           <button
@@ -913,7 +913,7 @@ function HeroFeatureSection() {
       {!currentProvider && (
         <div className="mb-5 border border-border rounded-[6px] px-5 py-3">
           <p className="font-sans text-[13px] text-muted-foreground italic">
-            Showing default — "NexusZim"
+            Showing default ("NexusZim")
           </p>
         </div>
       )}
@@ -928,10 +928,10 @@ function HeroFeatureSection() {
             onChange={(e) => setSelectedId(e.target.value)}
             className="field-input"
           >
-            <option value="">— Choose a provider —</option>
+            <option value="">- Choose a provider -</option>
             {(providers ?? []).map((p) => (
               <option key={p.user_id} value={p.user_id}>
-                {p.business_name} · {p.city ?? "—"} · T{p.tier}
+                {p.business_name} · {p.city ?? "-"} · T{p.tier}
               </option>
             ))}
           </select>

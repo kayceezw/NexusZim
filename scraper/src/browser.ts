@@ -1,6 +1,6 @@
 /**
  * Playwright-based scraper for JS-heavy social platforms.
- * Handles Google Maps and Facebook — both require a real browser to render results.
+ * Handles Google Maps and Facebook - both require a real browser to render results.
  *
  * Google Maps: most reliable, rich business data, no login required.
  * Facebook:    best-effort; shows partial results before the login wall.
@@ -68,7 +68,7 @@ async function scrapeGoogleMaps(target: BrowserTarget): Promise<Lead[]> {
     try {
       await page.waitForSelector('div[role="feed"]', { timeout: 15_000 });
     } catch {
-      console.warn(`  SKIP — Google Maps feed did not load: ${target.url}`);
+      console.warn(`  SKIP - Google Maps feed did not load: ${target.url}`);
       return [];
     }
 
@@ -132,7 +132,7 @@ async function scrapeFacebook(target: BrowserTarget): Promise<Lead[]> {
       .catch(() => false);
 
     if (loginWall) {
-      console.warn(`  SKIP — Facebook requires login: ${target.url}`);
+      console.warn(`  SKIP - Facebook requires login: ${target.url}`);
       return [];
     }
 
@@ -186,7 +186,7 @@ export async function scrapeBrowserTarget(target: BrowserTarget): Promise<Lead[]
       case "facebook":    return await scrapeFacebook(target);
     }
   } catch (err) {
-    console.warn(`  SKIP — browser error: ${(err as Error).message.split("\n")[0]}`);
+    console.warn(`  SKIP - browser error: ${(err as Error).message.split("\n")[0]}`);
   }
 
   return [];

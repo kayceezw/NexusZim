@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth/callback")({
-  head: () => ({ meta: [{ title: "Confirming your account — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Confirming your account - NexusZim" }] }),
   component: AuthCallback,
 });
 
@@ -70,7 +70,7 @@ function AuthCallback() {
             <>
               <div className="mx-auto h-12 w-12 rounded-full border-2 border-gold/25 border-t-gold animate-spin" />
               <h1 className="font-display text-2xl text-foreground">
-                Confirming your <em className="italic text-gold">account…</em>
+                Confirming your <span className="text-gold">account…</span>
               </h1>
               <p className="font-sans text-sm text-muted-foreground">
                 One moment while we verify your email.

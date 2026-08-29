@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCart, type CartItem } from "@/hooks/use-cart";
 
 export const Route = createFileRoute("/cart")({
-  head: () => ({ meta: [{ title: "Your brief — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Your brief - NexusZim" }] }),
   component: CartPage,
 });
 
@@ -105,7 +105,7 @@ function CartPage() {
             Enquiry brief
           </p>
           <h1 className="font-display text-2xl text-cream">
-            Review your <em className="italic text-gold">Brief.</em>
+            Review your <span className="text-gold">Brief.</span>
           </h1>
           <p className="mt-3 font-sans text-sm text-cream/60 leading-relaxed max-w-xl">
             Providers matching your requirements will contact you directly. No payment goes through

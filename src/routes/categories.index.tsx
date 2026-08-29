@@ -6,11 +6,11 @@ import { fetchCategories } from "@/lib/queries";
 export const Route = createFileRoute("/categories/")({
   head: () => ({
     meta: [
-      { title: "Service categories — NexusZim" },
+      { title: "Service categories - NexusZim" },
       {
         name: "description",
         content:
-          "Browse all service categories on NexusZim — events, visa & docs, transport, beauty, business services and more.",
+          "Browse all service categories on NexusZim: events, visa & docs, transport, beauty, business services and more.",
       },
     ],
   }),
@@ -55,7 +55,7 @@ function CategoriesPage() {
             <p className="font-sans text-sm text-muted-foreground">No categories yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
             {dbCategories.map((c, i) => (
               <CategoryCard key={c.id} category={c} animationDelay={i * 40} />
             ))}
@@ -63,7 +63,7 @@ function CategoriesPage() {
         )}
       </div>
 
-      {/* Full service index — all categories with counts */}
+      {/* Full service index - all categories with counts */}
       {dbCategories.length > 0 && (
         <div className="border-t border-gold/10 mt-8">
           <div className="container-page py-16 pb-24">
@@ -73,7 +73,7 @@ function CategoriesPage() {
                 Full Service Index
               </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
               {dbCategories.map((cat) => (
                 <div
                   key={cat.id}
@@ -83,9 +83,9 @@ function CategoriesPage() {
                   <Link
                     to="/categories/$slug"
                     params={{ slug: cat.slug }}
-                    className="group flex items-center gap-3 px-5 py-4 border-b border-border hover:bg-forest hover:border-primary transition-colors"
+                    className="group flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 px-3 py-3 sm:px-5 sm:py-4 border-b border-border hover:bg-forest hover:border-primary transition-colors"
                   >
-                    <span className="font-display text-base font-bold text-foreground group-hover:text-white transition-colors flex-1 leading-tight">
+                    <span className="font-display text-sm sm:text-base font-bold text-foreground group-hover:text-white transition-colors flex-1 leading-tight">
                       {cat.name}
                     </span>
                     <span className="font-mono text-[9px] text-muted-foreground/50 group-hover:text-white/50 transition-colors shrink-0">
@@ -94,8 +94,8 @@ function CategoriesPage() {
                   </Link>
 
                   {cat.description && (
-                    <div className="px-5 py-4">
-                      <p className="font-sans text-[13px] text-muted-foreground leading-relaxed line-clamp-3">
+                    <div className="px-3 py-3 sm:px-5 sm:py-4">
+                      <p className="font-sans text-[12px] sm:text-[13px] text-muted-foreground leading-relaxed line-clamp-3">
                         {cat.description}
                       </p>
                     </div>

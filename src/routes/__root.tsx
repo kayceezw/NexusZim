@@ -113,15 +113,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NexusZim — Zimbabwe's marketplace for trusted services" },
+      { title: "NexusZim - Zimbabwe's marketplace for trusted services" },
       {
         name: "description",
         content:
-          "Find, request and book vetted service providers in Zimbabwe — events, visa & business docs, transport, personal services, and more.",
+          "Find, request and book vetted service providers in Zimbabwe across events, visa & business docs, transport, personal services, and more.",
       },
       { name: "author", content: "NexusZim" },
       { property: "og:site_name", content: "NexusZim" },
-      { property: "og:title", content: "NexusZim — Trusted services in Zimbabwe" },
+      { property: "og:title", content: "NexusZim - Trusted services in Zimbabwe" },
       {
         property: "og:description",
         content:
@@ -132,7 +132,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image", content: "https://www.nexuszim.co.zw/icon.png" },
       { property: "og:locale", content: "en_ZW" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "NexusZim — Trusted services in Zimbabwe" },
+      { name: "twitter:title", content: "NexusZim - Trusted services in Zimbabwe" },
       {
         name: "twitter:description",
         content:

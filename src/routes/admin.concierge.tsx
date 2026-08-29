@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Plus, X } from "lucide-react";
 
 export const Route = createFileRoute("/admin/concierge")({
-  head: () => ({ meta: [{ title: "Concierge Mode — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Concierge Mode - NexusZim" }] }),
   component: () => (
     <RequireAuth roles={["admin", "super_admin"]}>
       <ConciergeMode />
@@ -67,7 +67,7 @@ function ConciergeMode() {
             </span>
           </div>
           <h1 className="mt-4 font-display text-5xl font-bold text-foreground">
-            Concierge <span className="italic text-gold">Mode.</span>
+            Concierge <span className="text-gold">Mode.</span>
           </h1>
           <p className="mt-4 max-w-xl font-body text-base text-foreground/60">
             Create managed packages, track brokered deals, and log off-platform commissions.
@@ -253,7 +253,7 @@ function PackagesTab() {
               <Row label="Providers" value={String(pkg.provider_ids.length)} />
               <Row
                 label="Commission"
-                value={pkg.commission_pct != null ? `${pkg.commission_pct}%` : "—"}
+                value={pkg.commission_pct != null ? `${pkg.commission_pct}%` : "-"}
                 gold
               />
               <Row label="Created" value={new Date(pkg.created_at).toLocaleDateString()} />
@@ -369,7 +369,7 @@ function DealsTab() {
                 onChange={(e) => setForm({ ...form, package_id: e.target.value })}
                 className="w-full bg-background border border-gold/20 p-3 font-body text-sm text-foreground outline-none focus:border-gold"
               >
-                <option value="">— None —</option>
+                <option value="">- None -</option>
                 {(packages ?? []).map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name}
@@ -459,7 +459,7 @@ function DealsTab() {
                     </td>
                     <td className="py-6">
                       <span className="font-body text-sm text-foreground/80">
-                        {pkg?.name ?? "—"}
+                        {pkg?.name ?? "-"}
                       </span>
                       {deal.notes && (
                         <p className="mt-1 font-mono text-[9px] text-foreground/30 line-clamp-1">
@@ -469,14 +469,14 @@ function DealsTab() {
                     </td>
                     <td className="py-6 text-center">
                       <span className="font-mono text-xs font-bold text-foreground">
-                        {deal.value != null ? `$${deal.value.toFixed(0)}` : "—"}
+                        {deal.value != null ? `$${deal.value.toFixed(0)}` : "-"}
                       </span>
                     </td>
                     <td className="py-6 text-center">
                       <span className="font-mono text-xs font-bold text-gold">
                         {deal.commission_earned != null
                           ? `$${deal.commission_earned.toFixed(0)}`
-                          : "—"}
+                          : "-"}
                       </span>
                     </td>
                     <td className="py-6 text-right">

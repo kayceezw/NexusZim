@@ -1,4 +1,4 @@
--- events_radar v2 — adds scraper columns, indices, and auto-expiry function
+-- events_radar v2 - adds scraper columns, indices, and auto-expiry function
 -- Run backup.sh before applying this migration.
 
 ALTER TABLE public.events_radar

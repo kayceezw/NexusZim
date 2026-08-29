@@ -124,7 +124,7 @@ spacing:
 
 ## Brand & Style
 
-The design system is built on the pillars of **Trust, Groundedness, and Accessibility**. It serves as a modern digital directory for the Zimbabwean service economy, transitioning word-of-mouth reliability into a verified digital ecosystem. The aesthetic avoids the "sterile corporate" feel in favor of a "well-run government registry"—authoritative yet approachable.
+The design system is built on the pillars of **Trust, Groundedness, and Accessibility**. It serves as a modern digital directory for the Zimbabwean service economy, transitioning word-of-mouth reliability into a verified digital ecosystem. The aesthetic avoids the "sterile corporate" feel in favor of a "well-run government registry"-authoritative yet approachable.
 
 The design style is **Corporate / Modern** with a focus on high-clarity information architecture. It prioritizes legibility and immediate recognition of trust signals over decorative elements. 
 

@@ -1,20 +1,32 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, ShieldCheck } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Hallmark } from "@/components/registry/hallmark";
-import { Ledger, type LedgerEntry } from "@/components/registry/ledger";
-import { CategoryCard } from "@/components/category-card";
+import {
+  DiamondField,
+  RegistryChip,
+  SectionHeading,
+} from "@/components/registry";
+import {
+  VerificationStandard,
+  CertificateOfAccreditation,
+  CategoryExcellenceGrid,
+} from "@/components/registry/home-sections";
 import { HeroImageUpload, CategoryBgUpload } from "@/components/registry/photo-upload";
 import { StatSkeleton } from "@/components/skeletons";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchPlatformStats, fetchCategories, type ProviderListing } from "@/lib/queries";
+import {
+  fetchPlatformStats,
+  fetchCategories,
+  providerRegistryId,
+  type ProviderListing,
+} from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "NexusZim — Zimbabwe's Verified Service Directory" },
+      { title: "NexusZim - Zimbabwe's Verified Service Directory" },
       {
         name: "description",
         content:
@@ -25,19 +37,14 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
 });
 
-const SPECIMEN_LEDGER: LedgerEntry[] = [
-  { key: "CR14 registration", value: "Confirmed", date: "Apr 2024", verified: true },
-  { key: "Identity documents", value: "Verified", date: "Apr 2024", verified: true },
-  { key: "Positive rating history", value: "Cleared", date: "Apr 2024", verified: true },
-  { key: "Portfolio audit", value: "Passed", date: "Apr 2024", verified: true },
-];
+const REGISTRY_DISCLAIMER =
+  "NexusZim is an accreditation registry and does not handle or intermediate client funds.";
 
 function LandingPage() {
   const [q, setQ] = useState("");
   const [heroBg, setHeroBg] = useState<string | null>(null);
   const [categoryBg, setCategoryBg] = useState<string | null>(null);
   const [heroProviderId, setHeroProviderId] = useState<string | null>(null);
-  const heroImgRef = useRef<HTMLImageElement>(null);
   const navigate = useNavigate();
   const { roles } = useAuth();
   const isAdmin = roles.includes("admin") || roles.includes("super_admin");
@@ -96,6 +103,12 @@ function LandingPage() {
           { value: String(stats.citiesCount), label: "Cities covered" },
         ];
 
+  // Registry identifier used in the Certificate-of-Accreditation specimen. Derived
+  // from the featured provider when configured; otherwise a stable house record.
+  const certificateRegistryId = heroProvider
+    ? providerRegistryId(heroProvider.user_id)
+    : "NX-2024-8492A";
+
   function handleSearch(e?: React.FormEvent) {
     e?.preventDefault();
     navigate({ to: "/search", search: q.trim() ? { q: q.trim() } : {} });
@@ -103,28 +116,26 @@ function LandingPage() {
 
   return (
     <div className="bg-background pt-16 overflow-x-hidden animate-page-enter">
-      {/* ─── HERO ─── */}
-      <section className="relative py-20 lg:py-28 border-b border-border overflow-hidden">
+      {/* ─── 1. HERO ─── */}
+      <section className="relative overflow-hidden border-b border-border py-20 lg:py-28">
         {heroBg && (
-          <>
-            <img
-              ref={heroImgRef}
-              src={heroBg}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-full w-full object-cover opacity-30 pointer-events-none select-none"
-              onError={() => setHeroBg(null)}
-            />
-          </>
+          <img
+            src={heroBg}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full select-none object-cover opacity-30 pointer-events-none"
+            onError={() => setHeroBg(null)}
+          />
         )}
+        <DiamondField tone="forest" className="opacity-[0.6]" />
 
-        {/* Ambient premium wash — warm cream base with a soft gold + forest glow */}
+        {/* Ambient premium wash - warm cream base with a soft gold + forest glow */}
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(60% 55% at 78% 8%, rgba(212,166,60,0.14), transparent 62%), radial-gradient(52% 48% at 5% 100%, rgba(15,51,35,0.08), transparent 60%)",
+              "radial-gradient(60% 55% at 78% 8%, rgba(212,166,60,0.12), transparent 62%), radial-gradient(52% 48% at 5% 100%, rgba(15,51,35,0.07), transparent 60%)",
           }}
         />
         <div
@@ -144,85 +155,71 @@ function LandingPage() {
         )}
 
         <div className="container-page relative z-10">
-          <div className="grid gap-14 lg:grid-cols-2 lg:items-start">
-            <div className="space-y-8 lg:pt-6">
-              <p className="eyebrow text-muted-foreground animate-fade-up">
-                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                Zimbabwe's Verified Service Marketplace
-              </p>
+          <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
+            {/* Eyebrow chip */}
+            <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/[0.06] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold-deep animate-fade-up">
+              <span aria-hidden className="inline-block h-1.5 w-1.5 rotate-45 bg-gold" />
+              Official Registry
+            </span>
 
-              <h1
-                className="text-foreground animate-fade-up delay-100"
-                style={{
-                  fontSize: "clamp(44px, 6vw, 76px)",
-                  lineHeight: "1.04",
-                  letterSpacing: "-0.025em",
-                }}
-              >
-                Find the right provider.
-                <br />
-                <em className="italic text-gold-deep dark:text-gold">Vetted, verified,</em>
-                <br />
-                ready to deliver.
-              </h1>
+            <h1
+              className="mt-6 font-display text-foreground animate-fade-up delay-100"
+              style={{
+                fontSize: "clamp(40px, 6vw, 72px)",
+                lineHeight: "1.05",
+                letterSpacing: "-0.025em",
+              }}
+            >
+              The Standard of Service Excellence.
+            </h1>
 
-              <p className="font-sans text-base text-muted-foreground leading-relaxed max-w-[440px] animate-fade-up delay-200">
-                NexusZim is Zimbabwe's verified service directory — find, compare, and brief vetted
-                providers across transport, business services, personal care, and more.
-              </p>
+            <p className="mt-5 max-w-xl font-sans text-base leading-relaxed text-muted-foreground animate-fade-up delay-200">
+              Search Zimbabwe's official register of verified service providers by name, category,
+              or NX registry number. Every record is traceable, checked, and independently
+              accredited.
+            </p>
 
-              <div className="flex flex-wrap gap-3 animate-fade-up delay-250">
-                <Link
-                  to="/search"
-                  className="btn-cta gold-metal px-6 py-3 rounded-[4px] font-sans text-sm font-semibold text-gold-foreground shadow-[var(--elev-sm)]"
-                >
-                  Browse Service Providers →
-                </Link>
-                <Link
-                  to="/request"
-                  className="border border-primary/80 bg-card px-6 py-3 rounded-[4px] font-sans text-sm font-semibold text-primary shadow-[var(--elev-sm)] hover:bg-forest hover:text-cream hover:shadow-[var(--elev-md)] hover:-translate-y-px transition-all duration-150"
-                >
-                  Request a Quote
-                </Link>
+            {/* Search — routes to /search on submit */}
+            <form
+              onSubmit={handleSearch}
+              className="mt-8 flex w-full max-w-xl animate-fade-up delay-300"
+            >
+              <div className="relative flex-1">
+                <Search
+                  className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50"
+                  strokeWidth={1.5}
+                  aria-hidden
+                />
+                <input
+                  type="text"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Search registry by name, category, or NX- number..."
+                  aria-label="Search the registry by name, category, or NX number"
+                  className="h-12 w-full border border-border bg-card pl-11 pr-3 font-sans text-sm text-foreground shadow-[var(--elev-sm)] outline-none transition-all placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/12"
+                  style={{ borderRadius: "var(--radius) 0 0 var(--radius)" }}
+                />
               </div>
-
-              <form
-                onSubmit={handleSearch}
-                className="flex max-w-[480px] animate-fade-up delay-300"
+              <button
+                type="submit"
+                className="btn-cta gold-metal h-12 shrink-0 px-6 font-sans text-sm font-semibold text-gold-foreground"
+                style={{ borderRadius: "0 var(--radius) var(--radius) 0" }}
               >
-                <div className="relative flex-1">
-                  <Search
-                    className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50"
-                    strokeWidth={1.5}
-                  />
-                  <input
-                    type="text"
-                    value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    placeholder="Service, city, or provider name..."
-                    aria-label="Search for a service or provider"
-                    className="w-full h-11 pl-10 pr-3 bg-card border border-border font-sans text-sm text-foreground placeholder:text-muted-foreground/50 outline-none shadow-[var(--elev-sm)] focus:border-primary focus:ring-2 focus:ring-primary/12 transition-all"
-                    style={{ borderRadius: "4px 0 0 4px" }}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn-cta gold-metal px-5 h-11 font-sans text-sm font-semibold text-gold-foreground shrink-0"
-                  style={{ borderRadius: "0 4px 4px 0" }}
-                >
-                  Search
-                </button>
-              </form>
-            </div>
+                Search
+              </button>
+            </form>
 
-            {/* Right: featured registry card */}
-            <HeroRegistryCard provider={heroProvider ?? null} />
+            {/* Registry disclaimer */}
+            <p className="mt-4 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground/70 animate-fade-up delay-300">
+              <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary/70" strokeWidth={1.75} aria-hidden />
+              {REGISTRY_DISCLAIMER}
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ─── PROOF STRIP ─── */}
-      <section className="bg-forest-ink border-b border-forest-ink/20">
+      {/* ─── PROOF STRIP (real platform stats) ─── */}
+      <section className="border-b border-forest-ink/20 bg-forest-ink">
         <div className="container-page">
           <div className="grid grid-cols-2 lg:grid-cols-4">
             {statsLoading || !STATS
@@ -234,7 +231,7 @@ function LandingPage() {
               : STATS.map((s, i) => (
                   <div
                     key={s.label}
-                    className={`py-10 px-4 text-center animate-fade-in ${i < STATS.length - 1 ? "border-r border-cream/10" : ""}`}
+                    className={`animate-fade-in px-4 py-10 text-center ${i < STATS.length - 1 ? "border-r border-cream/10" : ""}`}
                   >
                     <p
                       className="font-display text-cream"
@@ -251,14 +248,61 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ─── CATEGORY INDEX ─── */}
-      <section className="relative py-20 border-b border-border overflow-hidden">
+      {/* ─── 2. THE VERIFICATION STANDARD ─── */}
+      <section className="border-b border-border py-20 lg:py-24">
+        <div className="container-page">
+          <SectionHeading
+            align="center"
+            eyebrow="Accreditation Tiers"
+            title="The Verification Standard"
+            subcopy="Every provider on the register holds one of three verification tiers. Each tier reflects the depth of checks completed against their record."
+            className="mx-auto mb-12"
+          />
+          <VerificationStandard />
+        </div>
+      </section>
+
+      {/* ─── 3. TRACEABLE TRUST ─── */}
+      <section className="relative overflow-hidden border-b border-border py-20 lg:py-24">
+        <DiamondField tone="forest" className="opacity-[0.4]" />
+        <div className="container-page relative z-10">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Left: copy + verification example */}
+            <div>
+              <SectionHeading
+                eyebrow="Traceable Trust"
+                title="One number. A complete, permanent record."
+                subcopy="Every accredited provider is issued a unique NX registry number. It never changes, it cannot be reassigned, and it links directly to the provider's verification history on the official register."
+              />
+
+              <div className="mt-8 rounded-[var(--radius)] border border-border bg-card p-6 shadow-[var(--elev-sm)]">
+                <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Verification Example
+                </p>
+                <div className="mt-4">
+                  <RegistryChip value="NX-2024-8492A" copyable tone="default" size="md" />
+                </div>
+                <p className="mt-3 font-sans text-sm leading-relaxed text-muted-foreground">
+                  Copy any NX number and check it in the Verification Center to confirm a provider's
+                  current tier, status, and accreditation history.
+                </p>
+              </div>
+            </div>
+
+            {/* Right: decorative certificate */}
+            <CertificateOfAccreditation registryId={certificateRegistryId} />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 4. CATEGORIES OF EXCELLENCE ─── */}
+      <section className="relative overflow-hidden py-20 lg:py-24">
         {categoryBg && (
           <img
             src={categoryBg}
             alt=""
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover opacity-30 pointer-events-none select-none"
+            className="absolute inset-0 h-full w-full select-none object-cover opacity-20 pointer-events-none"
             onError={() => setCategoryBg(null)}
           />
         )}
@@ -268,123 +312,26 @@ function LandingPage() {
           </div>
         )}
         <div className="container-page relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10">
-            <div className="space-y-2">
-              <p className="eyebrow text-muted-foreground">
-                <span className="inline-block h-1.5 w-1.5 rotate-45 bg-gold shrink-0" />
-                Service categories
-              </p>
-              <h2 className="font-display font-bold text-3xl lg:text-4xl text-foreground">
-                What's on the register
-              </h2>
-            </div>
+          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <SectionHeading
+              eyebrow="Service Categories"
+              title="Categories of Excellence"
+              subcopy="Browse the register by discipline. Each category lists only providers whose credentials have been recorded."
+            />
             <Link
               to="/categories"
-              className="font-sans text-sm font-semibold text-primary hover:text-gold-deep transition-colors mt-4 md:mt-0 flex items-center gap-1 group"
+              className="group flex shrink-0 items-center gap-1 font-sans text-sm font-semibold text-primary transition-colors hover:text-gold-deep"
             >
               All categories
-              <span className="transition-transform group-hover:translate-x-[3px] duration-150">
+              <span className="transition-transform duration-150 group-hover:translate-x-[3px]">
                 →
               </span>
             </Link>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {dbCategories.slice(0, 6).map((c, i) => (
-              <CategoryCard
-                key={c.id}
-                category={c}
-                count={c.provider_count}
-                animationDelay={i * 60}
-              />
-            ))}
-          </div>
+          <CategoryExcellenceGrid categories={dbCategories} />
         </div>
       </section>
-
     </div>
-  );
-}
-
-function HeroRegistryCard({ provider }: { provider: ProviderListing | null }) {
-  const name = provider?.business_name ?? "NexusZim";
-  const categoryName = (provider?.categories as { name: string } | null)?.name ?? null;
-  const city = provider?.city ?? "Zimbabwe";
-  const tier = provider?.tier ?? 4;
-  const registryId = provider
-    ? `NX-${provider.user_id.slice(0, 4).toUpperCase()}-${provider.user_id.slice(4, 9).toUpperCase()}`
-    : "NX-0000-00001";
-  const tags = categoryName
-    ? [categoryName, "Verified Business", "Trust Record"]
-    : ["Verified Providers", "Business Records", "Trust Certificates"];
-
-  const linkProps = provider
-    ? ({ to: "/providers/$providerId", params: { providerId: provider.user_id } } as const)
-    : ({ to: "/search" } as const);
-
-  return (
-    <Link
-      {...linkProps}
-      className="group relative block cursor-pointer bg-forest-ink border border-cream/10 rounded-[8px] p-6 shadow-[var(--elev-xl)] hover:border-primary hover:shadow-[var(--elev-xl),var(--glow-gold)] hover:-translate-y-1 transition-all duration-300 animate-fade-up delay-200 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-    >
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-px animate-shimmer-gold"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(240,205,122,0.25), rgba(240,205,122,0.75), rgba(240,205,122,0.25), transparent)",
-          backgroundSize: "200% 100%",
-        }}
-      />
-      <div className="flex items-start justify-between gap-3 pb-4 border-b border-cream/10">
-        <div>
-          <p className="eyebrow text-cream/40">
-            <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
-            Registry record
-          </p>
-          <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-cream/50 mt-1">
-            {registryId}
-          </p>
-        </div>
-        <Hallmark tier={tier} />
-      </div>
-
-      <div className="py-4 border-b border-cream/10">
-        <p className="font-display text-2xl leading-tight bg-gradient-to-r from-gold-hi via-gold to-gold-deep bg-clip-text text-transparent transition-[filter] duration-300 group-hover:brightness-110">
-          {name}
-        </p>
-        <p className="font-sans text-[13px] text-cream/60 mt-1">
-          {provider ? `${city}` : "Zimbabwe's Verified Service Registry · Harare"}
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {tags.map((s) => (
-            <span
-              key={s}
-              className="font-mono text-[10px] uppercase tracking-[0.06em] text-cream/60 px-2 py-0.5 border border-cream/20 rounded-[3px]"
-            >
-              {s}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="py-4 border-b border-cream/10">
-        <p className="eyebrow text-cream/40 mb-3">
-          <span className="inline-block h-1.5 w-1.5 rotate-45 border border-current shrink-0" />
-          Verification record
-        </p>
-        <Ledger entries={SPECIMEN_LEDGER} variant="condensed" />
-      </div>
-
-      <div className="pt-4 flex items-center justify-between">
-        <span className="font-mono text-[11px] text-cream/40 uppercase tracking-[0.08em]">
-          {provider ? `Tier ${tier} · Verified` : "NexusZim Platform · Est. 2024"}
-        </span>
-        <span className="font-sans text-[12px] font-semibold text-gold group-hover:text-gold-hi transition-colors flex items-center gap-1">
-          {provider ? "View full record" : "Browse all records"}
-          <span className="transition-transform group-hover:translate-x-[3px] duration-150">→</span>
-        </span>
-      </div>
-    </Link>
   );
 }

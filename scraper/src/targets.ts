@@ -41,7 +41,7 @@ export const CATEGORY_MAP: Record<string, string> = {
   restaurant: "food-catering",
 };
 
-// Shared social link selectors — picks up FB/IG/TW/LI icons any directory includes
+// Shared social link selectors - picks up FB/IG/TW/LI icons any directory includes
 const SOCIAL_SELECTORS = [
   "[href*='facebook.com']",
   "[href*='instagram.com']",
@@ -77,7 +77,7 @@ const IP_SELECTORS = {
   socialLinks: SOCIAL_SELECTORS,
 };
 
-// ─── Bing search — Zimbabwe businesses on Facebook ────────────────────────────
+// ─── Bing search - Zimbabwe businesses on Facebook ────────────────────────────
 // Bing is more scraper-friendly than Google; results pages include titles + URLs
 // which we parse to extract Facebook page references
 const BING_SELECTORS = {
@@ -153,7 +153,7 @@ export const TARGETS: ScrapeTarget[] = [
   },
 ];
 
-// ─── Social media — browser-rendered targets (Playwright) ────────────────────
+// ─── Social media - browser-rendered targets (Playwright) ────────────────────
 
 import type { BrowserTarget } from "./browser.js";
 
@@ -161,7 +161,7 @@ const GM_BASE = "https://www.google.com/maps/search";
 const FB_BASE = "https://www.facebook.com/search/pages/?q";
 
 export const BROWSER_TARGETS: BrowserTarget[] = [
-  // Google Maps — reliable, no login, rich name+address data
+  // Google Maps - reliable, no login, rich name+address data
   {
     name: "google-maps",
     source_name: "google.com/maps",
@@ -212,7 +212,7 @@ export const BROWSER_TARGETS: BrowserTarget[] = [
     platform: "google-maps",
   },
 
-  // Facebook Business Pages — best-effort, partial results before login wall
+  // Facebook Business Pages - best-effort, partial results before login wall
   {
     name: "facebook.com",
     label: "venues",

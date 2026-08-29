@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Reset password — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Reset password - NexusZim" }] }),
   component: ResetPasswordPage,
 });
 
@@ -110,10 +110,10 @@ function ResetPasswordPage() {
                   Link expired
                 </p>
                 <h1 className="font-display text-2xl text-foreground">
-                  Reset link <em className="italic text-rose-500">expired.</em>
+                  Reset link <span className="text-rose-500">expired.</span>
                 </h1>
                 <p className="mt-2 font-sans text-sm text-muted-foreground">
-                  This link is no longer valid — links expire after 1 hour. Request a new one.
+                  This link is no longer valid. Links expire after 1 hour, so request a new one.
                 </p>
               </div>
               <Link
@@ -139,7 +139,7 @@ function ResetPasswordPage() {
                   Reset password
                 </p>
                 <h1 className="font-display text-2xl text-foreground">
-                  Choose a new <em className="italic text-gold">password.</em>
+                  Choose a new <span className="text-gold">password.</span>
                 </h1>
                 <p className="mt-2 font-sans text-sm text-muted-foreground">
                   Pick something strong that only you know.
@@ -286,7 +286,7 @@ function ResetPasswordPage() {
                 Password updated
               </p>
               <h1 className="font-display text-2xl text-foreground">
-                All <em className="italic text-gold">done.</em>
+                All <span className="text-gold">done.</span>
               </h1>
               <div className="border border-emerald-500/30 bg-emerald-500/10 rounded-[6px] p-5">
                 <p className="font-sans text-sm text-emerald-600 dark:text-emerald-400 leading-relaxed">

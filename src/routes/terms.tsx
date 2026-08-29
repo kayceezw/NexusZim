@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/terms")({
-  head: () => ({ meta: [{ title: "Terms & conditions — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Terms & conditions - NexusZim" }] }),
   component: TermsPage,
 });
 
@@ -16,7 +16,7 @@ function TermsPage() {
           </p>
         </div>
         <h1 className="mt-6 font-display text-5xl font-bold text-foreground md:text-6xl">
-          Terms of <span className="italic text-gold">Engagement.</span>
+          Terms of <span className="text-gold">Engagement.</span>
         </h1>
         <p className="mt-4 font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
           Effective: June 2026

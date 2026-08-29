@@ -38,7 +38,7 @@ export const Route = createFileRoute("/categories/$slug")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.category.name} — NexusZim` },
+          { title: `${loaderData.category.name} - NexusZim` },
           { name: "description", content: loaderData.category.description ?? "" },
         ]
       : [],
@@ -164,7 +164,7 @@ function CategoryDetailPage() {
               Available services
             </p>
             <h2 className="font-display text-2xl text-foreground">
-              Select <em className="italic text-gold-deep dark:text-gold">what you need.</em>
+              Select <span className="text-gold-deep dark:text-gold">what you need.</span>
             </h2>
           </div>
           <Link
@@ -193,7 +193,7 @@ function CategoryDetailPage() {
             </p>
           </div>
         ) : (
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
             {services.map((s) => (
               <ServiceCard
                 key={s.id}
@@ -218,7 +218,7 @@ function CategoryDetailPage() {
         <div className="container-page py-12">
           <div className="flex flex-wrap items-center gap-4 border-b border-border pb-6 mb-10">
             <h2 className="font-display text-2xl text-foreground">
-              Verified <em className="italic text-gold-deep dark:text-gold">Directory.</em>
+              Verified <span className="text-gold-deep dark:text-gold">Directory.</span>
             </h2>
             {selectedSub !== "all" && (
               <span className="font-mono text-[10px] px-2.5 py-1 bg-gold/10 border border-gold/30 text-gold-deep dark:text-gold uppercase tracking-[0.06em] rounded-[3px]">
@@ -293,20 +293,20 @@ function ServiceCard({
   }
 
   return (
-    <div className="bg-card border border-border rounded-[8px] p-6 flex flex-col group shadow-[var(--elev-sm)] hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[var(--elev-lg)] transition-all duration-200">
-      <h3 className="font-display text-lg text-foreground group-hover:text-primary transition-colors">
+    <div className="bg-card border border-border rounded-[8px] p-4 sm:p-6 flex flex-col group shadow-[var(--elev-sm)] hover:border-primary/50 hover:-translate-y-0.5 hover:shadow-[var(--elev-lg)] transition-all duration-200">
+      <h3 className="font-display text-base sm:text-lg text-foreground group-hover:text-primary transition-colors leading-tight">
         {service.name}
       </h3>
       {service.description && (
-        <p className="mt-3 font-sans text-[13px] text-muted-foreground leading-relaxed line-clamp-2">
+        <p className="mt-2 sm:mt-3 font-sans text-[12px] sm:text-[13px] text-muted-foreground leading-relaxed line-clamp-2">
           {service.description}
         </p>
       )}
-      <div className="mt-6 flex items-baseline gap-2">
+      <div className="mt-4 sm:mt-6 flex items-baseline gap-2">
         {service.base_price != null ? (
           <>
             <span className="font-mono text-[9px] uppercase tracking-tight text-muted-foreground/50">From</span>
-            <span className="font-display text-2xl text-foreground">
+            <span className="font-display text-xl sm:text-2xl text-foreground">
               ${Number(service.base_price).toFixed(0)}
             </span>
           </>
@@ -316,11 +316,11 @@ function ServiceCard({
           </span>
         )}
       </div>
-      <div className="mt-auto pt-6 flex flex-col gap-2">
+      <div className="mt-auto pt-4 sm:pt-6 flex flex-col gap-2">
         <button
           onClick={handleAdd}
           disabled={inCart}
-          className={`w-full py-3 rounded-[4px] font-sans text-sm font-semibold transition-all duration-150 ${
+          className={`w-full py-2.5 sm:py-3 rounded-[4px] font-sans text-[13px] sm:text-sm font-semibold transition-all duration-150 ${
             inCart
               ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 cursor-not-allowed"
               : "bg-gold/10 text-gold-deep dark:text-gold border border-gold/40 hover:gold-metal hover:text-gold-foreground hover:border-transparent hover:shadow-[var(--glow-gold)]"
@@ -378,7 +378,7 @@ function CustomRequestCard({
         Bespoke enquiry
       </p>
       <h3 className="font-display text-2xl text-foreground mb-2">
-        Describe a custom <em className="italic text-gold-deep dark:text-gold">brief.</em>
+        Describe a custom <span className="text-gold-deep dark:text-gold">brief.</span>
       </h3>
       <p className="font-sans text-[13px] text-muted-foreground max-w-xl leading-relaxed mb-8">
         Tell us what you're looking for. Verified providers in {categoryName} will respond with

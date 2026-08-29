@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { RequireAuth } from "@/components/require-auth";
 
 export const Route = createFileRoute("/onboarding/client")({
-  head: () => ({ meta: [{ title: "Client onboarding — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Client onboarding - NexusZim" }] }),
   component: () => (
     <RequireAuth roles={["client"]} requireOnboarding={false}>
       <ClientOnboarding />
@@ -69,7 +69,7 @@ function ClientOnboarding() {
           </p>
         </div>
         <h1 className="mt-6 font-display text-4xl font-bold text-foreground">
-          Operational <span className="italic text-gold">Brief.</span>
+          Operational <span className="text-gold">Brief.</span>
         </h1>
         <p className="mt-4 font-body text-base text-foreground/60">
           Define your preferences so our network of fixers can respond with optimal speed and

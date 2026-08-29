@@ -104,13 +104,13 @@ function ProviderCardInner({ data }: { data: NormalizedCard }) {
     <article className="group bg-card border border-border rounded-[6px] hover:border-primary hover:shadow-[0_8px_28px_rgba(15,51,35,0.12)] hover:-translate-y-1 transition-all duration-200 relative overflow-hidden">
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gold scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-200" />
 
-      <div className="flex flex-col sm:flex-row gap-0">
+      <div className="flex flex-row gap-0">
         {/* Avatar */}
         <Link
           to="/providers/$providerId"
           params={{ providerId: data.id }}
           aria-label={`View ${data.businessName} profile`}
-          className="flex-shrink-0 sm:w-[80px] h-20 sm:h-auto flex items-center justify-center border-b sm:border-b-0 sm:border-r border-border transition-opacity group-hover:opacity-90 overflow-hidden"
+          className="flex-shrink-0 w-[64px] sm:w-[80px] flex items-center justify-center border-r border-border transition-opacity group-hover:opacity-90 overflow-hidden"
           style={{ minHeight: 120 }}
         >
           {data.firstPhoto ? (

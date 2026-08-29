@@ -3,7 +3,7 @@ import { useState, useEffect, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/forgot-password")({
-  head: () => ({ meta: [{ title: "Reset password — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Reset password - NexusZim" }] }),
   component: ForgotPasswordPage,
 });
 
@@ -69,7 +69,7 @@ function ForgotPasswordPage() {
                   Password reset
                 </p>
                 <h1 className="font-display text-2xl text-foreground">
-                  Forgot your <em className="italic text-gold">password?</em>
+                  Forgot your <span className="text-gold">password?</span>
                 </h1>
                 <p className="mt-2 font-sans text-sm text-muted-foreground">
                   Enter your email and we'll send you a reset link right away.
@@ -131,7 +131,7 @@ function ForgotPasswordPage() {
                   Reset link sent!
                 </p>
                 <h1 className="font-display text-2xl text-foreground">
-                  Check your <em className="italic text-gold">email.</em>
+                  Check your <span className="text-gold">email.</span>
                 </h1>
               </div>
 
@@ -148,7 +148,7 @@ function ForgotPasswordPage() {
 
               <ul className="space-y-2">
                 {[
-                  "Check your inbox — the link arrives within 2 minutes.",
+                  "Check your inbox. The link arrives within 2 minutes.",
                   "Check spam if it's not visible.",
                   "The link expires after 1 hour.",
                 ].map((tip) => (

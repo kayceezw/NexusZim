@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { CheckCircle2, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/admin/revenue")({
-  head: () => ({ meta: [{ title: "Admin Revenue — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Admin Revenue - NexusZim" }] }),
   component: () => (
     <RequireAuth roles={["admin", "super_admin"]}>
       <AdminRevenuePage />
@@ -99,7 +99,7 @@ function AdminRevenuePage() {
           </span>
         </div>
         <h1 className="mt-4 font-display text-5xl font-bold text-foreground">
-          Revenue <span className="italic text-gold">Dashboard.</span>
+          Revenue <span className="text-gold">Dashboard.</span>
         </h1>
       </div>
 
@@ -116,7 +116,7 @@ function AdminRevenuePage() {
           Awaiting Payment Confirmation ({pending.length})
         </h2>
         <p className="mt-2 font-body text-xs text-foreground/40">
-          Providers who've signed up for a paid plan — confirm once EcoCash/bank transfer is
+          Providers who've signed up for a paid plan. Confirm once the EcoCash or bank transfer is
           received.
         </p>
         <div className="mt-8 space-y-4">
@@ -138,7 +138,7 @@ function AdminRevenuePage() {
                     {prof?.business_name ?? s.provider_id}
                   </p>
                   <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-foreground/40">
-                    {prof?.city ?? "—"} · Registered {new Date(s.created_at).toLocaleDateString()}
+                    {prof?.city ?? "-"} · Registered {new Date(s.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -203,7 +203,7 @@ function AdminRevenuePage() {
                       </span>
                     </td>
                     <td className="py-4 font-mono text-[10px] text-foreground/40">
-                      {s.confirmed_at ? new Date(s.confirmed_at).toLocaleDateString() : "—"}
+                      {s.confirmed_at ? new Date(s.confirmed_at).toLocaleDateString() : "-"}
                     </td>
                     <td className="py-4 text-right">
                       <span className="flex items-center justify-end gap-1.5 font-mono text-[9px] font-bold uppercase tracking-widest text-emerald-500">
@@ -257,10 +257,10 @@ function AdminRevenuePage() {
                       {prof?.business_name ?? f.provider_id}
                     </td>
                     <td className="py-4 font-mono text-[10px] text-foreground/60 uppercase">
-                      {cat?.name ?? "—"}
+                      {cat?.name ?? "-"}
                     </td>
                     <td className="py-4 font-mono text-[10px] text-foreground/60">
-                      #{f.position ?? "—"}
+                      #{f.position ?? "-"}
                     </td>
                     <td className="py-4 text-right">
                       <span

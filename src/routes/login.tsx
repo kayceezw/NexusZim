@@ -3,7 +3,7 @@ import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Log in — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Log in - NexusZim" }] }),
   component: LoginPage,
 });
 
@@ -73,7 +73,7 @@ function LoginPage() {
             </span>
           </div>
           <h1 className="font-display text-3xl text-foreground">
-            Welcome <em className="italic text-gold">back.</em>
+            Welcome <span className="text-gold">back.</span>
           </h1>
           <p className="mt-2 font-sans text-sm text-muted-foreground">
             Log in to manage your briefs and access intelligence.
@@ -136,7 +136,7 @@ function LoginPage() {
               >
                 Password
               </label>
-              {/* Forgot password — gold, clearly visible */}
+              {/* Forgot password - gold, clearly visible */}
               <Link
                 to="/forgot-password"
                 className="font-sans text-[12px] font-semibold text-gold hover:text-gold-deep transition-colors underline underline-offset-2"

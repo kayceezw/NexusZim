@@ -2,7 +2,7 @@ import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useAuth, dashboardPathForRoles } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/onboarding/")({
-  head: () => ({ meta: [{ title: "Getting started — NexusZim" }] }),
+  head: () => ({ meta: [{ title: "Getting started - NexusZim" }] }),
   component: OnboardingRedirect,
 });
 
